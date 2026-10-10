@@ -100,6 +100,8 @@ svg{display:block}
 .linkbtn b{font-weight:400;color:var(--text);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
 .linkbtn:disabled{opacity:.6}
 .acc-id{margin:0;font-size:.88rem;color:var(--muted)}
+.vsrow{display:flex;align-items:center;justify-content:center;gap:16px}
+.vsrow b{font-size:2.4rem;font-weight:400;color:var(--yolk);text-shadow:var(--ol)}
 .pf{display:grid;gap:10px;padding:12px;border-radius:14px;background:rgba(16,18,43,.38);border:2px solid var(--ink);text-align:left}
 .pf h3{margin:0;font-family:var(--f-disp);font-weight:400;font-size:1.1rem}
 .pf .msg{min-height:0}
@@ -146,6 +148,12 @@ svg{display:block}
 .hero-meta b{font-weight:400}
 .playbar{position:relative;z-index:2;display:grid;justify-items:center;gap:6px;padding-inline:16px;padding-block:6px 14px;background:var(--planks)}
 .play{width:min(100%,360px);font-size:1.5rem;padding:17px 22px}
+.playrow{display:flex;gap:10px;width:min(100%,380px)}
+.playrow .play{flex:1;width:auto;min-width:0}
+.pvpb{flex:none;font-size:1.25rem;padding-inline:18px}
+.vcode{margin:0;font-family:var(--f-num);font-size:3rem;letter-spacing:.12em;color:var(--yolk);text-shadow:var(--ol)}
+.vwait{display:inline-block;width:46px;height:46px;margin:4px auto;border-radius:50%;border:5px solid rgba(255,255,255,.25);border-top-color:var(--yolk);animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .mode-note{margin:0;text-align:center;font-size:.8rem;color:var(--ink);max-width:40ch}
 
 /* 패널(장비/상점/랭킹/채팅) */
@@ -314,6 +322,7 @@ textarea{-webkit-user-select:text;user-select:text}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>window.FB_CONFIG = window.FB_CONFIG || {};</script>
 </head>
@@ -358,7 +367,7 @@ textarea{-webkit-user-select:text;user-select:text}
       </button>
     </div>
     <div class="playbar">
-      <button class="btn big play" id="bPlay" type="button">게임 시작</button>
+      <div class="playrow"><button class="btn big play" id="bPlay" type="button">게임 시작</button><button class="btn big blue pvpb" id="bPvp" type="button">1대1</button></div>
       <p class="mode-note" id="modeNote"></p>
     </div>
   </section>
@@ -551,7 +560,7 @@ const LS_CHAT_SEEN = 'hojun-brawl-chatseen';
 
 function newProfile(nick) {
   return {
-    nick, ch: 'base', pic: '', total: 0, best: 0, games: 0, clears: 0,
+    nick, ch: 'base', pic: '', pw: 0, pl: 0, pd: 0, total: 0, best: 0, games: 0, clears: 0,
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
   };
@@ -564,7 +573,7 @@ function lvMap(src, table, must) {
 }
 function normProfile(pub, priv) {
   const P = newProfile(str(pub && pub.nick, 8) || '호준');
-  if (pub) { P.ch = CHARS[pub.ch] ? pub.ch : 'base'; P.pic = validPic(pub.pic) ? pub.pic : ''; for (const k of ['total', 'best', 'games', 'clears']) P[k] = num(pub[k]); }
+  if (pub) { P.ch = CHARS[pub.ch] ? pub.ch : 'base'; P.pic = validPic(pub.pic) ? pub.pic : ''; for (const k of ['total', 'best', 'games', 'clears', 'pw', 'pl', 'pd']) P[k] = num(pub[k]); }
   if (priv) {
     P.coins = num(priv.coins, 300);
     const raw = Array.isArray(priv.chars) ? priv.chars : [];
@@ -805,7 +814,7 @@ const Store = {
     if (this.web && !this.kicked) this.webErr = fsErrMsg(e);
     if (this.mode === 'online') { this.mode = 'readonly'; this.localSave(); this.emit('mode'); }
   },
-  pubData() { const P = this.P; return { nick: P.nick, ch: P.ch, pic: P.pic || '', total: P.total, best: P.best, games: P.games, clears: P.clears, upd: Date.now() }; },
+  pubData() { const P = this.P; return { nick: P.nick, ch: P.ch, pic: P.pic || '', total: P.total, best: P.best, games: P.games, clears: P.clears, pw: P.pw || 0, pl: P.pl || 0, pd: P.pd || 0, upd: Date.now() }; },
   privData() {
     const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, v: 1 };
     if (this.web) o.sess = this.sess;
@@ -844,6 +853,12 @@ const Store = {
     w.busy = false;
   },
 
+  applyPvp(r) {
+    const P = this.P;
+    P.coins += r.coins;
+    if (r.res === 'win') P.pw = (P.pw || 0) + 1; else if (r.res === 'lose') P.pl = (P.pl || 0) + 1; else P.pd = (P.pd || 0) + 1;
+    this.save('all');
+  },
   applyResult(r) {
     const P = this.P;
     P.total += r.score; P.best = Math.max(P.best, r.score); P.games += 1;
@@ -1130,11 +1145,15 @@ function updatePlayer(dt) {
   for (const k in p.buf) if (p.buf[k] > 0) p.buf[k] = Math.max(0, p.buf[k] - dt);
   p.flash = Math.max(0, p.flash - dt); p.recoil = Math.max(0, p.recoil - dt * 8); p.potCd = Math.max(0, p.potCd - dt);
   p.noAmmo = Math.max(0, p.noAmmo - dt); p.inv = Math.max(0, (p.inv || 0) - dt); p.fcd -= dt;
+  if (p.stun > 0) p.stun = Math.max(0, p.stun - dt);
+  if (p.conf > 0) p.conf = Math.max(0, p.conf - dt);
+  const locked = (p.stun || 0) > 0 || !!(G.pvp && G.pvp.cd > 0);
 
   let mx = IN.mv.x, my = IN.mv.y;
   const k = IN.keys;
   const kx = (k.right ? 1 : 0) - (k.left ? 1 : 0), ky = (k.down ? 1 : 0) - (k.up ? 1 : 0);
   if (kx || ky) { const l = Math.hypot(kx, ky); mx = kx / l; my = ky / l; }
+  if (locked) { mx = 0; my = 0; } else if ((p.conf || 0) > 0) { mx = -mx; my = -my; }
   const mm = Math.hypot(mx, my);
 
   let slow = 1;
@@ -1212,6 +1231,7 @@ function apmAim() {
 function tryAttack(a) {
   if (!G || G.over || G.p.dead) return false;
   const p = G.p;
+  if ((p.stun || 0) > 0 || (G.pvp && G.pvp.cd > 0)) return false;
   if (p.fcd > 0 || p.burstN > 0) { IN.buffer = { ang: a, t: 0.3 }; return false; }
   if (p.rl > 0 || p.ammo <= 0) { if (p.rl <= 0) startReload(); p.noAmmo = 0.45; return false; }
   const wp = WEAPONS[G.lo.w];
@@ -1231,15 +1251,16 @@ function fireVolley(a, apm) {
   else angs.push(a + rand(-wp.spread / 2, wp.spread / 2));
   const sx = p.x + Math.cos(a) * (p.r + 10), sy = p.y + Math.sin(a) * (p.r + 10);
   for (const b of angs) G.pb.push({ x: sx, y: sy, vx: Math.cos(b) * spd, vy: Math.sin(b) * spd, r, dmg, life: range / spd, pierce, hit: [], nc: !!apm });
+  if (G.pvp) PvP.shot(sx, sy, angs, spd, r, range / spd);
   p.recoil = 1; sfx('shoot');
 }
 /* 궁극기: 궁 버튼을 끌어서 조준하고 놓으면 발사, 톡 치면 자동 조준 */
-function ultReady() { return !!G && !G.over && !G.p.dead && G.p.ult >= 1; }
+function ultReady() { return !!G && !G.over && !G.p.dead && G.p.ult >= 1 && !((G.p.stun || 0) > 0) && !(G.pvp && G.pvp.cd > 0); }
 function denyUlt() { if (G) G.ultDeny = 0.35; }
 function ultRangeOf() { return ULT_RANGE[CHARS[G.lo.ch].ult] || ULT_RANGE.bomb; }
 function angDiff(a, b) { return ((((a - b + Math.PI) % TAU) + TAU) % TAU) - Math.PI; }
-function stunE(e, s) { e.stun = Math.max(e.stun || 0, e.boss ? s * 0.4 : s); }
-function confE(e, s) { if (!e.boss) e.conf = Math.max(e.conf || 0, s); }
+function stunE(e, s) { if (e.rival) { PvP.pendFx('st', s); return; } e.stun = Math.max(e.stun || 0, e.boss ? s * 0.4 : s); }
+function confE(e, s) { if (e.rival) { PvP.pendFx('cf', s); return; } if (!e.boss) e.conf = Math.max(e.conf || 0, s); }
 function areaHit(x, y, R, dmg, stun, push) {
   for (const e of G.en) {
     if (e.dead || Math.hypot(e.x - x, e.y - y) > R + e.r) continue;
@@ -1253,10 +1274,12 @@ function fireUlt(a, mag) {
   if (!ultReady()) return;
   const p = G.p, ch = CHARS[G.lo.ch], kind = ch.ult;
   p.ult = 0; p.ang = a; sfx('ult');
+  const ox = p.x, oy = p.y; let ex = null;
   if (kind === 'bomb') {
     const d = clamp(mag, 0.12, 1) * ULT_RANGE.bomb;
     const tx = clamp(p.x + Math.cos(a) * d, 30, WW - 30), ty = clamp(p.y + Math.sin(a) * d, 30, WH - 30);
     G.lobs.push({ x0: p.x, y0: p.y, tx, ty, t: 0, dur: 0.45 + d / 1800, dmg: 950 * p.dmgMul });
+    ex = { tx: Math.round(tx), ty: Math.round(ty), dur: +(0.45 + d / 1800).toFixed(3) };
   } else if (kind === 'dash') { p.dashT = 0.42; p.dashAng = a; p.dashHit = []; }
   else if (kind === 'heal') { heal(0.45); shockwave(p.x, p.y, 280, 450 * p.dmgMul); }
   else if (kind === 'apm') { p.buf.apm = 3.2; p.apmT = 0; p.ammo = p.mag; p.rl = 0; addText(p.x, p.y - p.r - 44, 'APM 폭주!', COL.violet, 26, 1.1); }
@@ -1294,6 +1317,7 @@ function fireUlt(a, mag) {
     G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: a, len, w: 60, t: 0, dur: 0.45 });
     G.shake = Math.max(G.shake, 8);
   }
+  if (G.pvp) PvP.ult(kind, a, ox, oy, ex);
 }
 function autoUlt() {
   if (!ultReady()) { denyUlt(); return; }
@@ -1306,7 +1330,7 @@ function pointerUlt() {
   if (IN.mouse.used) fireUlt(mouseAng(), mouseDist() / ultRangeOf()); else autoUlt();
 }
 function updateLobs(dt) {
-  for (const b of G.lobs) { b.t += dt; if (b.t >= b.dur) { b.dead = true; explode(b.tx, b.ty, b.dmg, 165); } }
+  for (const b of G.lobs) { b.t += dt; if (b.t >= b.dur) { b.dead = true; if (b.cos) PvP.boomFx(b.tx, b.ty); else explode(b.tx, b.ty, b.dmg, 165); } }
   G.lobs = G.lobs.filter(b => !b.dead);
 }
 function drawLobs() {
@@ -1354,10 +1378,11 @@ function damagePlayer(d, silent) {
   if (p.hp <= 0) {
     p.hp = 0; p.dead = true;
     burst(p.x, p.y, 40, ['#fff', CHARS[G.lo.ch].ring, COL.yolk], 420);
+    if (G.pvp) { PvP.onDeath(); return; }
     G.slow = 0.8; sfx('lose'); finish(false);
   }
 }
-function knock(o, ang, power) { o.kvx = (o.kvx || 0) + Math.cos(ang) * power; o.kvy = (o.kvy || 0) + Math.sin(ang) * power; }
+function knock(o, ang, power) { if (o.rival) { PvP.pendKnock(ang, power); return; } o.kvx = (o.kvx || 0) + Math.cos(ang) * power; o.kvy = (o.kvy || 0) + Math.sin(ang) * power; }
 function finish(clear) {
   if (G.over) return;
   G.over = true;
@@ -1372,6 +1397,7 @@ function finish(clear) {
 function updateEnemies(dt) {
   for (const e of G.en) {
     if (e.dead) continue;
+    if (e.rival) { PvP.updRival(e, dt); continue; }
     e.flash = Math.max(0, e.flash - dt); e.ct = Math.max(0, e.ct - dt); e.tell = Math.max(0, (e.tell || 0) - dt);
     if (e.spawnT > 0) { e.spawnT -= dt; continue; }
     if ((e.stun || 0) > 0) {
@@ -1591,6 +1617,7 @@ const PAT = {
 
 function hitEnemy(e, dmg, charge) {
   if (e.dead) return;
+  if (e.rival) { PvP.hitRival(e, dmg, charge); return; }
   dmg = Math.round(dmg);
   e.hp -= dmg; e.flash = 0.09;
   if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: e.boss ? 26 : 21, t: 0, dur: 0.7, vy: -70 });
@@ -1663,8 +1690,8 @@ function updateEB(dt) {
     b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
     if (b.kind === 1) { b.bt -= dt; if (b.bt <= 0) { orbBurst(b); b.dead = true; continue; } }
     if (b.life <= 0 || b.x < -20 || b.y < -20 || b.x > WW + 20 || b.y > WH + 20) { b.dead = true; continue; }
-    if (inObst(b.x, b.y, b.r * 0.5)) { if (b.kind === 1) orbBurst(b); else spark(b.x, b.y, EB_COL[b.c]); b.dead = true; continue; }
-    if (!p.dead && Math.hypot(b.x - p.x, b.y - p.y) < b.r + p.r - 4) { damagePlayer(b.dmg); b.dead = true; spark(b.x, b.y, EB_COL[b.c]); }
+    if (!b.giant && inObst(b.x, b.y, b.r * 0.5)) { if (b.kind === 1) orbBurst(b); else spark(b.x, b.y, EB_COL[b.c]); b.dead = true; continue; }
+    if (!b.cos && !p.dead && Math.hypot(b.x - p.x, b.y - p.y) < b.r + p.r - 4) { damagePlayer(b.dmg); b.dead = true; spark(b.x, b.y, EB_COL[b.c]); }
   }
   G.eb = G.eb.filter(b => !b.dead);
 }
@@ -1755,7 +1782,7 @@ function update(dt) {
   if (G.note) { G.note.t -= dt; if (G.note.t <= 0) G.note = null; }
   if (G.hint > 0) G.hint -= dt;
   updatePlayer(dt);
-  if (!G.over) updateScript(dt);
+  if (G.pvp) PvP.update(dt); else if (!G.over) updateScript(dt);
   updateEnemies(dt);
   updatePB(dt); updateLobs(dt); updateEB(dt); updateHZ(dt); updateDrops(dt); updateFX(dt);
   if (G.over && !G.ended) {
@@ -1936,6 +1963,7 @@ function drawEnemy(e) {
     case 'curry': drawCurry(e, t, look); break;
     case 'king': drawKing(e, t, look); break;
     case 'mom': drawMom(e, t); break;
+    case 'rival': drawRival(e); break;
   }
   ctx.restore();
   if (e.flash > 0) { ctx.beginPath(); ctx.arc(e.x, e.y - air, e.r * 0.95, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fill(); }
@@ -2191,6 +2219,7 @@ function drawOverheads() {
   for (const e of G.en) {
     if (e.spawnT > 0) continue;
     if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18, w, 7, e.hp / e.maxHp, COL.rose); }
+    if (e.rival) { ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25, '#ffc2cc', 4); }
     const sy = e.y - e.r - (e.boss ? 44 : 32);
     if ((e.stun || 0) > 0) {
       for (let i = 0; i < 3; i++) {
@@ -2203,6 +2232,8 @@ function drawOverheads() {
     }
   }
   const p = G.p; if (p.dead) return;
+  if ((p.stun || 0) > 0) for (let i = 0; i < 3; i++) { const an = G.t * 6 + (i * TAU) / 3; ctx.beginPath(); ctx.arc(p.x + Math.cos(an) * 16, p.y - p.r - 50 + Math.sin(an) * 5, 5, 0, TAU); ctx.fillStyle = COL.yolk; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = COL.ink; ctx.stroke(); }
+  else if ((p.conf || 0) > 0) { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 22px ${FONT_NUM}`; outText('?', p.x + Math.sin(G.t * 8) * 4, p.y - p.r - 50, COL.mint, 4); }
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
   ctx.font = `400 15px ${FONT_DISP}`; outText(G.lo.nick, p.x, p.y - p.r - 27, '#fff', 4);
   const w = 78, x = p.x - w / 2, y = p.y - p.r - 21;
@@ -2317,6 +2348,7 @@ function drawControls() {
 function drawHUD() {
   const u = L.u, p = G.p;
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  if (G.pvp) PvP.hud(); else {
   const S = SCRIPT[clamp(G.step, 0, SCRIPT.length - 1)];
   const label = G.step < 0 ? '준비' : S.k === 'boss' ? `PHASE ${S.ph} · 보스전` : `PHASE ${S.ph} · ${S.name}`;
   ctx.font = `400 ${Math.round(17 * u)}px ${FONT_DISP}`; outText(label, 14 * u, 24 * u, '#fff', 4);
@@ -2336,6 +2368,7 @@ function drawHUD() {
     fitFont(BOSS[boss.type].name, Math.round(16 * u), w, FONT_DISP); outText(BOSS[boss.type].name, VW / 2, y - 13 * u, boss.enr ? COL.rose : '#fff', 4);
     bar(x, y, w, 14 * u, boss.hp / boss.maxHp, boss.enr ? COL.rose : COL.orange);
     ctx.font = `400 ${Math.round(11 * u)}px ${FONT_NUM}`; outText(fmt(Math.max(0, boss.hp)), VW / 2, y + 7 * u, '#fff', 3);
+  }
   }
   if (G.banner) drawBanner();
   if (G.note) { ctx.textAlign = 'center'; fitFont(G.note.text, Math.round(15 * u), VW - 32, FONT_UI); outText(G.note.text, VW / 2, VH * 0.5 - 90 * u, COL.mint, 4); }
@@ -2510,17 +2543,319 @@ const Game = {
     try { new ResizeObserver(resize).observe(cv); } catch (e) { window.addEventListener('resize', resize); }
   },
   start(lo, onEnd) { newGame(lo); endCb = onEnd; paused = false; resetInput(); resize(); this.loop(); },
+  startPvp(lo, m, onEnd) { newGame(lo); PvP.setup(m); endCb = onEnd; paused = false; resetInput(); resize(); this.loop(); },
   restore(g, onEnd) { G = g; endCb = onEnd; paused = true; resetInput(); resize(); this.loop(); UI.showPause(); },
   loop() { cancelAnimationFrame(raf); lastTs = performance.now(); acc = 0; raf = requestAnimationFrame(frame); },
   stop() { cancelAnimationFrame(raf); raf = 0; },
   pause(on) {
     if (!G || G.over) return;
+    if (G.pvp) { resetInput(); if (on) UI.showPvpMenu(); else UI.closeModal(); return; }
     paused = on; resetInput();
     if (on) UI.showPause(); else UI.closeModal();
   },
-  quit() { if (!G || G.over) return; paused = false; G.quit = true; finish(false); G.endT = 0.01; },
+  quit() { if (!G || G.over) return; if (G.pvp) { PvP.forfeit(); return; } paused = false; G.quit = true; finish(false); G.endT = 0.01; },
   get paused() { return paused; },
 };
+
+/* ================= 1대1 대결 =================
+   Firebase Realtime Database로 위치·공격을 주고받음 (웹사이트 버전 전용)
+   - 내 위치/체력은 0.08초마다 보내고, 상대 화면에서는 부드럽게 따라감
+   - 맞았는지는 쏜 사람 화면 기준으로 정해서 '맞음' 신호를 보내고, 맞은 사람이 자기 체력을 깎음  */
+const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
+const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], [1600, 1120], [1600, 180], [200, 1120]];
+const PVP_REWARD = { win: 200, draw: 100, lose: 60 };
+const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
+const ridLong = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+const Net = {
+  db: null, rid: null, role: null, me: null, opUid: null, opInfo: null, started: false, mmMine: false,
+  ls: [], timers: [],
+  why() {
+    if (!Store.web) return '1대1은 웹사이트 버전에서만 할 수 있어요';
+    if (Store.mode !== 'online' || !Store.uid || Store.kicked) return '서버에 연결돼 있어야 1대1을 할 수 있어요';
+    const u = window.FB_CONFIG && window.FB_CONFIG.databaseURL;
+    if (!u || /여기에/.test(String(u)) || !window.firebase || typeof firebase.database !== 'function') return 'Firebase에 Realtime Database 설정이 아직 없어요 (databaseURL)';
+    return '';
+  },
+  ref(p) { if (!this.db) this.db = firebase.database(); return this.db.ref(p); },
+  info() { const P = Store.P; return { n: P.nick, ch: P.ch }; },
+  on(ref, ev, fn) { ref.on(ev, fn); this.ls.push(() => ref.off(ev, fn)); },
+  clear() {
+    for (const f of this.ls) { try { f(); } catch (e) { /* 무시 */ } }
+    this.ls = []; this.timers.forEach(clearInterval); this.timers = [];
+  },
+  reset() { this.rid = null; this.role = null; this.opUid = null; this.opInfo = null; this.started = false; this.mmMine = false; },
+  /* 빠른 대전: 기다리는 사람이 있으면 그 방으로, 없으면 내가 기다림 */
+  async quick(onReady) {
+    const me = Store.uid; let room = null, host = false;
+    const r = await this.ref('mm/wait').transaction(cur => {
+      if (cur && cur.u !== me && Date.now() - (cur.t || 0) < 25000) { room = cur.r; host = false; return null; }
+      room = ridLong(); host = true; return { u: me, r: room, t: Date.now() };
+    });
+    if (!r.committed) throw new Error('busy');
+    if (host) {
+      this.mmMine = true;
+      await this.host(room, onReady, false);
+      this.timers.push(setInterval(() => {
+        this.ref('mm/wait').transaction(cur => (cur === null ? null : cur.u === me ? { u: me, r: cur.r, t: Date.now() } : undefined)).catch(() => {});
+      }, 8000));
+    } else await this.join(room, onReady);
+    return host;
+  },
+  /* 친구랑: 4자리 방 코드 */
+  async makeRoom(onReady) {
+    const me = Store.uid;
+    for (let i = 0; i < 8; i++) {
+      const code = rid4(); let mine = false;
+      const r = await this.ref('rooms/' + code).transaction(cur => {
+        if (cur && Date.now() - (cur.c || 0) < 30 * 60000) { mine = false; return; }
+        mine = true; return { h: me, hi: this.info(), c: Date.now() };
+      });
+      if (r.committed && mine) { await this.host(code, onReady, true); return code; }
+    }
+    throw new Error('code');
+  },
+  async host(room, onReady, made) {
+    this.rid = room; this.role = 'h'; this.me = Store.uid;
+    const R = this.ref('rooms/' + room);
+    if (!made) await R.set({ h: this.me, hi: this.info(), c: Date.now() });
+    R.onDisconnect().remove();
+    this.on(R, 'value', s => {
+      const v = s.val();
+      if (this.started || this.rid !== room) return;
+      if (v && v.g && v.gi) { this.opUid = v.g; this.opInfo = v.gi; this.begin(onReady); }
+    });
+  },
+  async join(room, onReady) {
+    const me = Store.uid; let st = 'none', hostInfo = null, hostUid = null;
+    const r = await this.ref('rooms/' + room).transaction(cur => {
+      if (!cur) { st = 'none'; return cur; }
+      if (cur.h === me) { st = 'self'; return; }
+      if (cur.g && cur.g !== me) { st = 'full'; return; }
+      st = 'ok'; hostInfo = cur.hi; hostUid = cur.h;
+      return Object.assign({}, cur, { g: me, gi: this.info() });
+    });
+    if (!r.committed || st !== 'ok') throw new Error(st);
+    this.rid = room; this.role = 'g'; this.me = me; this.opUid = hostUid; this.opInfo = hostInfo || { n: '상대', ch: 'base' };
+    this.begin(onReady);
+  },
+  begin(onReady) {
+    this.started = true; this.clearMm();
+    const base = 'rooms/' + this.rid;
+    try { this.ref(base).onDisconnect().cancel(); } catch (e) { /* 무시 */ }
+    this.ref(base + '/x/' + this.me).onDisconnect().set(true);
+    this.on(this.ref(base + '/s/' + this.opUid), 'value', s => { const v = s.val(); if (v) PvP.netState(v); });
+    this.on(this.ref(base + '/e'), 'child_added', s => { const v = s.val(); if (v && v.u !== this.me) PvP.netEvent(v); });
+    this.on(this.ref(base + '/x/' + this.opUid), 'value', s => { if (s.val()) PvP.opLeft(); });
+    onReady({ role: this.role, op: this.opInfo });
+  },
+  clearMm() {
+    const me = Store.uid;
+    this.timers.forEach(clearInterval); this.timers = [];
+    if (this.mmMine) {
+      this.mmMine = false;
+      this.ref('mm/wait').transaction(cur => (cur === null ? null : cur.u === me ? null : undefined)).catch(() => {});
+    }
+  },
+  send(st) { if (this.rid && this.started) this.ref('rooms/' + this.rid + '/s/' + this.me).set(st).catch(() => {}); },
+  ev(o) { if (this.rid && this.started) { o.u = this.me; this.ref('rooms/' + this.rid + '/e').push(o); } },
+  /* 기다리다 취소 */
+  async cancel() {
+    const rid = this.rid, started = this.started;
+    this.clear(); this.clearMm();
+    if (rid && !started) { try { const R = this.ref('rooms/' + rid); R.onDisconnect().cancel(); await R.remove(); } catch (e) { /* 무시 */ } }
+    this.reset();
+  },
+  /* 경기 끝나고 나가기 */
+  leave() {
+    const rid = this.rid, me = this.me, role = this.role;
+    this.clear(); this.reset();
+    if (!rid) return;
+    const R = this.ref('rooms/' + rid);
+    R.child('x/' + me).set(true).catch(() => {});
+    try { R.child('x/' + me).onDisconnect().cancel(); } catch (e) { /* 무시 */ }
+    if (role === 'h') setTimeout(() => { R.remove().catch(() => {}); }, 5000);
+  },
+};
+
+const PvP = {
+  setup(m) {
+    const host = m.role === 'h', me = host ? PVP_SPAWN[0] : PVP_SPAWN[1], op = host ? PVP_SPAWN[1] : PVP_SPAWN[0];
+    const p = G.p, oc = CHARS[m.op && m.op.ch] ? m.op.ch : 'base', nick = str(m.op && m.op.n, 8) || '상대';
+    p.x = me[0]; p.y = me[1]; p.ang = host ? -Math.PI / 2 : Math.PI / 2;
+    G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9;
+    const rival = { id: G.id++, type: 'rival', rival: true, x: op[0], y: op[1], tx: op[0], ty: op[1], r: 30, hp: 1000, maxHp: 1000, ang: -p.ang, flash: 0, spawnT: 0, kvx: 0, kvy: 0, ch: oc, nick, sh: 0, inv: 0, stun: 0, conf: 0, gone: false };
+    G.en.push(rival);
+    G.pvp = { role: m.role, op: { n: nick, ch: oc }, k: 0, d: 0, cd: 3.4, cdShown: -1, left: PVP_TIME, send: 0, resp: 0, pend: null, seen: performance.now(), rival };
+    banner('1 VS 1', `${nick} 등장!`, COL.yolk, 1.2);
+  },
+  update(dt) {
+    const V = G.pvp, p = G.p;
+    if (V.cd > 0) {
+      V.cd -= dt;
+      const n = V.cd > 0 ? Math.ceil(V.cd) : 0;
+      if (V.cd < 2.6 && n !== V.cdShown) { V.cdShown = n; if (n > 0) { banner(String(n), '준비!', '#fff', 0.8); sfx('click'); } else { banner('FIGHT!', `${PVP_KILLS}번 먼저 쓰러뜨리면 승리`, COL.yolk, 1.1); sfx('warn'); } }
+    } else if (!G.over) {
+      V.left -= dt;
+      if (V.left <= 0) { V.left = 0; this.end(V.k > V.d ? 'win' : V.k < V.d ? 'lose' : 'draw', '시간 끝!'); }
+    }
+    if (p.dead && !G.over) { V.resp -= dt; if (V.resp <= 0) this.respawn(); }
+    if (V.pend) { const e = V.pend; V.pend = null; e.k = 'h'; if (e.d) e.d = Math.round(e.d); Net.ev(e); }
+    V.send -= dt;
+    if (V.send <= 0 && !G.over) {
+      V.send = PVP_SEND;
+      Net.send({ x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0 });
+    }
+    if (!G.over && performance.now() - V.seen > 20000) this.end('win', '상대 연결이 끊겼어요');
+  },
+  /* ----- 상대 화면 정보 ----- */
+  netState(v) {
+    if (!G || !G.pvp) return;
+    const V = G.pvp, e = V.rival;
+    V.seen = performance.now();
+    e.tx = num(v.x, e.tx); e.ty = num(v.y, e.ty);
+    if (typeof v.a === 'number') e.ang = v.a;
+    e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
+    e.sh = v.s ? 1 : 0; e.inv = v.i ? 1 : 0; e.stun = v.st ? 0.2 : 0; e.conf = v.cf ? 0.2 : 0;
+    if (v.d && !e.gone) { e.gone = true; G.en = G.en.filter(x => x !== e); burst(e.x, e.y, 30, ['#fff', CHARS[e.ch].ring, COL.rose], 380); }
+    else if (!v.d && e.gone) { e.gone = false; e.x = e.tx; e.y = e.ty; if (!G.en.includes(e)) G.en.push(e); }
+  },
+  updRival(e, dt) {
+    e.flash = Math.max(0, e.flash - dt);
+    const dx = e.tx - e.x, dy = e.ty - e.y;
+    if (Math.hypot(dx, dy) > 260) { e.x = e.tx; e.y = e.ty; return; }
+    const k = 1 - Math.pow(0.0004, dt);
+    e.x += dx * k; e.y += dy * k;
+  },
+  netEvent(v) {
+    if (!G || !G.pvp) return;
+    const V = G.pvp, p = G.p;
+    V.seen = performance.now();
+    if (v.k === 's') this.cosShot(v);
+    else if (v.k === 'u') this.cosUlt(v);
+    else if (v.k === 'h') {
+      if (G.over || p.dead) return;
+      if (v.d > 0) damagePlayer(Math.min(v.d, 5000));
+      if (p.dead) return;
+      if (v.st > 0 && !((p.inv || 0) > 0)) p.stun = Math.max(p.stun || 0, Math.min(v.st, 3) * 0.6);
+      if (v.cf > 0 && !((p.inv || 0) > 0)) p.conf = Math.max(p.conf || 0, Math.min(v.cf, 3) * 0.7);
+      if (v.kp > 0) knock(p, v.ka || 0, Math.min(v.kp, 1200) * 0.6);
+    } else if (v.k === 'd') {
+      if (G.over) return;
+      V.k++; sfx('kill');
+      banner('처치!', `${V.op.n} 쓰러뜨림 · ${V.k} : ${V.d}`, COL.yolk, 1.4);
+      if (V.k >= PVP_KILLS) this.end('win');
+    } else if (v.k === 'q') { if (!G.over) this.end('win', '상대가 나갔어요'); }
+  },
+  opLeft() { if (G && G.pvp && !G.over && G.pvp.left > 3) this.end('win', '상대가 나갔어요'); },
+  /* ----- 내가 공격 ----- */
+  shot(x, y, angs, spd, r, life) { Net.ev({ k: 's', x: Math.round(x), y: Math.round(y), as: angs.map(a => Math.round(a * 1000) / 1000), v: Math.round(spd), r, l: Math.round(life * 100) / 100 }); },
+  ult(kind, a, ox, oy, ex) {
+    const p = G.p, o = { k: 'u', u: kind, a: Math.round(a * 1000) / 1000, x: Math.round(ox), y: Math.round(oy) };
+    if (ex) Object.assign(o, ex);
+    if (kind === 'tele') { o.tx = Math.round(p.x); o.ty = Math.round(p.y); }
+    Net.ev(o);
+  },
+  pend() { return G.pvp.pend || (G.pvp.pend = { d: 0 }); },
+  hitRival(e, dmg, charge) {
+    if (G.over || e.gone || e.inv) return;
+    dmg = Math.round(dmg);
+    const P = this.pend(); P.d += dmg;
+    e.hp = Math.max(1, e.hp - dmg); e.flash = 0.09;
+    if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: 21, t: 0, dur: 0.7, vy: -70 });
+    if (charge) G.p.ult = Math.min(1, G.p.ult + (Math.min(dmg, 400) / 1300) * G.p.ultMul);
+    sfx('hit');
+  },
+  pendFx(k, s) { if (G.over || G.pvp.rival.inv) return; const P = this.pend(); P[k] = Math.max(P[k] || 0, Math.round(s * 10) / 10); },
+  pendKnock(ang, power) { if (G.over) return; const P = this.pend(); P.ka = Math.round(ang * 100) / 100; P.kp = Math.round(power); },
+  /* ----- 상대 공격은 화면에만 보여줌 (진짜 피해는 상대가 보낸 '맞음' 신호로) ----- */
+  cosShot(v) {
+    const as = Array.isArray(v.as) ? v.as.slice(0, 12) : [];
+    const spd = clamp(num(v.v, 900), 100, 3000), r = clamp(num(v.r, 7), 2, 20), life = clamp(Number(v.l) || 0.6, 0.05, 2);
+    for (const a of as) if (typeof a === 'number') G.eb.push({ x: num(v.x), y: num(v.y), vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, r, dmg: 0, life, c: 0, kind: 0, bt: 0, cos: true });
+    const e = G.pvp.rival; if (as.length && typeof as[0] === 'number') e.ang = as[0];
+  },
+  cosUlt(v) {
+    const e = G.pvp.rival, c = CHARS[e.ch] || CHARS.base, a = Number(v.a) || 0, x = num(v.x), y = num(v.y);
+    sfx('ult');
+    addText(x, y - 70, c.ultName, c.ring, 22, 1.1);
+    if (v.u === 'bomb') G.lobs.push({ x0: x, y0: y, tx: num(v.tx, x), ty: num(v.ty, y), t: 0, dur: clamp(Number(v.dur) || 0.6, 0.2, 2), dmg: 0, cos: true });
+    else if (v.u === 'tele') { burst(x, y, 16, [c.ring, '#fff'], 280); G.fx.push({ k: 'ring', x: num(v.tx, x), y: num(v.ty, y), r0: 20, r1: 160, t: 0, dur: 0.35, c: c.ring, w: 10 }); }
+    else if (v.u === 'slam') { G.fx.push({ k: 'ring', x, y, r0: 30, r1: 300, t: 0, dur: 0.45, c: c.ring, w: 16 }); G.shake = Math.max(G.shake, 8); sfx('boom'); }
+    else if (v.u === 'flash') G.fx.push({ k: 'cone', x, y, ang: a, half: 0.6, len: ULT_RANGE.flash, t: 0, dur: 0.45 });
+    else if (v.u === 'roll') G.eb.push({ x: x + Math.cos(a) * 20, y: y + Math.sin(a) * 20, vx: Math.cos(a) * 520, vy: Math.sin(a) * 520, r: 64, dmg: 0, life: ULT_RANGE.roll / 520, c: 2, kind: 0, bt: 0, cos: true, giant: true });
+    else if (v.u === 'qring') for (let i = 0; i < 24; i++) { const b = a + (TAU * i) / 24; G.eb.push({ x, y, vx: Math.cos(b) * 700, vy: Math.sin(b) * 700, r: 12, dmg: 0, life: 600 / 700, c: 3, kind: 0, bt: 0, cos: true }); }
+    else if (v.u === 'laser') G.fx.push({ k: 'beam', x, y, ang: a, len: ULT_RANGE.laser, w: 60, t: 0, dur: 0.45 });
+  },
+  boomFx(x, y) {
+    G.fx.push({ k: 'ring', x, y, r0: 20, r1: 165, t: 0, dur: 0.35, c: COL.orange, w: 10 });
+    burst(x, y, 26, [COL.yolk, COL.orange, '#fff'], 420); G.shake = Math.max(G.shake, 6); sfx('boom');
+  },
+  /* ----- 죽음 / 부활 / 끝 ----- */
+  onDeath() {
+    const V = G.pvp;
+    V.d++; V.resp = 3; G.shake = 12;
+    Net.ev({ k: 'd' });
+    if (V.d >= PVP_KILLS) { this.end('lose'); return; }
+    banner('쓰러졌어요!', `3초 뒤 부활 · ${V.k} : ${V.d}`, COL.rose, 1.6);
+    sfx('hurt');
+  },
+  respawn() {
+    const p = G.p, e = G.pvp.rival;
+    let best = PVP_SPAWN[0], bd = -1;
+    for (const s of PVP_SPAWN) { const d = Math.hypot(s[0] - e.tx, s[1] - e.ty); if (d > bd) { bd = d; best = s; } }
+    p.x = best[0]; p.y = best[1]; p.dead = false; p.hp = p.maxHp; p.inv = 1.5; p.stun = 0; p.conf = 0;
+    p.ammo = p.mag; p.rl = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.dashT = 0;
+    burst(p.x, p.y, 20, ['#fff', CHARS[G.lo.ch].ring], 300); sfx('pick');
+  },
+  end(res, why) {
+    if (G.over) return;
+    const V = G.pvp;
+    G.over = true; G.endT = 2.4;
+    G.result = { pvp: true, res, k: V.k, d: V.d, op: V.op.n, opCh: V.op.ch, why: why || '', coins: PVP_REWARD[res], time: G.t, potUsed: G.potUsed };
+    banner(res === 'win' ? '승리!' : res === 'lose' ? '패배' : '무승부', why || `${V.k} : ${V.d}`, res === 'win' ? COL.yolk : res === 'lose' ? COL.rose : '#fff', 2.4);
+    sfx(res === 'lose' ? 'lose' : 'win');
+    if (V.pend) { const e = V.pend; V.pend = null; e.k = 'h'; Net.ev(e); }
+    setTimeout(() => Net.leave(), 2500);
+  },
+  forfeit() { if (!G || G.over) return; Net.ev({ k: 'q' }); this.end('lose', '중간에 나갔어요'); G.endT = 0.4; },
+  hud() {
+    const u = L.u, V = G.pvp, p = G.p;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    ctx.font = `400 ${Math.round(16 * u)}px ${FONT_DISP}`; outText('1 VS 1', 14 * u, 24 * u, '#fff', 4);
+    let by = 48 * u;
+    ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`;
+    for (const [k, name, c] of BUFS) if (p.buf[k] > 0) { outText(`${name} ${Math.ceil(p.buf[k])}초`, 14 * u, by, c, 3); by += 18 * u; }
+    ctx.textAlign = 'center';
+    ctx.font = `400 ${Math.round(30 * u)}px ${FONT_NUM}`; outText(`${V.k} : ${V.d}`, VW / 2, 30 * u, COL.yolk, 5);
+    fitFont(`나  vs  ${V.op.n}`, Math.round(13 * u), VW * 0.4, FONT_UI); outText(`나  vs  ${V.op.n}`, VW / 2, 56 * u, '#fff', 3);
+    const t = Math.ceil(V.left);
+    ctx.font = `400 ${Math.round(15 * u)}px ${FONT_NUM}`; outText(mmss(t), VW / 2, 77 * u, t <= 10 && V.cd <= 0 ? COL.rose : '#fff', 3);
+    if (p.dead && !G.over) { ctx.font = `400 ${Math.round(22 * u)}px ${FONT_DISP}`; outText(`부활까지 ${Math.max(1, Math.ceil(V.resp))}`, VW / 2, VH * 0.5, '#fff', 5); }
+  },
+};
+
+function drawRival(e) {
+  const c = CHARS[e.ch] || CHARS.base, r = e.r;
+  if (e.inv && Math.floor(G.t * 20) % 2 === 0) ctx.globalAlpha = 0.45;
+  if (e.sh) { ctx.beginPath(); ctx.arc(0, 0, r + 14, 0, TAU); ctx.fillStyle = 'rgba(89,184,255,.25)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(89,184,255,.85)'; ctx.stroke(); }
+  const behind = Math.sin(e.ang) < -0.3;
+  const gun = () => {
+    ctx.save(); ctx.rotate(e.ang);
+    rr(r - 8, -7, 28, 14, 5); ctx.fillStyle = '#3a3f5c'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = COL.ink; ctx.stroke();
+    rr(r + 13, -5, 10, 10, 3); ctx.fillStyle = COL.rose; ctx.fill(); ctx.stroke();
+    ctx.restore();
+  };
+  if (behind) gun();
+  ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, TAU); ctx.fillStyle = COL.rose; ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, r + 3, 0, TAU); ctx.fillStyle = COL.ink; ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fillStyle = c.ring; ctx.fill();
+  const f = FACE_CV[c.face], fr = r - 4;
+  if (f) ctx.drawImage(f, -fr, -fr, fr * 2, fr * 2);
+  ctx.beginPath(); ctx.ellipse(-r * 0.4, -r * 0.52, r * 0.3, r * 0.14, -0.5, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill();
+  if (!behind) gun();
+  ctx.globalAlpha = 1;
+}
 
 /* ================= 화면 / 메뉴 ================= */
 const $ = s => document.querySelector(s);
@@ -2592,6 +2927,7 @@ const UI = {
     $('#heroBtn').addEventListener('click', go('chars'));
     $('#charsBody').addEventListener('click', onCharsClick);
     $('#bPlay').addEventListener('click', startGame);
+    $('#bPvp').addEventListener('click', () => { SFX.init(); sfx('click'); this.showPvp(); });
     $('#btnSound').addEventListener('click', () => { SFX.init(); SFX.toggle(); this.soundIcon(); sfx('click'); });
     $('#meChip').addEventListener('click', () => { sfx('click'); this.showAccount(); });
     $('#gearBody').addEventListener('click', onGearClick);
@@ -2604,6 +2940,9 @@ const UI = {
     Store.on('chat', () => { if (this.cur === 'chat') { this.renderChat(false); markChatSeen(); } updateChatDot(); });
     Store.on('mode', () => { this.refreshMode(); });
     Store.on('kick', () => {
+      if (G && G.pvp && !G.over) { Net.ev({ k: 'q' }); Net.leave(); }
+      else if (Net.rid) Net.cancel();
+      clearInterval(this.vT);
       if (this.cur === 'game') this.show('lobby');
       this.refreshMode(); sfx('fail');
       this.modal(`
@@ -2753,6 +3092,7 @@ const UI = {
         <div><span>최고 점수</span><b class="num">${fmt(P.best)}</b></div>
         <div><span>플레이</span><b class="num">${fmt(P.games)}판</b></div>
         <div><span>클리어</span><b class="num">${fmt(P.clears)}회</b></div>
+        <div class="wide"><span>1대1 전적</span><b class="num">${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div>
       </div>
       <p class="sub">${esc(modeNote())}</p>
       <button class="btn blue" type="button" id="bProfile">프로필 수정</button>
@@ -2977,6 +3317,66 @@ const UI = {
       return `<div class="cmsg${mine ? ' mine' : ''}">${mine ? '' : avatarHTML(Store.picOf(m.uid), m.ch, 's')}<div class="mb">${mine ? '' : `<p class="mh"><b>${esc(m.nick)}</b> ${tfmt(m.t)}</p>`}<p class="bub">${esc(m.x)}</p>${mine ? `<p class="mh r">${tfmt(m.t)}</p>` : ''}</div></div>`;
     }).join('');
     if (force || near) sc.scrollTop = sc.scrollHeight;
+  },
+
+  /* ---------- 1대1 ---------- */
+  vT: 0,
+  showPvp(msg) {
+    clearInterval(this.vT);
+    const why = Net.why();
+    if (why) {
+      this.modal(`<p class="eyebrow">1 VS 1</p><h2>1대1 대결</h2><p class="sub">${esc(why)}</p><div class="mbtns"><button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
+      $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+      return;
+    }
+    this.modal(`
+      <p class="eyebrow">1 VS 1</p><h2>1대1 대결</h2>
+      <p class="sub">상대를 ${PVP_KILLS}번 먼저 쓰러뜨리면 승리! (제한 시간 ${mmss(PVP_TIME)})<br>이기면 <b class="num">${PVP_REWARD.win}</b>코인 · 비기면 ${PVP_REWARD.draw} · 져도 ${PVP_REWARD.lose}코인</p>
+      <div class="mbtns col">
+        <button class="btn big" type="button" id="vQuick" data-focus>빠른 대전</button>
+        <button class="btn blue" type="button" id="vMake">친구랑 하기 · 방 만들기</button>
+      </div>
+      <form class="pf" id="vJoinF" novalidate>
+        <h3>방 코드로 들어가기</h3>
+        <div class="field row"><input id="vCode" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4자리 숫자" aria-label="방 코드"><button class="btn small" type="submit">들어가기</button></div>
+        <p class="msg${msg ? ' err' : ''}" id="vMsg">${esc(msg || '친구가 만든 방 코드를 넣으세요')}</p>
+      </form>
+      <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button></div>`, true);
+    $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+    $('#vQuick').addEventListener('click', pvpQuick);
+    $('#vMake').addEventListener('click', pvpMake);
+    $('#vJoinF').addEventListener('submit', pvpJoin);
+  },
+  pvpWait(title, sub, code) {
+    clearInterval(this.vT);
+    const t0 = Date.now();
+    this.modal(`
+      <p class="eyebrow">1 VS 1</p><h2>${esc(title)}</h2>
+      ${code ? `<p class="vcode">${esc(code)}</p>` : '<span class="vwait" aria-hidden="true"></span>'}
+      <p class="sub">${esc(sub)}</p>
+      <p class="sub" id="vTime">0초째 기다리는 중</p>
+      <div class="mbtns"><button class="btn ghost" type="button" id="vCancel" data-focus>취소</button></div>`, false);
+    this.vT = setInterval(() => { const e = $('#vTime'); if (e) e.textContent = `${Math.floor((Date.now() - t0) / 1000)}초째 기다리는 중`; }, 1000);
+    $('#vCancel').addEventListener('click', async () => { sfx('click'); clearInterval(this.vT); $('#vCancel').disabled = true; await Net.cancel(); this.showPvp(); });
+  },
+  showPvpMenu() {
+    this.modal(`
+      <p class="eyebrow">1 VS 1</p><h2>나갈까요?</h2>
+      <p class="sub">1대1은 멈출 수 없어요. 지금 나가면 패배로 처리돼요.</p>
+      <div class="mbtns col"><button class="btn big" type="button" id="pResume" data-focus>계속 싸우기</button><button class="btn ghost" type="button" id="pQuit">나가기 (패배)</button></div>`, true);
+    $('#pResume').addEventListener('click', () => { sfx('click'); this.closeModal(); });
+    $('#pQuit').addEventListener('click', () => { sfx('click'); this.closeModal(); Game.quit(); });
+  },
+  showPvpResult(r) {
+    const P = Store.P, title = r.res === 'win' ? '승리!' : r.res === 'lose' ? '패배' : '무승부';
+    this.modal(`
+      <p class="eyebrow">1 VS 1</p><h2 class="${r.res === 'win' ? 'win' : r.res === 'lose' ? 'lose' : ''}">${title}</h2>
+      <div class="vsrow">${avatarHTML(P.pic, P.ch, 'l')}<b class="num">${r.k} : ${r.d}</b>${ballHTML(r.opCh, 'l')}</div>
+      <p class="sub">나 vs ${esc(r.op)}${r.why ? ` · ${esc(r.why)}` : ''}</p>
+      <div class="res"><div class="wide big"><span>받은 코인</span><b class="num">+${fmt(r.coins)}</b></div><div class="wide"><span>1대1 전적</span><b class="num">${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div></div>
+      <div class="mbtns"><button class="btn ghost" type="button" id="vLobby">로비로</button><button class="btn" type="button" id="vAgain" data-focus>다시 1대1</button></div>`, false);
+    $('#vLobby').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('lobby'); });
+    $('#vAgain').addEventListener('click', () => { sfx('click'); this.show('lobby'); this.showPvp(); });
   },
 
   /* ---------- 게임 중 모달 ---------- */
@@ -3241,7 +3641,42 @@ function startGame() {
   UI.show('game');
   Game.start(loadoutFrom(Store.P), onGameEnd);
 }
+function pvpGo(m) {
+  clearInterval(UI.vT); UI.closeModal();
+  UI.show('game');
+  Game.startPvp(loadoutFrom(Store.P), m, onGameEnd);
+}
+async function pvpQuick() {
+  SFX.init(); sfx('click');
+  UI.pvpWait('상대 찾는 중...', '1대1 빠른 대전을 누른 사람이랑 바로 붙어요');
+  for (let i = 0; i < 3; i++) {
+    try { await Net.quick(pvpGo); return; }
+    catch (e) { console.warn(e); Net.clear(); Net.reset(); if (!['none', 'full', 'busy', 'self'].includes(e && e.message)) break; }
+  }
+  UI.showPvp('상대를 찾지 못했어요. 다시 해 주세요');
+}
+async function pvpMake() {
+  SFX.init(); sfx('click');
+  UI.pvpWait('방 만드는 중...', '잠깐만요');
+  try {
+    const code = await Net.makeRoom(pvpGo);
+    if (!Net.started) UI.pvpWait('방 코드', '친구가 1대1 → 방 코드로 들어가기에 이 숫자를 넣으면 시작해요', code);
+  } catch (e) { console.warn(e); Net.clear(); Net.reset(); UI.showPvp('방을 만들지 못했어요. 다시 해 주세요'); }
+}
+async function pvpJoin(ev) {
+  ev.preventDefault(); SFX.init();
+  const code = $('#vCode').value.trim(), m = $('#vMsg');
+  if (!/^\d{4}$/.test(code)) { m.textContent = '방 코드는 4자리 숫자예요'; m.className = 'msg err'; sfx('fail'); return; }
+  m.className = 'msg'; m.textContent = '들어가는 중...';
+  try { await Net.join(code, pvpGo); }
+  catch (e) {
+    Net.clear(); Net.reset();
+    const t = { none: '그런 방이 없어요. 코드를 다시 확인해 주세요', full: '이미 둘이 들어간 방이에요', self: '내가 만든 방이에요. 친구가 들어와야 해요' }[e && e.message] || '들어가지 못했어요. 다시 해 주세요';
+    const mm = $('#vMsg'); if (mm) { mm.textContent = t; mm.className = 'msg err'; } sfx('fail');
+  }
+}
 function onGameEnd(r) {
+  if (r && r.pvp) { Store.applyPvp(r); Game.stop(); UI.showPvpResult(r); return; }
   const prevBest = Store.P.best;
   Store.applyResult(r);
   Game.stop();
@@ -3270,7 +3705,7 @@ try {
   window.claude?.hot?.snapshot?.(() => ({ v: 1, screen: UI.cur, game: G && !G.over && UI.cur === 'game' ? JSON.parse(JSON.stringify(G)) : null }));
 } catch (e) { /* 뷰어 밖 */ }
 if (location.protocol === 'file:') {
-  window.__HB = { get G() { return G; }, set G(v) { G = v; }, Store, UI, Game, IN, L, SCRIPT, step(n) { for (let i = 0; i < n && G && !G.ended; i++) update(STEP); }, render() { render(); }, onGameEnd, actPotion, tryAttack, fireUlt, autoUlt, autoTarget };
+  window.__HB = { get G() { return G; }, set G(v) { G = v; }, Store, UI, Game, IN, L, SCRIPT, step(n) { for (let i = 0; i < n && G && !G.ended; i++) update(STEP); }, render() { render(); }, onGameEnd, actPotion, tryAttack, fireUlt, autoUlt, autoTarget, get Net() { return Net; }, get PvP() { return PvP; } };
 }
 if (window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data ?? {});
 
