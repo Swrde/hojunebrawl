@@ -389,6 +389,7 @@ textarea{-webkit-user-select:text;user-select:text}
 .chtile .lockic svg{width:20px;height:20px}
 .chtile.view{border-color:var(--sky);box-shadow:0 5px 0 var(--ink),0 0 0 3px var(--sky)}
 .chtile.sel small{color:var(--yolk)}
+@media (max-width:440px){.chinfo .pc{justify-content:center}}
 @media (max-width:440px){.chprev{grid-template-columns:1fr;justify-items:center}.chinfo{width:100%}.chinfo h3,.chinfo .cd{text-align:center}.chact{justify-content:center}}
 @keyframes bob{50%{transform:translateY(-10px)}}
 @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-10px)}}
@@ -430,7 +431,7 @@ textarea{-webkit-user-select:text;user-select:text}
 .btn.small.red{box-shadow:0 4px 0 var(--ink),inset 0 -4px 0 #c93350,inset 0 2px 0 rgba(255,255,255,.4)}
 .tscore{display:flex;align-items:center;justify-content:center;gap:14px;font-size:2.6rem;text-shadow:var(--ol)}
 .tscore b{font-weight:400}
-.ilist{display:grid;gap:8px;max-height:46vh;overflow-y:auto}
+.invl{display:grid;gap:8px;max-height:46vh;overflow-y:auto}
 .irow{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:rgba(16,18,43,.38);text-align:left}
 .irow .it{flex:1;min-width:0;display:grid}
 .irow b{font-family:var(--f-disp);font-weight:400}
@@ -459,6 +460,55 @@ textarea{-webkit-user-select:text;user-select:text}
 .dinv{display:grid;gap:6px;justify-items:start;margin-top:6px;padding-top:6px;border-top:2px dashed rgba(16,18,43,.25);font-size:.88rem}
 .dinv b{font-weight:400}
 @media (max-width:380px){.hero{padding-inline:88px}.sbtn{width:64px}}
+/* 뽑기 · 칭호/테두리 화면 */
+.pc{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.pc span{padding:2px 9px;border-radius:9px;border:2px solid var(--ink);font-size:.8rem}
+.pc .pro{background:#1f6b45}.pc .con{background:#7d1a33}
+.cprev{display:flex;align-items:center;gap:14px;padding:14px;background:var(--panel-2)}
+.cp{display:grid;gap:3px;min-width:0}
+.cp b{font-family:var(--f-disp);font-weight:400;font-size:1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+.cp b .ttl{margin-left:0}
+.cp small{color:var(--muted);font-size:.8rem}
+.sec h3 small{font-size:.8rem;color:var(--muted);margin-left:6px;font-family:var(--f-num)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.titem,.fitem{display:grid;justify-items:center;align-content:start;gap:5px;padding:12px 8px 10px;text-align:center;box-shadow:0 4px 0 var(--ink);min-width:0}
+.titem:active,.fitem:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.titem .tp .ttl{margin-left:0;font-size:.86rem;padding:2px 9px 3px}
+.titem small,.fitem small{color:var(--muted);font-size:.74rem;line-height:1.3;overflow-wrap:anywhere}
+.titem em,.fitem em{font-style:normal;font-size:.8rem;color:var(--yolk)}
+.titem.sel,.fitem.sel{border-color:var(--yolk);background:var(--panel-2);box-shadow:0 4px 0 var(--ink),0 0 0 3px var(--yolk)}
+.titem.sel em,.fitem.sel em{color:var(--mint)}
+.titem.lock,.fitem.lock{background:rgba(16,18,43,.45)}
+.titem.lock .ttl,.fitem.lock .ball{filter:grayscale(1) brightness(.7)}
+.titem.lock em,.fitem.lock em{color:var(--muted)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.fitem{padding:14px 6px 10px}
+.fitem b{font-family:var(--f-disp);font-weight:400;font-size:.95rem}
+.cbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.cbtns .btn svg,[data-tocoll] svg{width:24px;height:24px}
+/* 1대1 티어: 다음 티어까지 */
+.tprog{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 8px;font-size:.9rem;color:#fff}
+.tbar{position:relative;display:inline-block;width:90px;height:10px;border-radius:6px;background:rgba(16,18,43,.6);border:2px solid var(--ink);overflow:hidden}
+.tbar b{display:block;height:100%;background:var(--tc)}
+.tnx{color:var(--muted);font-size:.82rem}
+.tnx b{color:#fff;font-weight:400}
+.res .tprog{color:#fff;font-size:.9rem}.res .tprog .tnx{font-size:.8rem}.res .tprog b{font-size:1.05rem}
+.mytier{display:flex;justify-content:center}
+.mycard .mt{grid-column:1/-1;display:flex;justify-content:center}
+/* 강화 확률 */
+.uprob{display:grid;gap:6px}
+.ubar{display:flex;height:16px;border-radius:999px;border:2px solid var(--ink);overflow:hidden;background:rgba(16,18,43,.5)}
+.ubar b{display:block;height:100%;background:var(--mint)}
+.ubar i{display:block;height:100%;background:var(--rose)}
+.ulab{display:flex;justify-content:space-between;align-items:baseline;font-size:.95rem}
+.ulab .ok{color:var(--mint)}.ulab .no{color:#ffb3c0}
+.ulab b{font-size:1.3rem;font-weight:400}
+.upgo{flex-direction:column;gap:3px;line-height:1.1}
+.upgo small{display:inline-flex;align-items:center;gap:4px;font-size:.88rem}
+/* 이름 + 칭호: 이름이 길면 칭호는 다음 줄로 (잘리지 않게) */
+.rn b{display:flex;flex-wrap:wrap;align-items:center;column-gap:5px;row-gap:2px;white-space:normal;overflow:visible}
+.rn b .nk{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rn b .ttl,.rn b .atag{margin-left:0}
 @media (max-height:520px) and (min-width:600px){.side{grid-template-columns:repeat(2,auto)}.side.r{direction:rtl}.side.r .sbtn{direction:ltr}}
 @media (max-height:520px){.side{top:6px;gap:8px}.sbtn{padding:5px 4px 4px;font-size:.8rem}.sbtn svg{width:24px;height:24px}.hero-meta{display:none}.play{padding:12px 22px;font-size:1.25rem}}
 @media (prefers-reduced-motion:reduce){.hero-ball,.roster>span{animation:none}.forge.go i{animation-duration:.2s}}
@@ -498,11 +548,13 @@ textarea{-webkit-user-select:text;user-select:text}
         <button class="sbtn" id="bRank" type="button"><span>랭킹</span></button>
         <button class="sbtn" id="bChat" type="button"><span>채팅</span><i class="dot" id="chatDot" hidden></i></button>
         <button class="sbtn" id="bPeople" type="button"><span>친구</span><i class="dot n" id="dmDot" hidden></i><i class="ocnt" id="onBadge" hidden></i></button>
+        <button class="sbtn" id="bColl" type="button"><span>칭호</span></button>
       </nav>
       <nav class="side r" aria-label="준비">
         <button class="sbtn" id="bChars" type="button"><span>캐릭터</span></button>
         <button class="sbtn" id="bGear" type="button"><span>장비</span></button>
         <button class="sbtn" id="bShop" type="button"><span>상점</span></button>
+        <button class="sbtn" id="bGacha" type="button"><span>뽑기</span><i class="dot n" id="tixDot" hidden></i></button>
       </nav>
       <button class="hero" id="heroBtn" type="button" aria-label="캐릭터 바꾸기">
         <span class="ball hero-ball" id="heroBall"><img id="heroImg" alt="" draggable="false"></span>
@@ -543,6 +595,16 @@ textarea{-webkit-user-select:text;user-select:text}
     <header class="phead"><button class="back" type="button" data-back aria-label="로비로"></button><h2>전체 채팅</h2></header>
     <div class="pbody" id="chatScroll"><p class="chat-note" id="chatNote"></p><div class="chatlist" id="chatList"></div></div>
     <form class="chatbar" id="chatForm"><label for="chatIn" class="sr">메시지</label><input id="chatIn" maxlength="80" autocomplete="off" placeholder="메시지 보내기"><button class="btn small" type="submit" id="chatSend">보내기</button></form>
+  </section>
+
+  <section id="s-gacha" class="scr panel" aria-label="뽑기" hidden>
+    <header class="phead"><button class="back" type="button" data-back aria-label="로비로"></button><h2>뽑기</h2><span class="chip"><i class="coin"></i><b class="num coinTxt">0</b></span></header>
+    <div class="pbody" id="gachaBody"></div>
+  </section>
+
+  <section id="s-coll" class="scr panel" aria-label="칭호와 테두리" hidden>
+    <header class="phead"><button class="back" type="button" data-back aria-label="로비로"></button><h2>칭호 · 테두리</h2></header>
+    <div class="pbody" id="collBody"></div>
   </section>
 
   <section id="s-people" class="scr panel" aria-label="친구" hidden>
@@ -604,24 +666,28 @@ const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return 
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* 저장 불가 환경 */ } };
 
 /* ================= 캐릭터 / 장비 / 포션 ================= */
+const CHAR_PRICE = 2000;   // 기본 호준 빼고 전부 같은 가격
+/* 성능은 비슷비슷하게: 하나가 좋으면 하나는 아쉽게 (체력 · 속도 · 공격력 · 연사) */
 const CHARS = {
   base:    { name: '기본 호준',      face: 0, role: '밸런스', hp: 1200, spd: 260, dmg: 1.00, rate: 1.00, ring: '#59b8ff', price: 0,
-             ult: 'bomb', ultName: '교과서 폭탄', ultDesc: '조준한 곳에 폭탄을 던져 넓은 범위에 큰 피해 (벽 너머로도 던져짐)', desc: '뭐든 무난한 기본 호준' },
-  seojin:  { name: '박서진', face: 4, role: '스피드', hp: 1000, spd: 295, dmg: 1.00, rate: 1.05, ring: '#2fd6c3', price: 1500,
-             ult: 'tele', ultName: '순간이동', ultDesc: '조준한 곳으로 순간이동하고 도착한 자리 주변 적에게 피해', desc: '제일 빠른 캐릭터, 치고 빠지기 장인' },
-  jongyun: { name: '임종윤', face: 5, role: '파워', hp: 1750, spd: 240, dmg: 1.05, rate: 0.90, ring: '#ff7a1c', price: 2500,
-             ult: 'slam', ultName: '근육 쇼크웨이브', ultDesc: '땅을 내리쳐 주변 적에게 큰 피해를 주고 1.6초 기절시킴', desc: '체력 최강 근육맨' },
-  minjun:  { name: '김민준', face: 6, role: '컨트롤', hp: 1100, spd: 260, dmg: 0.95, rate: 1.00, ring: '#ffd23f', price: 2000,
-             ult: 'flash', ultName: '플래시 촬영', ultDesc: '조준한 쪽으로 플래시를 터뜨려 앞쪽 적들을 2.2초 기절시킴', desc: '찍히면 아무도 못 움직임' },
-  jaewon:  { name: '박재원', face: 7, role: '돌격', hp: 1300, spd: 255, dmg: 1.00, rate: 1.00, ring: '#ff8fb1', price: 2500,
-             ult: 'roll', ultName: '스마일 볼링', ultDesc: '웃는 얼굴이 볼링공처럼 굴러가며 적을 쓰러뜨리고 적 총알도 지움', desc: '한번 웃으면 다 쓰러짐' },
-  woojin:  { name: '정우진', face: 8, role: '혼란', hp: 1150, spd: 270, dmg: 1.00, rate: 1.05, ring: '#7bd389', price: 2000,
-             ult: 'qring', ultName: '물음표 폭발', ultDesc: '사방으로 물음표를 날려 맞은 쫄병을 2.5초 동안 헷갈리게 함', desc: '예측 불가 혼란 유발자' },
-  seowon:  { name: '정서원', face: 9, role: '저격', hp: 1000, spd: 265, dmg: 1.10, rate: 1.00, ring: '#59d0ff', price: 3000,
-             ult: 'laser', ultName: '안경 레이저', ultDesc: '안경에서 벽도 뚫는 레이저를 쏴서 한 줄에 있는 적 모두에게 큰 피해', desc: '공격력이 제일 센 캐릭터' },
-  seungho: { name: '주승호', face: 10, role: '탱커', hp: 1600, spd: 245, dmg: 1.00, rate: 0.95, ring: '#1fd17a', price: 2600,
-             ult: 'dash', ultName: '불도저 돌진', ultDesc: '조준한 쪽으로 돌진해 부딪힌 적에게 큰 피해를 주고 날려버림 (돌진하는 동안 무적)', desc: '무표정으로 다 밀어버리는 돌격 탱커' },
+             ult: 'bomb', ultName: '교과서 폭탄', ultDesc: '조준한 곳에 폭탄을 던져 넓은 범위에 큰 피해 (벽 너머로도 던져짐)', desc: '뭐든 무난한 기본 호준 · 약점이 없어요', pro: '약점 없음', con: '특기도 없음' },
+  seojin:  { name: '박서진', face: 4, role: '스피드', hp: 1000, spd: 300, dmg: 0.95, rate: 1.05, ring: '#2fd6c3', price: CHAR_PRICE,
+             ult: 'tele', ultName: '순간이동', ultDesc: '조준한 곳으로 순간이동하고 도착한 자리 주변 적에게 피해', desc: '제일 빠른 치고 빠지기 장인', pro: '이동속도 최고', con: '체력이 낮음' },
+  jongyun: { name: '임종윤', face: 5, role: '파워', hp: 1400, spd: 240, dmg: 1.05, rate: 0.88, ring: '#ff7a1c', price: CHAR_PRICE,
+             ult: 'slam', ultName: '근육 쇼크웨이브', ultDesc: '땅을 내리쳐 주변 적에게 큰 피해를 주고 1.6초 기절시킴', desc: '튼튼하고 한 방이 센 근육맨', pro: '체력 · 공격력 높음', con: '느리고 연사가 느림' },
+  minjun:  { name: '김민준', face: 6, role: '컨트롤', hp: 1150, spd: 265, dmg: 0.95, rate: 1.05, ring: '#ffd23f', price: CHAR_PRICE,
+             ult: 'flash', ultName: '플래시 촬영', ultDesc: '조준한 쪽으로 플래시를 터뜨려 앞쪽 적들을 2.2초 기절시킴', desc: '찍히면 아무도 못 움직임', pro: '기절 궁극기 · 연사 빠름', con: '공격력이 조금 약함' },
+  jaewon:  { name: '박재원', face: 7, role: '돌격', hp: 1300, spd: 250, dmg: 1.00, rate: 0.96, ring: '#ff8fb1', price: CHAR_PRICE,
+             ult: 'roll', ultName: '스마일 볼링', ultDesc: '웃는 얼굴이 볼링공처럼 굴러가며 적을 쓰러뜨리고 적 총알도 지움', desc: '한번 웃으면 다 쓰러짐', pro: '체력 조금 높음 · 총알 막는 궁', con: '조금 느림' },
+  woojin:  { name: '정우진', face: 8, role: '혼란', hp: 1100, spd: 270, dmg: 1.00, rate: 1.05, ring: '#7bd389', price: CHAR_PRICE,
+             ult: 'qring', ultName: '물음표 폭발', ultDesc: '사방으로 물음표를 날려 맞은 적을 2.5초 동안 헷갈리게 함', desc: '예측 불가 혼란 유발자', pro: '빠르고 연사 빠름', con: '체력이 조금 낮음' },
+  seowon:  { name: '정서원', face: 9, role: '저격', hp: 1000, spd: 265, dmg: 1.12, rate: 1.00, ring: '#59d0ff', price: CHAR_PRICE,
+             ult: 'laser', ultName: '안경 레이저', ultDesc: '안경에서 벽도 뚫는 레이저를 쏴서 한 줄에 있는 적 모두에게 큰 피해', desc: '공격력이 제일 센 캐릭터', pro: '공격력 최고', con: '체력이 낮음' },
+  seungho: { name: '주승호', face: 10, role: '탱커', hp: 1550, spd: 235, dmg: 0.90, rate: 0.92, ring: '#1fd17a', price: CHAR_PRICE,
+             ult: 'dash', ultName: '불도저 돌진', ultDesc: '조준한 쪽으로 돌진해 부딪힌 적에게 큰 피해를 주고 날려버림 (돌진하는 동안 무적)', desc: '무표정으로 다 밀어버리는 돌격 탱커', pro: '체력 최고', con: '제일 느리고 공격이 약함' },
 };
+/* 가격을 2,000으로 맞추기 전에 더 비싸게 산 사람에게 차액을 한 번 돌려줌 */
+const OLD_CHAR_PRICE = { jongyun: 2500, jaewon: 2500, seowon: 3000, seungho: 2600 };
 /* 예전에 있던 캐릭터: 산 사람에게 코인을 돌려줌 */
 const RETIRED_CHARS = { super: 2500, doctor: 3000, gamer: 3500 };
 const CH_ORDER = ['base', 'seojin', 'jongyun', 'minjun', 'jaewon', 'woojin', 'seowon', 'seungho'];
@@ -729,7 +795,7 @@ const RAR = {
 const TITLES = {
   first:     { n: '첫 클리어',     r: 'c', how: '스토리 모드 클리어' },
   att7:      { n: '개근상',        r: 'r', how: '7일 연속 출석' },
-  homom:     { n: '호맘 사냥꾼',   r: 'r', how: '호맘 타임어택 클리어' },
+  homom:     { n: '호맘 사냥꾼',   r: 'r', how: '호맘 타임어택(체력 3배) 클리어' },
   homom60:   { n: '1분 컷',        r: 'e', how: '호맘 타임어택 1분 안에 클리어' },
   endless10: { n: '버티기 장인',   r: 'r', how: '무한 모드 10웨이브' },
   endless25: { n: '무한의 지배자', r: 'l', how: '무한 모드 25웨이브' },
@@ -810,6 +876,35 @@ const prevWeekId = () => weekId(Date.now() - 7 * 864e5);
 /* 출석: 7일 주기, 7일째는 뽑기권도 줌 */
 const ATT_REWARD = [100, 150, 200, 250, 300, 400, 700];
 
+/* 호맘 보스전 (타임어택 · 협동): 스토리 호맘보다 체력 3배 */
+const HOMOM_HP = 3;
+/* 다음 티어까지 몇 점 남았는지 */
+function nextTier(pr) {
+  const i = TIERS.indexOf(tierOf(pr)), nx = TIERS[i + 1];
+  if (!nx) return null;
+  const lo = TIERS[i].min;
+  return { t: nx, need: nx.min - pr, f: clamp((pr - lo) / (nx.min - lo), 0, 1) };
+}
+/* 업적 칭호 진행도 (예: 3/10) */
+function titleProg(P, k) {
+  const of = (v, n) => `${fmt(Math.min(v, n))}/${fmt(n)}`;
+  switch (k) {
+    case 'first': return of(P.clears, 1);
+    case 'att7': return of(P.att.s, 7);
+    case 'homom': return P.hs3 ? '클리어!' : '';
+    case 'homom60': return P.hs3 ? `내 기록 ${clockTxt(P.hs3 / 100)}` : '';
+    case 'endless10': return of(P.ew, 10);
+    case 'endless25': return of(P.ew, 25);
+    case 'pvp10': return of(P.pw || 0, 10);
+    case 'gold': return `${fmt(P.pr)}/1,250점`;
+    case 'team5': return of(P.tw, 5);
+    case 'bossw': return of(P.bw, 1);
+    case 'hunter': return of(P.hw2, 1);
+    case 'rich': return of(P.coins, 20000);
+    default: return '';
+  }
+}
+
 /* ================= 계정 / 저장 =================
    online   : 공유 DB에 저장 (players/<id> 공개 기록, data/users/<id>/save 비공개 지갑·장비, chat/<id> 내 메시지)
    readonly : 공유 DB는 읽기만 가능 → 내 기록은 이 기기(localStorage)에 저장
@@ -817,14 +912,14 @@ const ATT_REWARD = [100, 150, 200, 250, 300, 400, 700];
 const LS_KEY = 'hojun-brawl-v1';
 const LS_CHAT_SEEN = 'hojun-brawl-chatseen';
 
-const PUB_NUMS = ['total', 'best', 'games', 'clears', 'pw', 'pl', 'pd', 'ws', 'lws', 'ew', 'es', 'hts', 'ht3', 'tw', 'tl', 'td', 'bw', 'bl', 'hw2', 'hl2'];
+const PUB_NUMS = ['total', 'best', 'games', 'clears', 'pw', 'pl', 'pd', 'ws', 'lws', 'ew', 'es', 'hs3', 'ht3', 'tw', 'tl', 'td', 'bw', 'bl', 'hw2', 'hl2'];
 function newProfile(nick) {
   return {
     nick, ch: 'base', pic: '', pw: 0, pl: 0, pd: 0, total: 0, best: 0, games: 0, clears: 0,
-    wk: '', ws: 0, lwk: '', lws: 0, ew: 0, es: 0, hts: 0, ht3: 0, ht3n: [], pr: 1000, tw: 0, tl: 0, td: 0, bw: 0, bl: 0, hw2: 0, hl2: 0, title: '', frame: '',
+    wk: '', ws: 0, lwk: '', lws: 0, ew: 0, es: 0, hs3: 0, ht3: 0, ht3n: [], pr: 1000, tw: 0, tl: 0, td: 0, bw: 0, bl: 0, hw2: 0, hl2: 0, title: '', frame: '',
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
-    att: { d: '', s: 0, t: 0 }, tix: 0, titles: [], frames: [],
+    att: { d: '', s: 0, t: 0 }, tix: 0, titles: [], frames: [], cr: 1,
   };
 }
 function lvMap(src, table, must) {
@@ -858,6 +953,7 @@ function normProfile(pub, priv) {
     const at = priv.att || {};
     P.att = { d: str(at.d, 10), s: clamp(num(at.s), 0, 7), t: num(at.t) };
     P.tix = num(priv.tix);
+    P.cr = num(priv.cr);
     P.titles = [...new Set((Array.isArray(priv.titles) ? priv.titles : []).filter(k => TITLES[k]))];
     P.frames = [...new Set((Array.isArray(priv.frames) ? priv.frames : []).filter(k => FRAMES[k]))];
   }
@@ -1221,7 +1317,7 @@ const Store = {
     return o;
   },
   privData() {
-    const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, att: { ...P.att }, tix: P.tix || 0, titles: P.titles.slice(), frames: P.frames.slice(), v: 2 };
+    const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, att: { ...P.att }, tix: P.tix || 0, titles: P.titles.slice(), frames: P.frames.slice(), cr: P.cr || 0, v: 2 };
     if (this.web) o.sess = this.sess;
     return o;
   },
@@ -1281,13 +1377,20 @@ const Store = {
     if (r.clear && (!r.mode || r.mode === 'story')) P.clears += 1;
     P.coins += r.coins;
     if (r.mode === 'endless') { r.prevBest = P.ew; P.ew = Math.max(P.ew, r.wave); P.es = Math.max(P.es, r.score); }
-    if (r.mode === 'homom' && r.clear && r.htime > 0) { const cs = Math.round(r.htime * 100); r.prevBest = P.hts; if (!P.hts || cs < P.hts) { P.hts = cs; r.newRecord = true; } }
+    if (r.mode === 'homom' && r.clear && r.htime > 0) { const cs = Math.round(r.htime * 100); r.prevBest = P.hs3; if (!P.hs3 || cs < P.hs3) { P.hs3 = cs; r.newRecord = true; } }
     if (r.mode === 'coop' && r.clear && r.htime > 0 && r.team && r.team.length >= 3) {
       const cs = Math.round(r.htime * 100); r.prevBest = P.ht3;
       if (!P.ht3 || cs < P.ht3) { P.ht3 = cs; P.ht3n = r.team.slice(0, 3); r.newRecord = true; }
     }
     if (r.mode === 'coop' && r.clear) this._coopClear = true;
     this.checkTitles(); this.save('all');
+  },
+  /* 캐릭터 가격을 2,000으로 맞추면서, 전에 더 비싸게 산 만큼 한 번 돌려줌 */
+  charRefund() {
+    const P = this.P; if (!P || P.cr >= 1) return 0;
+    let n = 0; for (const k in OLD_CHAR_PRICE) if (P.chars.includes(k)) n += Math.max(0, OLD_CHAR_PRICE[k] - CHAR_PRICE);
+    P.cr = 1; P.coins += n; this.save('priv');
+    return n;
   },
   /* ---------- 출석 ---------- */
   checkAttendance() {
@@ -1306,7 +1409,7 @@ const Store = {
   checkTitles() {
     const P = this.P, have = new Set(P.titles);
     const ok = {
-      first: P.clears >= 1, att7: P.att.s >= 7, homom: P.hts > 0, homom60: P.hts > 0 && P.hts <= 6000,
+      first: P.clears >= 1, att7: P.att.s >= 7, homom: P.hs3 > 0, homom60: P.hs3 > 0 && P.hs3 <= 6000,
       endless10: P.ew >= 10, endless25: P.ew >= 25, pvp10: P.pw >= 10, gold: P.pr >= 1250, team5: P.tw >= 5,
       bossw: P.bw >= 1, hunter: P.hw2 >= 1, coop: P.ht3 > 0 || this._coopClear === true, rich: P.coins >= 20000,
     };
@@ -1686,7 +1789,7 @@ function newGame(lo) {
   const mag = wp.mag + Math.floor(lo.wl / 5);
   G = {
     v: 4, t: 0, lo, over: false, ended: false, endT: 0, result: null, quit: false,
-    mode: lo.mode || 'story', map, scr: lo.mode === 'endless' ? [] : lo.mode === 'homom' || lo.mode === 'coop' ? [{ k: 'boss', ph: 4, boss: 'mom' }] : null,
+    mode: lo.mode || 'story', map, scr: lo.mode === 'endless' ? [] : lo.mode === 'homom' ? [{ k: 'boss', ph: 4, boss: 'mom', bm: HOMOM_HP }] : lo.mode === 'coop' ? [{ k: 'boss', ph: 4, boss: 'mom' }] : null,
     ehm: 1, edm: 1, esm: 1, bhm: 1, bossT0: 0, bossT1: 0,
     step: -1, ss: { mode: 'start', t: 0.5 },
     score: 0, kills: 0,
@@ -2892,7 +2995,10 @@ function drawOverheads() {
     }
   }
   drawAllyHeads();
-  const p = G.p; if (p.dead) return;
+  for (const e of G.en) if (e.emo) drawEmote(e, e.x, e.y - e.r - (e.isBoss ? 72 : 46));
+  for (const e of G.allies || []) if (e.emo && !e.gone) drawEmote(e, e.x, e.y - e.r - 46);
+  const p = G.p; if (p.emo && !p.dead) drawEmote(p, p.x, p.y - p.r - (p.isBoss ? 70 : 46));
+  if (p.dead) return;
   if ((p.stun || 0) > 0) for (let i = 0; i < 3; i++) { const an = G.t * 6 + (i * TAU) / 3; ctx.beginPath(); ctx.arc(p.x + Math.cos(an) * 16, p.y - p.r - 50 + Math.sin(an) * 5, 5, 0, TAU); ctx.fillStyle = COL.yolk; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = COL.ink; ctx.stroke(); }
   else if ((p.conf || 0) > 0) { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 22px ${FONT_NUM}`; outText('?', p.x + Math.sin(G.t * 8) * 4, p.y - p.r - 50, COL.mint, 4); }
   const cr = p.isBoss ? 24 : 0;
@@ -2912,6 +3018,58 @@ function drawOverheads() {
     }
   }
   if (p.rl > 0) bar(p.x - 39, ay + 13, 78, 5, 1 - p.rl / p.rlMax, '#fff');
+}
+/* ---------- 이모티콘 (브롤처럼 머리 위에 말풍선) ---------- */
+const EMOTES = ['👍', '😂', '😭', '😡', '😎', '🔥', '👋', 'GG'];
+const EMO_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+function sendEmote(i) {
+  if (!G || G.over || G.p.dead || !EMOTES[i]) return;
+  G.emoOpen = false;
+  if (G.t < (G.emoT || 0)) return;            // 1.2초에 한 번만
+  G.emoT = G.t + 1.2;
+  G.p.emo = { k: i, t0: G.t }; sfx('click');
+  if (G.pvp || G.coop) Net.ev({ k: 'em', e: i });
+}
+/* 다른 사람이 보낸 이모티콘 */
+function showEmote(e, i) {
+  if (!e || !Number.isInteger(i) || !EMOTES[i]) return;
+  if (e.emo && G.t - e.emo.t0 < 0.8) return;
+  e.emo = { k: i, t0: G.t };
+}
+function drawEmote(o, x, tipY) {
+  const age = G.t - o.emo.t0;
+  if (age > 2.4 || age < 0) { o.emo = null; return; }
+  const s = age < 0.12 ? 0.4 + (age / 0.12) * 0.75 : age < 0.22 ? 1.15 - (age - 0.12) * 1.5 : 1;
+  const txt = EMOTES[o.emo.k];
+  ctx.save(); ctx.globalAlpha = age > 2.0 ? (2.4 - age) / 0.4 : 1; ctx.translate(x, tipY); ctx.scale(s * 1.35, s * 1.35);
+  const x0 = -31, y0 = -64, w = 62, yb = -10, r = 17;   // 말풍선 + 꼬리 (꼬리 끝이 머리 위)
+  ctx.beginPath(); ctx.moveTo(x0 + r, y0);
+  ctx.arcTo(x0 + w, y0, x0 + w, yb, r); ctx.arcTo(x0 + w, yb, x0, yb, r);
+  ctx.lineTo(9, yb); ctx.lineTo(0, 0); ctx.lineTo(-9, yb);
+  ctx.arcTo(x0, yb, x0, y0, r); ctx.arcTo(x0, y0, x0 + w, y0, r); ctx.closePath();
+  ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 3.5; ctx.lineJoin = 'round'; ctx.strokeStyle = COL.ink; ctx.stroke();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  if (txt.length > 2) { ctx.font = `400 27px ${FONT_NUM}`; ctx.fillStyle = COL.rose; ctx.fillText(txt, 0, -36); }
+  else { ctx.font = `34px ${EMO_FONT}`; ctx.fillStyle = COL.ink; ctx.fillText(txt, 0, -35); }
+  ctx.restore();
+}
+/* 이모티콘 고르는 창 (이모티콘 버튼 아래) */
+function emoGrid() {
+  const u = L.u, sz = 44 * u, gap = 8 * u, w = 4 * sz + 3 * gap, B = L.emo;
+  const x0 = Math.max(8 * u, VW - 12 * u - w), y0 = B.y + B.r + 12 * u;
+  return EMOTES.map((t, i) => ({ i, t, x: x0 + (i % 4) * (sz + gap) + sz / 2, y: y0 + Math.floor(i / 4) * (sz + gap) + sz / 2, r: sz / 2 }));
+}
+function emoAt(x, y) { for (const c of emoGrid()) if (Math.hypot(x - c.x, y - c.y) < c.r + 4) return c.i; return -1; }
+function drawEmoPicker() {
+  const u = L.u, cs = emoGrid(), pad = 8 * u;
+  const x0 = cs[0].x - cs[0].r - pad, y0 = cs[0].y - cs[0].r - pad, x1 = cs[7].x + cs[7].r + pad, y1 = cs[7].y + cs[7].r + pad;
+  rr(x0, y0, x1 - x0, y1 - y0, 16 * u); ctx.fillStyle = 'rgba(16,18,43,.82)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = COL.ink; ctx.stroke();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const c of cs) {
+    ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = COL.ink; ctx.stroke();
+    if (c.t.length > 2) { ctx.font = `400 ${Math.round(19 * u)}px ${FONT_NUM}`; ctx.fillStyle = COL.rose; ctx.fillText(c.t, c.x, c.y + 1); }
+    else { ctx.font = `${Math.round(25 * u)}px ${EMO_FONT}`; ctx.fillStyle = COL.ink; ctx.fillText(c.t, c.x, c.y + 1); }
+  }
 }
 function fitFont(text, size, maxW, family) {
   ctx.font = `400 ${size}px ${family}`;
@@ -2937,7 +3095,7 @@ function drawBanner() {
 function drawIndicators() {
   const m = 26 * L.u, cx = VW / 2, cy = VH / 2;
   const list = [];
-  for (const e of G.en) list.push([e.x, e.y, e.rival && G.pvp && G.pvp.kind === 'team' ? TEAM_COL[e.tm] : COL.rose, e.boss || e.isBoss ? 1.7 : 1]);
+  for (const e of G.en) { if (e.rival && G.pvp && G.pvp.kind === '1v1') continue; list.push([e.x, e.y, e.rival && G.pvp && G.pvp.kind === 'team' ? TEAM_COL[e.tm] : COL.rose, e.boss || e.isBoss ? 1.7 : 1]); }
   for (const e of G.allies || []) if (!e.gone) list.push([e.x, e.y, COL.sky, 0.9]);
   for (const c of G.drops) list.push([c.x, c.y, COL.mint, 1.25]);
   for (const [wx, wy, c, s] of list) {
@@ -3003,6 +3161,16 @@ function drawControls() {
   const ea = Math.PI * 1.45, ex = R.x + Math.cos(ea) * R.r * 0.48, ey = R.y + Math.sin(ea) * R.r * 0.48;
   ctx.beginPath(); ctx.moveTo(ex + 6 * u, ey + 1 * u); ctx.lineTo(ex - 1 * u, ey - 6 * u); ctx.lineTo(ex - 2 * u, ey + 5 * u); ctx.closePath(); ctx.fillStyle = p.rl > 0 ? COL.orange : '#fff'; ctx.fill();
   ctx.font = `400 ${Math.round(12 * u)}px ${FONT_NUM}`; outText(p.buf.apm > 0 ? '∞' : `${p.ammo}/${p.mag}`, R.x, R.y + R.r + 10 * u, '#fff', 3);
+  const Em = L.emo;
+  ctx.globalAlpha = G.emoOpen ? 1 : CTRL_IDLE + 0.1;
+  circleBtn(Em, G.emoOpen ? COL.yolk : 'rgba(16,18,43,.7)');
+  ctx.save(); ctx.translate(Em.x, Em.y); const es = Em.r / 20; ctx.scale(es, es);
+  ctx.beginPath(); ctx.arc(0, 0, 11, 0, TAU); ctx.fillStyle = COL.yolk; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = COL.ink; ctx.stroke();
+  ctx.fillStyle = COL.ink; ctx.beginPath(); ctx.arc(-4, -3, 1.8, 0, TAU); ctx.arc(4, -3, 1.8, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 1, 6, 0.25, Math.PI - 0.25); ctx.lineWidth = 2.2; ctx.stroke(); ctx.restore();
+  ctx.globalAlpha = 1;
+  if (G.emoOpen) drawEmoPicker();
+  ctx.globalAlpha = CTRL_IDLE;
   const Pa = L.pause;
   circleBtn(Pa, 'rgba(16,18,43,.7)');
   ctx.fillStyle = '#fff'; ctx.fillRect(Pa.x - 6 * u, Pa.y - 7 * u, 4 * u, 14 * u); ctx.fillRect(Pa.x + 2 * u, Pa.y - 7 * u, 4 * u, 14 * u);
@@ -3027,6 +3195,14 @@ function drawHUD() {
   const sx = L.pause.x - L.pause.r - 12 * u;
   ctx.font = `400 ${Math.round(24 * u)}px ${FONT_NUM}`; outText(fmt(G.score), sx, 24 * u, COL.yolk, 4);
   ctx.font = `400 ${Math.round(12 * u)}px ${FONT_UI}`; outText('점수', sx, 46 * u, '#fff', 3);
+  if (G.mode === 'story' || G.mode === 'endless') {
+    const ts = mmss(G.t), cy = 68 * u;
+    ctx.textAlign = 'right'; ctx.font = `400 ${Math.round(18 * u)}px ${FONT_NUM}`;
+    const tw = ctx.measureText(ts).width, ix = sx - tw - 13 * u;
+    ctx.beginPath(); ctx.arc(ix, cy, 8 * u, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = COL.ink; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ix, cy); ctx.lineTo(ix, cy - 5 * u); ctx.moveTo(ix, cy); ctx.lineTo(ix + 4 * u, cy); ctx.lineWidth = 2; ctx.stroke();
+    outText(ts, sx, cy + 1, '#fff', 4);
+  }
   if ((G.mode === 'homom' || G.mode === 'coop') && G.bossT0) {
     const tt = (G.bossT1 || G.t) - G.bossT0;
     ctx.textAlign = 'center'; ctx.font = `400 ${Math.round(22 * u)}px ${FONT_NUM}`;
@@ -3053,7 +3229,7 @@ function drawHUD() {
     const touchy = IN.touch || (COARSE && !IN.mouse.used);
     const lines = touchy
       ? ['오른쪽 조이스틱을 끌어서 조준, 놓으면 발사', '톡 치면 가까운 적 자동 조준 · 가운데로 돌리면 취소']
-      : ['WASD 이동 · 마우스로 조준하고 클릭을 떼면 발사 · R 재장전', '스페이스나 우클릭을 꾹 눌러 궁 조준, 떼면 발사 · Q 포션 · Esc 일시정지'];
+      : ['WASD 이동 · 마우스로 조준하고 클릭을 떼면 발사 · R 재장전', '스페이스나 우클릭을 꾹 눌러 궁 조준, 떼면 발사 · Q 포션 · 1~8 이모티콘 · Esc 일시정지'];
     ctx.globalAlpha = clamp(G.hint, 0, 1); ctx.textAlign = 'center';
     const y0 = touchy ? VH * 0.62 : VH - 44 * u;
     lines.forEach((t, i) => { fitFont(t, Math.round(14 * u), VW - 32, FONT_UI); outText(t, VW / 2, y0 + i * 22 * u, '#fff', 4); });
@@ -3077,6 +3253,7 @@ function layout() {
     L.rl = { x: Math.min(VW - 34 * u, L.am.x + 62 * u), y: L.ult.y - 50 * u, r: 25 * u };
   }
   L.pause = { x: VW - 30 * u, y: 30 * u, r: 20 * u };
+  L.emo = { x: VW - 30 * u, y: 86 * u, r: 20 * u };
 }
 function resize() {
   if (!cv) return;
@@ -3094,11 +3271,12 @@ function resetInput() {
   IN.mouse.aiming = false; IN.kbUlt = false; IN.buffer = null; IN.btn = {};
   for (const k in IN.keys) IN.keys[k] = false;
 }
-function btnAt(x, y) { for (const k of ['pause', 'ult', 'pot', 'rl']) { const B = L[k]; if (B && Math.hypot(x - B.x, y - B.y) < B.r + 8) return k; } return null; }
+function btnAt(x, y) { for (const k of ['pause', 'emo', 'ult', 'pot', 'rl']) { const B = L[k]; if (B && Math.hypot(x - B.x, y - B.y) < B.r + 8) return k; } return null; }
 function pressBtn(k) {
   if (!G || G.over) return;
   if (k === 'pause') { Game.pause(!paused); return; }
   if (paused) return;
+  if (k === 'emo') { G.emoOpen = !G.emoOpen; sfx('click'); return; }
   if (k === 'ult') autoUlt(); else if (k === 'pot') actPotion(); else if (k === 'rl') actReload();
 }
 function stickBase(x, y) { const r = L.sr; return { x: clamp(x, r + 8, VW - r - 8), y: clamp(y, r + 8, VH - r - 8) }; }
@@ -3112,6 +3290,7 @@ function onDown(ev) {
   if (!G) return;
   SFX.init(); ev.preventDefault();
   const { x, y } = evPos(ev);
+  if (G.emoOpen) { const i = emoAt(x, y); G.emoOpen = false; if (i >= 0) { if (ev.pointerType !== 'mouse') IN.touch = true; sendEmote(i); return; } if (btnAt(x, y) === 'emo') return; }
   if (ev.pointerType === 'mouse') {
     IN.mouse.used = true; IN.mouse.x = x; IN.mouse.y = y;
     const b = btnAt(x, y); if (b) { pressBtn(b); return; }
@@ -3183,6 +3362,8 @@ function onKey(ev, down) {
       if (code === 'KeyR') actReload();
       else if (ultKey) { if (ultReady()) IN.kbUlt = true; else denyUlt(); }
       else if (code === 'KeyQ') actPotion();
+      else if (/^Digit[1-8]$/.test(code)) sendEmote(Number(code.slice(5)) - 1);
+      else if (code === 'KeyT') { G.emoOpen = !G.emoOpen; }
     }
   }
   if (!down && ultKey && IN.kbUlt) { IN.kbUlt = false; if (!paused && !G.over) pointerUlt(); }
@@ -3733,6 +3914,7 @@ const PvP = {
       if (v.kp > 0) knock(p, v.ka || 0, Math.min(v.kp, 1200) * 0.6 * res);
     } else if (v.k === 'd') this.onKill(v.u, v.by, v.tm);
     else if (v.k === 'q') this.left(v.u);
+    else if (v.k === 'em') { if (P && !P.left) showEmote(P.e, v.e); }
   },
   /* 누군가 쓰러짐: 쓰러진 사람이 직접 알려줌 */
   onKill(victim, by, tm) {
@@ -3885,7 +4067,7 @@ const PvP = {
     ctx.font = `400 ${Math.round(15 * u)}px ${FONT_NUM}`; outText(mmss(t), VW / 2, (V.kind === 'boss' ? 86 : 77) * u, t <= 10 && V.cd <= 0 ? COL.rose : '#fff', 3);
     /* 킬 알림: 오른쪽, 일시정지 버튼 아래 */
     ctx.textAlign = 'right';
-    V.feed.forEach((f, i) => { const s = f.a ? `${f.a} ➜ ${f.b}` : f.b; fitFont(s, Math.round(12 * u), VW * 0.4, FONT_UI); outText(s, VW - 12 * u, ((V.kind === 'boss' ? 108 : 100) + i * 17) * u, V.kind === 'team' && f.tb != null ? TEAM_COL[f.tb] : '#fff', 3); });
+    V.feed.forEach((f, i) => { const s = f.a ? `${f.a} ➜ ${f.b}` : f.b; fitFont(s, Math.round(12 * u), VW * 0.4, FONT_UI); outText(s, VW - 12 * u, (118 + i * 17) * u, V.kind === 'team' && f.tb != null ? TEAM_COL[f.tb] : '#fff', 3); });
     ctx.textAlign = 'center';
     if (p.dead && !G.over) { ctx.font = `400 ${Math.round(22 * u)}px ${FONT_DISP}`; outText(V.outMe ? '관전 중' : `부활까지 ${Math.max(1, Math.ceil(V.resp))}`, VW / 2, VH * 0.5, '#fff', 5); }
   },
@@ -3949,8 +4131,8 @@ const Coop = {
       host: !!m.host, me, hostUid: m.hostUid, pl: {}, n, names: list.map(x => str(x.n, 8) || '???'),
       resp: 0, send: 0, wT: 0, ebT: 0, pend: {}, mir: new Map(), lastW: 0, why: '', sentEnd: false,
     };
-    /* 보스 강화: 인원수만큼 체력 ↑, 공격력 1.3배, 공격 템포 조금 빠르게 */
-    G.coopHm = 0.9 + 0.75 * n; G.edm = 1.3; G.bsp = 1.12;
+    /* 보스 강화: 타임어택 호맘(체력 3배) × 인원수, 공격력 1.3배, 공격 템포 조금 빠르게 */
+    G.coopHm = HOMOM_HP * (0.9 + 0.75 * n); G.edm = 1.3; G.bsp = 1.12;
     G.allies = [];
     list.forEach((pl, i) => {
       const s = COOP_SPAWN[i % 3];
@@ -4158,6 +4340,7 @@ const Coop = {
     } else if (v.k === 'd') {
       if (P && !P.dead && !G.over) { G.note = { text: `${P.nick} 쓰러짐! 20초 뒤 부활`, t: 2.2 }; }
     } else if (v.k === 'q') this.left(v.u);
+    else if (v.k === 'em') { if (P && !P.left) showEmote(P.e, v.e); }
     else if (v.k === 'end') {
       if (v.u !== C.hostUid || C.host) return;
       if (Array.isArray(v.n) && v.n.length) C.names = v.n.slice(0, 3).map(x => str(x, 8) || '???');
@@ -4650,9 +4833,9 @@ const UI = {
         <div><span>최고 점수</span><b class="num">${fmt(P.best)}</b></div>
         <div><span>플레이</span><b class="num">${fmt(P.games)}판</b></div>
         <div><span>클리어</span><b class="num">${fmt(P.clears)}회</b></div>
-        <div class="wide"><span>1대1</span><b class="num">${tierHTML(P.pr)} ${fmt(P.pr)}점 · ${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div>
+        <div class="wide"><span>1대1 · ${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</span>${tierBar(P.pr)}</div>
         <div><span>무한 최고</span><b class="num">${P.ew ? 'WAVE ' + P.ew : '-'}</b></div>
-        <div><span>호맘 기록</span><b class="num">${P.hts ? clockTxt(P.hts / 100) : '-'}</b></div>
+        <div><span>호맘 기록</span><b class="num">${P.hs3 ? clockTxt(P.hs3 / 100) : '-'}</b></div>
         <div><span>팀전</span><b class="num">${fmt(P.tw)}승 ${fmt(P.tl)}패</b></div>
         <div><span>출석</span><b class="num">${P.att.s}일 연속</b></div>
       </div>
@@ -4677,10 +4860,8 @@ const UI = {
       </section>
       <section class="pf">
         <h3>칭호 · 테두리</h3>
-        <div class="field"><label for="pfTitle">칭호 <small>${P.titles.length}개 보유</small></label><select id="pfTitle"><option value="">칭호 안 달기</option>${P.titles.map(k => `<option value="${k}"${P.title === k ? ' selected' : ''}>${esc(TITLES[k].n)} (${RAR[TITLES[k].r].n})</option>`).join('')}</select></div>
-        <div class="field"><label for="pfFrame">테두리 <small>${P.frames.length}개 보유</small></label><select id="pfFrame"><option value="">기본</option>${P.frames.map(k => `<option value="${k}"${P.frame === k ? ' selected' : ''}>${esc(FRAMES[k].n)} (${RAR[FRAMES[k].r].n})</option>`).join('')}</select></div>
-        <p class="msg">칭호는 업적을 깨거나 상점 뽑기로, 테두리는 뽑기로 얻어요</p>
-        <details class="tlist"><summary>얻을 수 있는 업적 칭호 보기</summary>${Object.entries(TITLES).filter(([, t]) => t.how).map(([k, t]) => `<p class="${P.titles.includes(k) ? 'got' : ''}">${titleHTML(k)} ${esc(t.how)}${P.titles.includes(k) ? ' ✓' : ''}</p>`).join('')}</details>
+        <p class="msg">지금: ${P.title ? titleHTML(P.title) : '칭호 없음'} · ${P.frame ? esc(FRAMES[P.frame].n) : '기본 테두리'} · 칭호 ${P.titles.length}개 · 테두리 ${P.frames.length}개 보유</p>
+        <button class="btn blue" type="button" id="pfColl">칭호 · 테두리 고르기</button>
       </section>
       <form class="pf" id="pfNickF" novalidate>
         <h3>닉네임</h3>
@@ -4717,8 +4898,7 @@ const UI = {
         picMsg('프로필 사진을 바꿨어요!'); sfx('up');
       } catch (err) { console.warn(err); picMsg('이 사진은 못 읽었어요. 다른 사진으로 해 주세요', true); sfx('fail'); }
     });
-    $('#pfTitle').addEventListener('change', e => { Store.equipTitle(e.target.value); sfx('up'); this.toast(e.target.value ? `칭호 「${TITLES[e.target.value].n}」 달았어요` : '칭호를 뗐어요', 'good'); });
-    $('#pfFrame').addEventListener('change', e => { Store.equipFrame(e.target.value); sfx('up'); $('#pfBall').innerHTML = avatarHTML(P.pic, P.ch, 'l', P.frame); });
+    $('#pfColl').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('coll'); });
     $('#pfReset').addEventListener('click', () => {
       sfx('click'); Store.setPic(''); $('#pfBall').innerHTML = avatarHTML('', P.ch, 'l'); picMsg('캐릭터 얼굴로 돌려놨어요');
     });
@@ -4809,6 +4989,7 @@ const UI = {
       <div class="chinfo">
         <h3>${esc(c.name)}</h3>
         <p class="cd">${esc(c.desc)}</p>
+        <p class="pc"><span class="pro">👍 ${esc(c.pro || '')}</span><span class="con">👎 ${esc(c.con || '')}</span></p>
         ${sbar('체력', c.hp, 900, 1800, fmt(c.hp))}
         ${sbar('속도', c.spd, 220, 300, c.spd)}
         ${sbar('공격', c.dmg, 0.8, 1.15, Math.round(c.dmg * 100) + '%')}
@@ -4831,13 +5012,13 @@ const UI = {
   /* ---------- 상점 ---------- */
   renderShop() {
     const P = Store.P; if (!P) return;
+    if (!['pot', 'gear', 'char'].includes(this.shopTab)) this.shopTab = 'pot';
     const tab = this.shopTab;
     const buyBtn = (kind, k, price) => {
       const armed = this.armed === kind + ':' + k, poor = P.coins < price;
       return `<button class="btn small buy${armed ? ' armed' : ''}${poor ? ' poor' : ''}" type="button" data-buy="${kind}" data-k="${k}">${armed ? '정말 살까요?' : `<i class="coin"></i> ${fmt(price)}`}</button>`;
     };
-    let h = `<div class="tabs t4" role="tablist">${[['pot', '포션'], ['gear', '장비'], ['char', '캐릭터'], ['gacha', '뽑기']].map(([k, n]) => `<button class="tab" type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${n}${k === 'gacha' && P.tix ? ` <i class="dot2">${P.tix}</i>` : ''}</button>`).join('')}</div>`;
-    if (tab === 'gacha') { $('#shopBody').innerHTML = `<div class="pin">${h}${this.gachaHTML()}</div>`; return; }
+    let h = `<div class="tabs" role="tablist">${[['pot', '포션'], ['gear', '장비'], ['char', '캐릭터']].map(([k, n]) => `<button class="tab" type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${n}</button>`).join('')}</div>`;
     h += '<div class="ilist">';
     if (tab === 'pot') {
       for (const k of P_ORDER) {
@@ -4856,7 +5037,7 @@ const UI = {
       for (const k of CH_ORDER) {
         const c = CHARS[k], own = P.chars.includes(k);
         if (c.price === 0) continue;
-        h += `<div class="icard card${own ? ' owned' : ''}"><span class="ic">${ballHTML(k, 'm')}</span><span class="im"><b>${c.name}</b><small>체력 ${fmt(c.hp)} · 속도 ${c.spd} · ${c.desc}</small><small class="d">궁극기 ${c.ultName}: ${c.ultDesc}</small></span><span class="ia">${own ? '<span class="tag on">보유 중</span>' : buyBtn('c', k, c.price)}</span></div>`;
+        h += `<div class="icard card${own ? ' owned' : ''}"><span class="ic">${ballHTML(k, 'm')}</span><span class="im"><b>${c.name}</b><small>체력 ${fmt(c.hp)} · 속도 ${c.spd} · 👍 ${c.pro} · 👎 ${c.con}</small><small class="d">궁극기 ${c.ultName}: ${c.ultDesc}</small></span><span class="ia">${own ? '<span class="tag on">보유 중</span>' : buyBtn('c', k, c.price)}</span></div>`;
       }
     }
     h += '</div><p class="sub center">코인은 게임이 끝나면 점수 10점당 1코인씩 들어와요</p>';
@@ -5181,14 +5362,17 @@ function openUpgrade(kind, k) {
       <div class="upg-item"><span class="ic">${gearIcon(kind, k)}</span><b>${it.name}</b></div>
       <div class="upg-lv"><span class="lvl num">+${lv}</span>${max ? '' : `<span class="arrow" aria-hidden="true">→</span><span class="lvl num nx">+${lv + 1}</span>`}</div>
       ${max ? '<p class="sub">최고 레벨이에요!</p>' : `
+      <div class="uprob" aria-label="성공 확률 ${rate}%">
+        <div class="ubar">${rate ? `<b style="width:${rate}%"></b>` : ''}${rate < 100 ? `<i style="width:${100 - rate}%"></i>` : ''}</div>
+        <div class="ulab"><span class="ok">성공 <b class="num">${rate}</b>%</span>${rate < 100 ? `<span class="no">실패 <b class="num">${100 - rate}</b>%</span>` : '<span class="ok">무조건 성공!</span>'}</div>
+      </div>
       <div class="res">
-        <div><span>성공 확률</span><b class="num rate ${rate >= 80 ? 'hi' : rate >= 50 ? 'mid' : 'lo'}">${rate}%</b></div>
         <div><span>성공하면</span><b>${eff}</b></div>
-        <div class="wide"><span>실패하면</span><b class="${drop ? 'down' : ''}">${drop ? `+${lv - 1}로 떨어져요` : '레벨은 그대로예요'}</b></div>
+        <div><span>실패하면</span><b class="${drop && rate < 100 ? 'down' : ''}">${rate >= 100 ? '실패 없음' : drop ? `+${numRo(lv - 1)} 떨어짐` : '레벨 그대로'}</b></div>
       </div>`}
       <div class="forge" id="forge"><i></i></div>
       <p class="upg-res ${cls || ''}" id="upRes" aria-live="polite">${res || ''}</p>
-      <div class="mbtns">${max ? '' : `<button class="btn big" type="button" id="upGo" data-focus><i class="coin"></i> ${fmt(cost)} 강화</button>`}<button class="btn ghost" type="button" id="upClose">닫기</button></div>`, true);
+      <div class="mbtns">${max ? '' : `<button class="btn big upgo" type="button" id="upGo" data-focus><span>강화하기</span><small><i class="coin"></i> <b class="num">${fmt(cost)}</b></small></button>`}<button class="btn ghost" type="button" id="upClose">닫기</button></div>`, true);
     $('#upClose').addEventListener('click', () => { sfx('click'); UI.closeModal(); UI.renderGear(); UI.updateCoins(); });
     const go = $('#upGo');
     if (go) go.addEventListener('click', () => {
@@ -5203,7 +5387,7 @@ function openUpgrade(kind, k) {
         const ok = Math.random() * 100 < rate;
         let txt, c;
         if (ok) { map[k] = lv + 1; txt = `강화 성공! +${lv + 1}`; c = 'good'; sfx('up'); }
-        else if (drop) { map[k] = Math.max(0, lv - 1); txt = `강화 실패... +${map[k]}로 떨어졌어요`; c = 'bad'; sfx('fail'); }
+        else if (drop) { map[k] = Math.max(0, lv - 1); txt = `강화 실패... +${numRo(map[k])} 떨어졌어요`; c = 'bad'; sfx('fail'); }
         else { txt = '강화 실패! 레벨은 그대로예요'; c = 'bad'; sfx('fail'); }
         Store.save('priv');
         draw(txt, c); UI.renderGear();
@@ -5245,6 +5429,8 @@ function onChatSubmit(e) {
   if (!r.ok) { UI.toast(r.msg, 'bad'); return; }
   inp.value = ''; sfx('click');
 }
+/* 숫자 + 으로/로 (3 → 3으로, 2 → 2로) */
+const numRo = n => n + ([0, 3, 6].includes(Math.abs(n) % 10) ? '으로' : '로');
 const ro = s => { const c = s.charCodeAt(s.length - 1); if (c < 0xAC00 || c > 0xD7A3) return s + '(으)로'; const j = (c - 0xAC00) % 28; return s + (j === 0 || j === 8 ? '로' : '으로'); };
 function onCharsClick(e) {
   const b = e.target.closest('[data-cact]'); if (!b) return;
@@ -5287,7 +5473,10 @@ function onGameEnd(r) {
   UI.showResult(r, r.score > prevBest && r.score > 0);
 }
 function enterLobby() {
-  Store.startSubs(); Promise.resolve(Store.claim()).then(() => Social.start()).catch(e => console.warn(e)); UI.show('lobby');
+  Store.startSubs(); Promise.resolve(Store.claim()).then(() => Social.start()).catch(e => console.warn(e));
+  const rf = Store.charRefund();
+  UI.show('lobby');
+  if (rf) setTimeout(() => { UI.toast(`캐릭터 가격이 모두 ${fmt(CHAR_PRICE)}코인이 돼서 더 냈던 ${fmt(rf)}코인을 돌려받았어요!`, 'good'); UI.updateCoins(); sfx('coin'); }, 1200);
   const a = Store.checkAttendance();
   if (a) setTimeout(() => UI.showAttendance(a), 350); else UI.flushTitles();
 }
@@ -5295,10 +5484,16 @@ function enterLobby() {
 /* ================= 모드 선택 · 결과 · 출석 · 랭킹 탭 · 뽑기 · 칭호 ================= */
 function titleHTML(k) { const t = TITLES[k]; return t ? `<i class="ttl r-${t.r}">${esc(t.n)}</i>` : ''; }
 function tierHTML(pr) { const t = tierOf(pr); return `<i class="tier" style="--tc:${t.c}">${t.n}</i>`; }
+/* 1대1 점수 + 다음 티어까지 남은 점수 막대 */
+function tierBar(pr) {
+  const nx = nextTier(pr);
+  if (!nx) return `<span class="tprog">${tierHTML(pr)} <b class="num">${fmt(pr)}</b>점 · <span class="tnx">최고 티어!</span></span>`;
+  return `<span class="tprog">${tierHTML(pr)} <b class="num">${fmt(pr)}</b>점<i class="tbar" style="--tc:${nx.t.c}"><b style="width:${Math.round(nx.f * 100)}%"></b></i><span class="tnx">${nx.t.n}까지 <b class="num">${fmt(nx.need)}</b>점</span></span>`;
+}
 const MODE_INFO = {
   story: { n: '스토리', d: '숙제·시계·지우기 쫄병을 뚫고 보스 4명을 차례로', ic: '📖' },
   endless: { n: '무한 모드', d: '웨이브가 끝없이! 갈수록 적이 세지고 5웨이브마다 보스', ic: '♾️' },
-  homom: { n: '호맘 타임어택', d: '바로 호맘이랑 붙어서 얼마나 빨리 잡는지 시간 재기', ic: '⏱️' },
+  homom: { n: '호맘 타임어택', d: '체력 3배 호맘이랑 바로 붙어서 얼마나 빨리 잡는지 시간 재기', ic: '⏱️' },
 };
 let lastMode = 'story';
 function chosenMap() { const m = lsGet('hb-map') || 'random'; return m === 'random' || !MAPS[m] ? randMap() : m; }
@@ -5307,7 +5502,7 @@ Object.assign(UI, {
   /* ---------- 게임 시작: 모드 + 맵 고르기 ---------- */
   showModes() {
     const P = Store.P, sel = lsGet('hb-map') || 'random';
-    const best = { story: `클리어 ${fmt(P.clears)}회`, endless: P.ew ? `내 최고 WAVE ${P.ew}` : '아직 기록 없음', homom: P.hts ? `내 기록 ${clockTxt(P.hts / 100)}` : '아직 기록 없음' };
+    const best = { story: `클리어 ${fmt(P.clears)}회`, endless: P.ew ? `내 최고 WAVE ${P.ew}` : '아직 기록 없음', homom: P.hs3 ? `내 기록 ${clockTxt(P.hs3 / 100)}` : '아직 기록 없음' };
     this.modal(`
       <p class="eyebrow">SOLO</p><h2>게임 모드</h2>
       <div class="modes">${Object.entries(MODE_INFO).map(([k, m]) => `<button class="mode" type="button" data-m="${k}"><span class="mi" aria-hidden="true">${m.ic}</span><span><b>${m.n}</b><small>${m.d}</small><em>${best[k]}</em></span></button>`).join('')}</div>
@@ -5334,7 +5529,7 @@ Object.assign(UI, {
     } else if (mode === 'homom') {
       eyebrow = 'TIME ATTACK'; title = r.clear ? '호맘 처치!' : r.quit ? '중간에 나감' : '실패...'; cls = r.clear ? 'win' : 'lose';
       if (r.clear) mid = `<p class="bigtime num">${clockTxt(r.htime)}</p>`;
-      sub = r.clear ? (r.newRecord ? '<b class="best">최고 기록 갱신!</b>' : `내 최고 기록 ${clockTxt(P.hts / 100)}`) : (P.hts ? `내 최고 기록 ${clockTxt(P.hts / 100)}` : '호맘을 쓰러뜨리면 기록이 남아요');
+      sub = r.clear ? (r.newRecord ? '<b class="best">최고 기록 갱신!</b>' : `내 최고 기록 ${clockTxt(P.hs3 / 100)}`) : (P.hs3 ? `내 최고 기록 ${clockTxt(P.hs3 / 100)}` : '호맘을 쓰러뜨리면 기록이 남아요');
     } else if (mode === 'coop') {
       eyebrow = '🤝 호맘 협동'; title = r.clear ? '호맘 처치!' : r.quit ? '중간에 나감' : '실패...'; cls = r.clear ? 'win' : 'lose';
       if (r.clear) mid = `<p class="bigtime num">${clockTxt(r.htime)}</p>`;
@@ -5374,7 +5569,7 @@ Object.assign(UI, {
   /* ---------- 새 칭호 알림 ---------- */
   flushTitles() {
     const L = Store.newTitles.splice(0);
-    L.forEach((k, i) => setTimeout(() => { this.toast(`새 칭호 획득! 「${TITLES[k].n}」 · 프로필에서 달 수 있어요`, 'good'); sfx('up'); }, 600 + i * 900));
+    L.forEach((k, i) => setTimeout(() => { this.toast(`새 칭호 획득! 「${TITLES[k].n}」 · 로비 칭호 버튼에서 달 수 있어요`, 'good'); sfx('up'); }, 600 + i * 900));
   },
 
   /* ---------- 출석 ---------- */
@@ -5404,7 +5599,7 @@ Object.assign(UI, {
     else if (tab === 'week') { rows = src.filter(r => r.wk === wk && r.ws > 0).sort((a, b) => b.ws - a.ws); val = r => fmt(r.ws); sub = () => '이번 주 점수'; note = '매주 월요일 0시(한국 시간)에 새로 시작해요. 지난주 1등은 「주간 1등」 칭호!'; }
     else if (tab === 'pvp') { rows = src.filter(r => r.pw + r.pl + r.pd > 0).sort((a, b) => b.pr - a.pr); val = r => fmt(r.pr); sub = r => `${tierHTML(r.pr)} ${r.pw}승 ${r.pl}패`; note = '1대1에서 이기면 점수가 오르고 지면 내려가요'; }
     else if (tab === 'endless') { rows = src.filter(r => r.ew > 0).sort((a, b) => b.ew - a.ew || b.es - a.es); val = r => `W${r.ew}`; sub = r => `최고 점수 ${fmt(r.es)}`; }
-    else if (tab === 'homom') { rows = src.filter(r => r.hts > 0).sort((a, b) => a.hts - b.hts); val = r => clockTxt(r.hts / 100); sub = () => '호맘 처치 시간'; note = '빠를수록 위로!'; }
+    else if (tab === 'homom') { rows = src.filter(r => r.hs3 > 0).sort((a, b) => a.hs3 - b.hs3); val = r => clockTxt(r.hs3 / 100); sub = () => '호맘 처치 시간'; note = '체력 3배 호맘을 잡은 시간 · 빠를수록 위로!'; }
     else {
       const seen = new Map();
       for (const r of src) if (r.ht3 > 0 && r.ht3n.length) { const key = r.ht3 + '|' + r.ht3n.slice().sort().join(','); if (!seen.has(key)) seen.set(key, Object.assign({}, r, { team: r.ht3n })); }
@@ -5413,7 +5608,7 @@ Object.assign(UI, {
     }
     const mine = rows.findIndex(r => r.id === me || (tab === 'coop' && r.team && r.team.includes(P.nick)));
     let h = `<div class="tabs t6" role="tablist">${TABS.map(([k, n]) => `<button class="tab" type="button" role="tab" data-rt="${k}" aria-selected="${tab === k}">${n}</button>`).join('')}</div>`;
-    h += `<div class="mycard card">${avatarHTML(P.pic, P.ch, 'l', P.frame)}<span class="mi"><small>내 순위</small><b class="num">${mine >= 0 ? mine + 1 + '위' : '-'}</b></span><span class="ms"><small>${{ all: '누적 점수', week: '이번 주', pvp: '1대1 점수', endless: '최고 웨이브', homom: '최고 기록', coop: '협동 기록' }[tab]}</small><b class="num">${{ all: fmt(P.total), week: fmt(P.wk === wk ? P.ws : 0), pvp: fmt(P.pr), endless: P.ew ? 'W' + P.ew : '-', homom: P.hts ? clockTxt(P.hts / 100) : '-', coop: P.ht3 ? clockTxt(P.ht3 / 100) : '-' }[tab]}</b>${tab === 'pvp' ? `<small>${tierHTML(P.pr)}</small>` : ''}</span></div>`;
+    h += `<div class="mycard card">${avatarHTML(P.pic, P.ch, 'l', P.frame)}<span class="mi"><small>내 순위</small><b class="num">${mine >= 0 ? mine + 1 + '위' : '-'}</b></span><span class="ms"><small>${{ all: '누적 점수', week: '이번 주', pvp: '1대1 점수', endless: '최고 웨이브', homom: '최고 기록', coop: '협동 기록' }[tab]}</small><b class="num">${{ all: fmt(P.total), week: fmt(P.wk === wk ? P.ws : 0), pvp: fmt(P.pr), endless: P.ew ? 'W' + P.ew : '-', homom: P.hs3 ? clockTxt(P.hs3 / 100) : '-', coop: P.ht3 ? clockTxt(P.ht3 / 100) : '-' }[tab]}</b></span>${tab === 'pvp' ? `<span class="mt">${tierBar(P.pr)}</span>` : ''}</div>`;
     if (note) h += `<p class="sub center">${note}</p>`;
     if (!online) h += `<p class="sub center">${Store.db ? '지금은 서버에 저장이 안 돼서 내 기록만 보여요' : '오프라인이라 내 기록만 보여요'}</p>`;
     if (online && Store.rankState === 'loading' && !rows.length) h += '<p class="empty">랭킹 불러오는 중...</p>';
@@ -5421,7 +5616,7 @@ Object.assign(UI, {
     else {
       h += '<ol class="rlist">';
       rows.slice(0, 100).forEach((r, i) => {
-        h += `<li class="rrow card${i === mine ? ' me' : ''}"><span class="rk num${i < 3 ? ' g' + (i + 1) : ''}">${i + 1}</span>${avatarHTML(r.pic, r.ch, 's', r.frame)}<span class="rn"><b>${tab === 'coop' ? '' : esc(r.nick)}${tab !== 'coop' && r.admin ? '<i class="atag">관리자</i>' : ''}${tab !== 'coop' ? titleHTML(r.title) : ''}</b><small>${sub(r)}</small></span><span class="rs num">${val(r)}</span></li>`;
+        h += `<li class="rrow card${i === mine ? ' me' : ''}"><span class="rk num${i < 3 ? ' g' + (i + 1) : ''}">${i + 1}</span>${avatarHTML(r.pic, r.ch, 's', r.frame)}<span class="rn"><b>${tab === 'coop' ? '' : `<span class="nk">${esc(r.nick)}</span>`}${tab !== 'coop' && r.admin ? '<i class="atag">관리자</i>' : ''}${tab !== 'coop' ? titleHTML(r.title) : ''}</b><small>${sub(r)}</small></span><span class="rs num">${val(r)}</span></li>`;
       });
       h += '</ol>';
     }
@@ -5448,7 +5643,7 @@ Object.assign(UI, {
     SFX.init();
     const r = Store.gacha(n);
     if (!r.ok) { this.toast(r.msg, 'bad'); sfx('fail'); return; }
-    sfx('up'); this.updateCoins(); if (this.cur === 'shop') this.renderShop();
+    sfx('up'); this.updateCoins(); if (this.cur === 'gacha') this.renderGacha(); updateGachaDot();
     const best = r.res.reduce((m, g) => ('cerl'.indexOf(g.rar) > 'cerl'.indexOf(m) ? g.rar : m), 'c');
     this.modal(`
       <p class="eyebrow">GACHA</p><h2 class="${best === 'l' ? 'win' : ''}">${best === 'l' ? '전설 등장!!' : best === 'e' ? '에픽!' : '뽑기 결과'}</h2>
@@ -5497,6 +5692,7 @@ Object.assign(UI, {
       <p class="eyebrow">MULTIPLAYER</p><h2>대전</h2>
       <button class="btn big" type="button" id="vQuick" data-focus>⚔️ 1대1 빠른 대전</button>
       <p class="sub small">빠른 대전을 누른 사람끼리 바로 붙어요 · 이기면 1대1 점수(티어)가 올라요</p>
+      <div class="mytier">${tierBar(Store.P.pr)}</div>
       <section class="pf"><h3>친구랑 방 만들기</h3>
         <div class="mpgrid">${Object.entries(MP_INFO).map(([k, m]) => `<button class="mpm" type="button" data-mk="${k}"><span class="mi" aria-hidden="true">${m.ic}</span><b>${m.n}</b><small>${m.d}</small></button>`).join('')}</div>
       </section>
@@ -5593,10 +5789,10 @@ Object.assign(UI, {
     this.modal(`
       <p class="eyebrow">INVITE</p><h2>친구 초대</h2>
       <p class="sub">고른 친구에게 DM으로 초대장을 보내요. 친구가 DM에서 <b>들어가기</b>를 누르면 이 방으로 와요</p>
-      <div class="ilist">${list.length ? list.slice(0, 30).map(r => `<button class="irow" type="button" data-inv="${esc(r.id)}">${avatarHTML(r.pic, r.ch, 's', r.frame)}<span class="it"><b>${esc(r.nick)}</b><small>${esc(Social.whereTxt(r.id))}</small></span><em>초대</em></button>`).join('') : '<p class="msg">지금 온라인인 친구가 없어요</p>'}</div>
+      <div class="invl">${list.length ? list.slice(0, 30).map(r => `<button class="irow" type="button" data-inv="${esc(r.id)}">${avatarHTML(r.pic, r.ch, 's', r.frame)}<span class="it"><b>${esc(r.nick)}</b><small>${esc(Social.whereTxt(r.id))}</small></span><em>초대</em></button>`).join('') : '<p class="msg">지금 온라인인 친구가 없어요</p>'}</div>
       <div class="mbtns"><button class="btn ghost" type="button" id="iBack" data-focus>대기실로</button></div>`, false);
     $('#iBack').addEventListener('click', () => { sfx('click'); back(); });
-    $('#mbox .ilist').addEventListener('click', async e => {
+    $('#mbox .invl').addEventListener('click', async e => {
       const b = e.target.closest('[data-inv]'); if (!b || b.disabled) return;
       b.disabled = true;
       const r = await Social.send(b.dataset.inv, `${MP_INFO[R.m].n} 같이 하자! 방 코드 ${R.rid}`, { c: R.rid, k: R.m });
@@ -5632,7 +5828,7 @@ Object.assign(UI, {
     } else {
       mid = `<div class="vsrow">${avatarHTML(P.pic, P.ch, 'l', P.frame)}<b class="num">${r.k} : ${r.d}</b>${ballHTML(r.opCh, 'l')}</div>
         <p class="sub">나 vs ${esc(r.op)}${r.why ? ` · ${esc(r.why)}` : ''}</p>
-        ${typeof r.dpr === 'number' ? `<p class="sub">1대1 점수 <b class="num">${r.dpr >= 0 ? '+' : ''}${r.dpr}</b> → ${tierHTML(P.pr)} <b class="num">${fmt(P.pr)}</b></p>` : ''}`;
+        ${typeof r.dpr === 'number' ? `<p class="sub">1대1 점수 <b class="num">${r.dpr >= 0 ? '+' : ''}${r.dpr}</b></p><div class="mytier">${tierBar(P.pr)}</div>` : ''}`;
       rec = `<div class="wide"><span>1대1 전적</span><b class="num">${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div>`;
     }
     this.modal(`
@@ -5782,7 +5978,7 @@ Object.assign(UI, {
     const dm = Social.dmOk();
     ul.innerHTML = rows.slice(0, 300).map(r => {
       const on = Social.online(r.id), mine = r.id === me, un = Social.unread(r.id);
-      return `<li class="prow card${mine ? ' me' : ''}${on ? ' on' : ''}" data-pid="${esc(r.id)}"><span class="pav">${avatarHTML(r.pic, r.ch, 's', r.frame)}${live || mine ? `<i class="sdot${on ? ' on' : ''}"></i>` : ''}</span><span class="rn"><b>${esc(r.nick)}${r.admin ? '<i class="atag">관리자</i>' : ''}${titleHTML(r.title)}</b><small>${live || mine ? esc(Social.whereTxt(r.id)) : `누적 ${fmt(r.total)}점`}</small></span>${mine ? '<em class="metag">나</em>' : dm ? `<button class="btn small${un ? '' : ' ghost'}" type="button" data-dm="${esc(r.id)}">${un ? `DM <i class="dot2">${un}</i>` : 'DM'}</button>` : ''}</li>`;
+      return `<li class="prow card${mine ? ' me' : ''}${on ? ' on' : ''}" data-pid="${esc(r.id)}"><span class="pav">${avatarHTML(r.pic, r.ch, 's', r.frame)}${live || mine ? `<i class="sdot${on ? ' on' : ''}"></i>` : ''}</span><span class="rn"><b><span class="nk">${esc(r.nick)}</span>${r.admin ? '<i class="atag">관리자</i>' : ''}${titleHTML(r.title)}</b><small>${live || mine ? esc(Social.whereTxt(r.id)) : `누적 ${fmt(r.total)}점`}</small></span>${mine ? '<em class="metag">나</em>' : dm ? `<button class="btn small${un ? '' : ' ghost'}" type="button" data-dm="${esc(r.id)}">${un ? `DM <i class="dot2">${un}</i>` : 'DM'}</button>` : ''}</li>`;
     }).join('');
   },
   renderConvs() {
@@ -5811,7 +6007,7 @@ Object.assign(UI, {
         <div><span>최고 점수</span><b class="num">${fmt(r.best)}</b></div>
         <div class="wide"><span>1대1</span><b class="num">${tierHTML(r.pr)} ${fmt(r.pr)}점 · ${fmt(r.pw)}승 ${fmt(r.pl)}패</b></div>
         <div><span>무한 최고</span><b class="num">${r.ew ? 'WAVE ' + r.ew : '-'}</b></div>
-        <div><span>호맘 기록</span><b class="num">${r.hts ? clockTxt(r.hts / 100) : '-'}</b></div>
+        <div><span>호맘 기록</span><b class="num">${r.hs3 ? clockTxt(r.hs3 / 100) : '-'}</b></div>
         <div><span>3대3</span><b class="num">${fmt(r.tw)}승 ${fmt(r.tl)}패</b></div>
         <div><span>5대1</span><b class="num">보스 ${fmt(r.bw)}승 · 사냥 ${fmt(r.hw2)}승</b></div>
       </div>
@@ -5859,11 +6055,118 @@ Object.assign(UI, {
   },
 });
 
+/* ================= 뽑기 화면 · 칭호/테두리 화면 (로비에서 바로) ================= */
+const GACHA_ICON = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 16a11 11 0 0 1 22 0z" fill="#ff5fb0" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M5 16a11 11 0 0 0 22 0z" fill="#fffaf0" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="16" cy="16" r="4" fill="#ffd23f" stroke="${INK}" stroke-width="2.5"/><path d="M9.5 10.5a7 7 0 0 1 4-3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`;
+const MEDAL_ICON = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 3h5l3 8-4 2zM23 3h-5l-3 8 4 2z" fill="#59b8ff" stroke="${INK}" stroke-width="2.3" stroke-linejoin="round"/><circle cx="16" cy="20" r="8.5" fill="#ffd23f" stroke="${INK}" stroke-width="2.5"/><path d="M16 15.2l1.5 3 3.3.4-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.4z" fill="#fff" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+/* 뽑기에서 나오는 확률 (같은 등급 안에서는 똑같이) */
+function gachaOdds(r) {
+  const w = (GACHA_RATE.find(x => x[0] === r) || [r, 0])[1];
+  const n = Object.values(TITLES).filter(t => t.gacha && t.r === r).length + Object.values(FRAMES).filter(f => f.r === r).length + ({ c: 5, r: 2, e: 1, l: 1 }[r] || 0);
+  return n ? Math.round((w / n) * 100) / 100 : 0;
+}
+
+Object.assign(UI, {
+  collTab: 'title',
+  initColl() {
+    $('#bGacha').insertAdjacentHTML('afterbegin', GACHA_ICON);
+    $('#bColl').insertAdjacentHTML('afterbegin', MEDAL_ICON);
+    $('#bGacha').addEventListener('click', () => { SFX.init(); sfx('click'); this.show('gacha'); });
+    $('#bColl').addEventListener('click', () => { SFX.init(); sfx('click'); this.show('coll'); });
+    $('#gachaBody').addEventListener('click', e => {
+      const g = e.target.closest('[data-gacha]'); if (g) { this.doGacha(Number(g.dataset.gacha)); return; }
+      if (e.target.closest('[data-tocoll]')) { sfx('click'); this.show('coll'); }
+    });
+    $('#collBody').addEventListener('click', e => this.onCollClick(e));
+    const ou = this.updateCoins;
+    this.updateCoins = function () { ou.call(this); updateGachaDot(); };
+    const os = this.show;
+    this.show = function (name) {
+      os.call(this, name);
+      if (name === 'gacha') this.renderGacha();
+      else if (name === 'coll') this.renderColl();
+      updateGachaDot();
+    };
+  },
+  renderGacha() {
+    const P = Store.P; if (!P) return;
+    $('#gachaBody').innerHTML = `<div class="pin">${this.gachaHTML()}<button class="btn blue" type="button" data-tocoll>${MEDAL_ICON}<span>내 칭호 · 테두리 보기 · 바꾸기</span></button></div>`;
+    $$('#s-gacha .tixTxt').forEach(n => { n.textContent = fmt(P.tix || 0); });
+  },
+
+  /* ---------- 칭호 · 테두리 ---------- */
+  renderColl() {
+    const P = Store.P; if (!P) return;
+    const tab = this.collTab;
+    const tAll = Object.keys(TITLES), fAll = Object.keys(FRAMES);
+    let h = `<div class="pin">
+      <div class="cprev card">${avatarHTML(P.pic, P.ch, 'l', P.frame)}<span class="cp"><b>${esc(P.nick)}${P.title ? titleHTML(P.title) : ''}</b><small>${P.title ? '' : '칭호 없음 · '}${P.frame ? esc(FRAMES[P.frame].n) : '기본 테두리'}</small><small>랭킹 · 채팅 · 친구 목록 · 대전에서 이렇게 보여요</small></span></div>
+      <div class="tabs t2" role="tablist">
+        <button class="tab" type="button" role="tab" data-ct="title" aria-selected="${tab === 'title'}">칭호 <b class="num">${P.titles.length}/${tAll.length}</b></button>
+        <button class="tab" type="button" role="tab" data-ct="frame" aria-selected="${tab === 'frame'}">테두리 <b class="num">${P.frames.length}/${fAll.length}</b></button>
+      </div>`;
+    if (tab === 'title') {
+      const item = k => {
+        const t = TITLES[k], own = P.titles.includes(k), sel = P.title === k;
+        const sub = t.how ? esc(t.how) : `뽑기 · ${RAR[t.r].n} (${gachaOdds(t.r)}%)`;
+        const prog = !own && t.how ? titleProg(P, k) : '';
+        return `<button class="titem card${own ? '' : ' lock'}${sel ? ' sel' : ''}" type="button" data-ttl="${k}">
+          <span class="tp">${titleHTML(k)}</span><small>${sub}</small>
+          <em>${sel ? '달고 있음' : own ? '달기' : `🔒 ${prog ? esc(prog) : '아직 없음'}`}</em></button>`;
+      };
+      const ach = tAll.filter(k => TITLES[k].how), gac = tAll.filter(k => TITLES[k].gacha);
+      const order = arr => arr.slice().sort((a, b) => (P.titles.includes(b) - P.titles.includes(a)) || ('lerc'.indexOf(TITLES[a].r) - 'lerc'.indexOf(TITLES[b].r)));
+      h += `<section class="sec"><h3>업적 칭호 <small class="num">${ach.filter(k => P.titles.includes(k)).length}/${ach.length}</small></h3><p class="sub">게임하면서 조건을 채우면 생겨요</p><div class="tgrid">${order(ach).map(item).join('')}</div></section>
+        <section class="sec"><h3>뽑기 칭호 <small class="num">${gac.filter(k => P.titles.includes(k)).length}/${gac.length}</small></h3><p class="sub">뽑기에서 나와요 · 이미 있는 게 나오면 코인으로 돌려받아요</p><div class="tgrid">${order(gac).map(item).join('')}</div></section>
+        <div class="cbtns">${P.title ? '<button class="btn ghost" type="button" data-ttl="">칭호 떼기</button>' : ''}<button class="btn" type="button" data-togacha>${GACHA_ICON}<span>뽑기 하러 가기</span></button></div>`;
+    } else {
+      const fitem = k => {
+        const f = FRAMES[k], own = P.frames.includes(k), sel = P.frame === k;
+        return `<button class="fitem card r-${f.r}${own ? '' : ' lock'}${sel ? ' sel' : ''}" type="button" data-frm="${k}">
+          ${avatarHTML(P.pic, P.ch, 'm', k)}<b>${esc(f.n)}</b><small>${RAR[f.r].n} · 뽑기 ${gachaOdds(f.r)}%</small>
+          <em>${sel ? '끼고 있음' : own ? '끼기' : '🔒 아직 없음'}</em></button>`;
+      };
+      const order = fAll.slice().sort((a, b) => (P.frames.includes(b) - P.frames.includes(a)) || ('lerc'.indexOf(FRAMES[a].r) - 'lerc'.indexOf(FRAMES[b].r)));
+      h += `<section class="sec"><h3>테두리</h3><p class="sub">프로필 사진 둘레랑 게임 속 내 캐릭터 둘레에 생겨요 · 전부 뽑기에서 나와요</p>
+        <div class="fgrid"><button class="fitem card${P.frame ? '' : ' sel'}" type="button" data-frm="">${avatarHTML(P.pic, P.ch, 'm', '')}<b>기본</b><small>테두리 없음</small><em>${P.frame ? '끼기' : '끼고 있음'}</em></button>${order.map(fitem).join('')}</div></section>
+        <div class="cbtns"><button class="btn" type="button" data-togacha>${GACHA_ICON}<span>뽑기 하러 가기</span></button></div>`;
+    }
+    $('#collBody').innerHTML = h + '</div>';
+  },
+  onCollClick(e) {
+    const P = Store.P;
+    const t = e.target.closest('[data-ct]');
+    if (t) { sfx('click'); this.collTab = t.dataset.ct; this.renderColl(); return; }
+    if (e.target.closest('[data-togacha]')) { sfx('click'); this.show('gacha'); return; }
+    const a = e.target.closest('[data-ttl]');
+    if (a) {
+      const k = a.dataset.ttl;
+      if (k && !P.titles.includes(k)) { const T = TITLES[k]; this.toast(T.how ? `「${T.n}」 얻는 법: ${T.how}` : `「${T.n}」은 뽑기에서 나와요 (${RAR[T.r].n})`, ''); sfx('fail'); return; }
+      const off = !k || P.title === k;
+      Store.equipTitle(off ? '' : k); sfx('up');
+      this.toast(off ? '칭호를 뗐어요' : `칭호 「${TITLES[k].n}」 달았어요`, 'good');
+      this.renderColl(); return;
+    }
+    const f = e.target.closest('[data-frm]');
+    if (f) {
+      const k = f.dataset.frm;
+      if (k && !P.frames.includes(k)) { this.toast(`${FRAMES[k].n}은 뽑기에서 나와요 (${RAR[FRAMES[k].r].n})`, ''); sfx('fail'); return; }
+      Store.equipFrame(k); sfx('up');
+      this.toast(k ? `${FRAMES[k].n}를 꼈어요` : '기본 테두리로 바꿨어요', 'good');
+      this.renderColl();
+    }
+  },
+});
+/* 뽑기권이 있으면 로비 뽑기 버튼에 숫자 */
+function updateGachaDot() {
+  const d = $('#tixDot'), n = Store.P ? Store.P.tix || 0 : 0;
+  if (d) { d.hidden = !n; d.textContent = n > 9 ? '9+' : String(n); }
+}
+
 /* ================= 시작 ================= */
 async function boot(hot) {
   hot = hot || {};
   prepFaces();
-  Game.init(); UI.init(); UI.initSocial();
+  Game.init(); UI.init(); UI.initSocial(); UI.initColl();
   try { if (document.fonts) ['400 20px "Black Han Sans"', '400 20px "Lilita One"', '400 20px "Jua"'].forEach(f => document.fonts.load(f, '호준 브롤 123').catch(() => {})); } catch (e) { /* 글꼴 없어도 진행 */ }
   UI.show('title'); UI.setAuth('loading');
   await Store.init();
@@ -5871,7 +6174,7 @@ async function boot(hot) {
   if (st === 'login' && hot.screen && hot.screen !== 'title') {
     enterLobby();
     if (hot.game && hot.game.v === 4 && !hot.game.pvp && !hot.game.coop) { UI.show('game'); Game.restore(hot.game, onGameEnd); }
-    else if (['gear', 'shop', 'rank', 'chat', 'people'].includes(hot.screen)) UI.show(hot.screen);
+    else if (['gear', 'shop', 'rank', 'chat', 'people', 'gacha', 'coll'].includes(hot.screen)) UI.show(hot.screen);
     return;
   }
   UI.setAuth(st);
