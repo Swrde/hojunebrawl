@@ -328,7 +328,7 @@ textarea{-webkit-user-select:text;user-select:text}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script>document.write('<script src="firebase-config.js?t=' + Date.now() + '"><\/script>');</script>
 <script>window.FB_CONFIG = window.FB_CONFIG || {};</script>
 </head>
 <body>
@@ -663,7 +663,9 @@ const Store = {
     if (cfg) {
       /* 웹사이트 버전: Firebase 아이디(이메일/비밀번호) 로그인 + Firestore. 로그인 상태는 Firebase가 브라우저에 기억해 둠 */
       this.web = true;
-      if (!window.firebase || !cfg.apiKey || /여기에/.test(String(cfg.apiKey))) { this.mode = 'local'; this.webErr = 'Firebase 설정이 아직 안 들어갔어요'; return; }
+      if (!window.firebase) { this.mode = 'local'; this.webErr = 'Firebase 프로그램을 못 불러왔어요 (인터넷 연결 확인)'; return; }
+      if (!Object.keys(cfg).length) { this.mode = 'local'; this.webErr = 'firebase-config.js를 못 읽었어요 (오타가 있거나 파일이 없어요)'; return; }
+      if (!cfg.apiKey || /여기에/.test(String(cfg.apiKey))) { this.mode = 'local'; this.webErr = 'Firebase 설정이 아직 안 들어갔어요'; return; }
       try {
         if (!firebase.apps.length) firebase.initializeApp(cfg);
         this.auth = firebase.auth();
