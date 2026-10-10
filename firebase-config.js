@@ -6,5 +6,6 @@ window.FB_CONFIG = {
   projectId: "hojunebrawl",
   storageBucket: "hojunebrawl.firebasestorage.app",
   messagingSenderId: "782981937656",
-  appId: "1:782981937656:web:bd817192bfa891214e3e0d"
+  appId: "1:782981937656:web:bd817192bfa891214e3e0d",
+  measurementId: "G-JX2YGV1ZG1"
 };
