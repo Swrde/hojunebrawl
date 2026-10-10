@@ -100,6 +100,15 @@ svg{display:block}
 .linkbtn b{font-weight:400;color:var(--text);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
 .linkbtn:disabled{opacity:.6}
 .acc-id{margin:0;font-size:.88rem;color:var(--muted)}
+.pf{display:grid;gap:10px;padding:12px;border-radius:14px;background:rgba(16,18,43,.38);border:2px solid var(--ink);text-align:left}
+.pf h3{margin:0;font-family:var(--f-disp);font-weight:400;font-size:1.1rem}
+.pf .msg{min-height:0}
+.pf-pic{display:flex;align-items:center;gap:14px}
+.pf-btns{display:flex;flex-wrap:wrap;gap:8px}
+.pf-btns label.btn{cursor:pointer}
+.field.row{display:flex;gap:8px;align-items:center}
+.field.row input{flex:1;min-width:0;width:auto}
+.field input{font-size:1.1rem}
 .acc-id b{font-weight:400;color:var(--text)}
 .gift{margin:0;font-size:.9rem;color:var(--yolk)}
 .loading{margin:8px 0;text-align:center;color:var(--muted)}
@@ -542,7 +551,7 @@ const LS_CHAT_SEEN = 'hojun-brawl-chatseen';
 
 function newProfile(nick) {
   return {
-    nick, ch: 'base', total: 0, best: 0, games: 0, clears: 0,
+    nick, ch: 'base', pic: '', total: 0, best: 0, games: 0, clears: 0,
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
   };
@@ -555,7 +564,7 @@ function lvMap(src, table, must) {
 }
 function normProfile(pub, priv) {
   const P = newProfile(str(pub && pub.nick, 8) || '호준');
-  if (pub) { P.ch = CHARS[pub.ch] ? pub.ch : 'base'; for (const k of ['total', 'best', 'games', 'clears']) P[k] = num(pub[k]); }
+  if (pub) { P.ch = CHARS[pub.ch] ? pub.ch : 'base'; P.pic = validPic(pub.pic) ? pub.pic : ''; for (const k of ['total', 'best', 'games', 'clears']) P[k] = num(pub[k]); }
   if (priv) {
     P.coins = num(priv.coins, 300);
     const raw = Array.isArray(priv.chars) ? priv.chars : [];
@@ -572,14 +581,24 @@ function normProfile(pub, priv) {
   if (!P.chars.includes(P.ch)) P.ch = 'base';
   return P;
 }
+/* 프로필 사진: 작은 JPEG 데이터만 허용 */
+const validPic = v => typeof v === 'string' && v.length < 40000 && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/.test(v);
 const validMsg = m => m && typeof m.t === 'number' && isFinite(m.t) && typeof m.x === 'string' && m.x.length > 0;
 
 /* ---------- 웹사이트 버전 아이디 로그인 (Firebase 이메일/비밀번호를 아이디용으로 씀, 메일은 안 감) ---------- */
-const ID_RE = /^[a-z0-9_]{3,12}$/;
+const ID_RE = /^[가-힣a-z0-9_]{2,10}$/;        // 새로 만들거나 바꿀 때
+const ID_LOGIN_RE = /^[가-힣a-z0-9_]{2,12}$/;  // 로그인할 때 (예전 12자 아이디 포함)
 const ID_DOMAIN = '@hojun-brawl.example.com';
-const normId = s => String(s || '').trim().toLowerCase();
-const idEmail = id => id + ID_DOMAIN;
-const emailId = e => { e = String(e || ''); return e.endsWith(ID_DOMAIN) ? e.slice(0, -ID_DOMAIN.length) : e.split('@')[0]; };
+const normId = s => String(s || '').normalize('NFC').trim().toLowerCase();
+const toHex = t => Array.from(new TextEncoder().encode(t), b => b.toString(16).padStart(2, '0')).join('');
+const fromHex = h => { try { return new TextDecoder().decode(new Uint8Array(h.match(/../g).map(x => parseInt(x, 16)))); } catch (e) { return h; } };
+/* 한글 아이디는 메일 주소에 못 써서 'k.' + 16진수로 바꿔 씀 */
+const idEmail = id => (/^[a-z0-9_]+$/.test(id) ? id : 'k.' + toHex(id)) + ID_DOMAIN;
+const emailId = e => {
+  e = String(e || '');
+  const l = e.endsWith(ID_DOMAIN) ? e.slice(0, -ID_DOMAIN.length) : e.split('@')[0];
+  return /^k\.[0-9a-f]+$/.test(l) ? fromHex(l.slice(2)) : l;
+};
 function authErrMsg(e, up) {
   const c = (e && e.code) || '';
   const M = {
@@ -610,7 +629,7 @@ const Store = {
   mode: 'loading', db: null, user: null, uid: null, P: null, web: false, webErr: '',
   auth: null, loginId: '', loadErr: '', kicked: false,
   sess: Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
-  rank: [], rankState: 'idle', chat: [], myChat: [], chatState: 'idle', lastSend: 0,
+  pics: {}, rank: [], rankState: 'idle', chat: [], myChat: [], chatState: 'idle', lastSend: 0,
   _subs: {}, _w: {}, _started: false, _claimed: false, _unSess: null,
 
   on(ev, fn) { (this._subs[ev] = this._subs[ev] || new Set()).add(fn); },
@@ -746,6 +765,34 @@ const Store = {
       }, e => console.warn('session watch failed', e));
     } catch (e) { console.warn(e); }
   },
+  /* ---------- 프로필 수정 ---------- */
+  picOf(uid) { return uid === this.uid && this.P ? this.P.pic : (this.pics && this.pics[uid]) || ''; },
+  setPic(pic) { this.P.pic = validPic(pic) ? pic : ''; this.save('pub'); },
+  async changeNick(nick) {
+    if (await this.nickTaken(nick)) return { ok: false, msg: '이미 누가 쓰고 있는 닉네임이에요' };
+    this.P.nick = nick; this.save('pub');
+    if (this.mode === 'online' && this.myChat.length) this.write('chat/' + this.uid, { nick, ch: this.P.ch, msgs: this.myChat });
+    return { ok: true };
+  },
+  async changeAccount(newId, newPw, curPw) {
+    const u = this.auth && this.auth.currentUser;
+    if (!u) return { ok: false, msg: '로그인 상태가 아니에요. 다시 로그인해 주세요' };
+    try { await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email, curPw)); }
+    catch (e) { const c = (e && e.code) || ''; return { ok: false, f: 'cur', msg: /invalid-credential|wrong-password|invalid-login|user-mismatch/.test(c) ? '지금 비밀번호가 틀렸어요' : authErrMsg(e, false) }; }
+    let idDone = false;
+    if (newId && newId !== this.loginId) {
+      try { await u.updateEmail(idEmail(newId)); this.loginId = newId; idDone = true; }
+      catch (e) {
+        const c = (e && e.code) || '';
+        return { ok: false, f: 'id', msg: c === 'auth/email-already-in-use' ? '이미 누가 쓰고 있는 아이디예요' : c === 'auth/operation-not-allowed' ? 'Firebase에서 "이메일 열거 보호"를 꺼야 아이디를 바꿀 수 있어요' : '아이디를 바꾸지 못했어요 (' + (c || '알 수 없는 오류') + ')' };
+      }
+    }
+    if (newPw) {
+      try { await u.updatePassword(newPw); }
+      catch (e) { const c = (e && e.code) || ''; return { ok: false, f: 'pw', msg: (idDone ? '아이디는 바뀌었는데 ' : '') + (c === 'auth/weak-password' ? '새 비밀번호가 너무 짧아요' : '비밀번호를 바꾸지 못했어요 (' + (c || '알 수 없는 오류') + ')') }; }
+    }
+    return { ok: true };
+  },
   stopWatch() { try { if (this._unSess) this._unSess(); } catch (e) { /* 무시 */ } this._unSess = null; },
   kick() {
     this.kicked = true; this.mode = 'readonly'; this.webErr = '다른 기기에서 이 아이디로 접속했어요';
@@ -758,7 +805,7 @@ const Store = {
     if (this.web && !this.kicked) this.webErr = fsErrMsg(e);
     if (this.mode === 'online') { this.mode = 'readonly'; this.localSave(); this.emit('mode'); }
   },
-  pubData() { const P = this.P; return { nick: P.nick, ch: P.ch, total: P.total, best: P.best, games: P.games, clears: P.clears, upd: Date.now() }; },
+  pubData() { const P = this.P; return { nick: P.nick, ch: P.ch, pic: P.pic || '', total: P.total, best: P.best, games: P.games, clears: P.clears, upd: Date.now() }; },
   privData() {
     const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, v: 1 };
     if (this.web) o.sess = this.sess;
@@ -814,8 +861,9 @@ const Store = {
       this.db.collection('players').orderBy('total', 'desc').limit(100).onSnapshot(snap => {
         this.rank = snap.docs.map(d => {
           const v = d.data() || {};
-          return { id: d.id, nick: str(v.nick, 8) || '???', ch: CHARS[v.ch] ? v.ch : 'base', total: num(v.total), best: num(v.best), clears: num(v.clears), games: num(v.games) };
+          return { id: d.id, nick: str(v.nick, 8) || '???', ch: CHARS[v.ch] ? v.ch : 'base', pic: validPic(v.pic) ? v.pic : '', total: num(v.total), best: num(v.best), clears: num(v.clears), games: num(v.games) };
         });
+        this.pics = {}; for (const r of this.rank) if (r.pic) this.pics[r.id] = r.pic;
         this.rankState = 'ready'; this.emit('rank');
       }, () => { this.rankState = 'error'; this.emit('rank'); });
     } catch (e) { this.rankState = 'error'; }
@@ -2493,6 +2541,12 @@ function modeNote() {
   return MODE_NOTE[Store.mode] || '';
 }
 function ballHTML(k, size) { const c = CHARS[k] || CHARS.base; return `<span class="ball ${size}" style="--ring:${c.ring}"><img src="${FACES[c.face]}" alt="" draggable="false"></span>`; }
+/* 프로필 사진이 있으면 그 사진, 없으면 고른 캐릭터 얼굴 */
+function avatarHTML(pic, k, size) {
+  if (!validPic(pic)) return ballHTML(k, size);
+  const c = CHARS[k] || CHARS.base;
+  return `<span class="ball ${size}" style="--ring:${c.ring}"><img src="${pic}" alt="" draggable="false"></span>`;
+}
 function tfmt(t) {
   const d = new Date(t), n = new Date(), hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   return d.toDateString() === n.toDateString() ? hm : `${d.getMonth() + 1}/${d.getDate()} ${hm}`;
@@ -2638,7 +2692,7 @@ const UI = {
     box.innerHTML = `
       <div class="authf">
         <h2>로그인</h2>
-        <div class="who">${ballHTML(P.ch, 'l')}<span><b>${esc(P.nick)}</b><small>누적 ${fmt(P.total)}점 · 코인 ${fmt(P.coins)}</small></span></div>
+        <div class="who">${avatarHTML(P.pic, P.ch, 'l')}<span><b>${esc(P.nick)}</b><small>누적 ${fmt(P.total)}점 · 코인 ${fmt(P.coins)}</small></span></div>
         <button class="btn big" type="button" id="bLogin" data-focus>${webId ? esc(ro(P.nick)) + ' 시작하기' : esc(P.nick) + '(으)로 로그인'}</button>
         <p class="msg">${note}</p>
         ${webId ? '<button class="linkbtn" type="button" id="bOut">다른 아이디로 로그인</button>' : ''}
@@ -2650,8 +2704,8 @@ const UI = {
   authTab: 'in', authId: '',
   renderSignin() {
     const box = $('#authBox'), up = this.authTab === 'up';
-    const idField = fid => `<div class="field"><label for="${fid}">아이디${up ? ' <small>영어 소문자·숫자 3~12자</small>' : ''}</label>
-      <input id="${fid}" maxlength="12" value="${esc(this.authId)}" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next"></div>`;
+    const idField = fid => `<div class="field"><label for="${fid}">아이디${up ? ' <small>한글·영어·숫자 2~10자</small>' : ''}</label>
+      <input id="${fid}" maxlength="${up ? 10 : 12}" value="${esc(this.authId)}" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next"></div>`;
     if (!up) {
       box.innerHTML = `
         <form id="fIn" class="authf" novalidate>
@@ -2693,7 +2747,7 @@ const UI = {
   showAccount() {
     const P = Store.P, webId = Store.web && Store.uid ? Store.loginId : '';
     this.modal(`
-      <div class="acc-top">${ballHTML(P.ch, 'l')}<h2>${esc(P.nick)}</h2>${webId ? `<p class="acc-id">아이디 <b>${esc(webId)}</b></p>` : ''}</div>
+      <div class="acc-top">${avatarHTML(P.pic, P.ch, 'l')}<h2>${esc(P.nick)}</h2>${webId ? `<p class="acc-id">아이디 <b>${esc(webId)}</b></p>` : ''}</div>
       <div class="res">
         <div><span>누적 점수</span><b class="num">${fmt(P.total)}</b></div>
         <div><span>최고 점수</span><b class="num">${fmt(P.best)}</b></div>
@@ -2701,16 +2755,76 @@ const UI = {
         <div><span>클리어</span><b class="num">${fmt(P.clears)}회</b></div>
       </div>
       <p class="sub">${esc(modeNote())}</p>
+      <button class="btn blue" type="button" id="bProfile">프로필 수정</button>
       <div class="mbtns">${webId ? '<button class="btn ghost" type="button" id="bLogout">로그아웃</button>' : ''}<button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
     $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
     if (webId) $('#bLogout').addEventListener('click', onLogout);
+    $('#bProfile').addEventListener('click', () => { sfx('click'); this.showProfile(); });
+  },
+  showProfile() {
+    const P = Store.P, web = Store.web && Store.uid && Store.mode === 'online';
+    this.modal(`
+      <h2>프로필 수정</h2>
+      <section class="pf">
+        <h3>프로필 사진</h3>
+        <div class="pf-pic"><span id="pfBall">${avatarHTML(P.pic, P.ch, 'l')}</span>
+          <div class="pf-btns"><label class="btn small blue" for="pfFile">사진 올리기</label><input type="file" id="pfFile" accept="image/*" hidden><button class="btn small ghost" type="button" id="pfReset">캐릭터 얼굴로</button></div></div>
+        <p class="msg" id="pfPicMsg">사진은 랭킹이랑 채팅에서 모두에게 보여요</p>
+      </section>
+      <form class="pf" id="pfNickF" novalidate>
+        <h3>닉네임</h3>
+        <div class="field row"><input id="pfNick" maxlength="8" autocomplete="off" spellcheck="false" value="${esc(P.nick)}" aria-label="닉네임"><button class="btn small" type="submit">바꾸기</button></div>
+        <p class="msg" id="pfNickMsg">2~8글자, 한글·영어·숫자</p>
+      </form>
+      ${web ? `<form class="pf" id="pfAccF" novalidate>
+        <h3>아이디 · 비밀번호</h3>
+        <div class="field"><label for="pfId">아이디 <small>한글·영어·숫자 2~10자</small></label><input id="pfId" maxlength="10" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(Store.loginId)}"></div>
+        <div class="field"><label for="pfPw">새 비밀번호 <small>안 바꾸려면 비워 두기</small></label><input id="pfPw" type="password" maxlength="64" autocomplete="new-password"></div>
+        <div class="field"><label for="pfPw2">새 비밀번호 확인</label><input id="pfPw2" type="password" maxlength="64" autocomplete="new-password"></div>
+        <div class="field"><label for="pfCur">지금 비밀번호 <small>바꾸려면 꼭 입력</small></label><input id="pfCur" type="password" maxlength="64" autocomplete="current-password"></div>
+        <p class="msg" id="pfAccMsg"></p>
+        <button class="btn" type="submit" id="pfAccBtn">아이디·비밀번호 저장</button>
+      </form>` : ''}
+      <div class="mbtns"><button class="btn ghost" type="button" id="pfBack">뒤로</button><button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
+    const closeAll = () => { this.closeModal(); if (this.cur === 'lobby') this.renderLobby(); };
+    $('#mbox [data-close]').addEventListener('click', closeAll);
+    $('#pfBack').addEventListener('click', () => { sfx('click'); if (this.cur === 'lobby') this.renderLobby(); this.showAccount(); });
+    const picMsg = (t, bad) => { const m = $('#pfPicMsg'); m.textContent = t; m.className = 'msg' + (bad ? ' err' : ''); };
+    $('#pfFile').addEventListener('change', async e => {
+      const f = e.target.files && e.target.files[0]; e.target.value = '';
+      if (!f) return;
+      if (!/^image\//.test(f.type || 'image/')) { picMsg('사진 파일만 올릴 수 있어요', true); sfx('fail'); return; }
+      picMsg('사진 줄이는 중...');
+      try {
+        const pic = await shrinkPic(f);
+        Store.setPic(pic); $('#pfBall').innerHTML = avatarHTML(pic, P.ch, 'l');
+        picMsg('프로필 사진을 바꿨어요!'); sfx('up');
+      } catch (err) { console.warn(err); picMsg('이 사진은 못 읽었어요. 다른 사진으로 해 주세요', true); sfx('fail'); }
+    });
+    $('#pfReset').addEventListener('click', () => {
+      sfx('click'); Store.setPic(''); $('#pfBall').innerHTML = avatarHTML('', P.ch, 'l'); picMsg('캐릭터 얼굴로 돌려놨어요');
+    });
+    $('#pfNickF').addEventListener('submit', async e => {
+      e.preventDefault();
+      const inp = $('#pfNick'), m = $('#pfNickMsg'), nick = inp.value.trim();
+      const bad = t => { m.textContent = t; m.className = 'msg err'; sfx('fail'); };
+      if (nick === P.nick) return bad('지금 닉네임이랑 같아요');
+      if (!NICK_RE.test(nick)) return bad('닉네임은 2~8글자, 한글·영어·숫자만 돼요');
+      if (clean(nick) !== nick) return bad('쓸 수 없는 단어가 들어 있어요');
+      const btn = e.target.querySelector('button'); btn.disabled = true; m.className = 'msg'; m.textContent = '확인 중...';
+      const r = await Store.changeNick(nick); btn.disabled = false;
+      if (!r.ok) return bad(r.msg);
+      m.textContent = `${ro(nick)} 바꿨어요!`; sfx('up');
+      $('#mbox h2').textContent = '프로필 수정';
+    });
+    if (web) $('#pfAccF').addEventListener('submit', onAccountChange);
   },
 
   /* ---------- 로비 ---------- */
   renderLobby() {
     const P = Store.P; if (!P) return;
     const ch = CHARS[P.ch];
-    $('#meBall').innerHTML = ballHTML(P.ch, 's');
+    $('#meBall').innerHTML = avatarHTML(P.pic, P.ch, 's');
     $('#meNick').textContent = P.nick;
     $('#meTotal').textContent = fmt(P.total);
     const hb = $('#heroBall'); hb.style.setProperty('--ring', ch.ring); $('#heroImg').src = FACES[ch.face];
@@ -2832,7 +2946,7 @@ const UI = {
       else note = Store.web ? '지금은 서버에 저장이 안 돼서 내 기록은 랭킹에 안 올라가요' : '보기 전용 계정이라 내 기록은 랭킹에 올라가지 않아요';
     }
     const myRank = mine >= 0 ? `${mine + 1}위` : Store.mode === 'online' && Store.rankState === 'ready' && rows.length >= 100 ? '100위 밖' : '-';
-    let h = `<div class="mycard card">${ballHTML(P.ch, 'l')}<span class="mi"><small>내 순위</small><b class="num">${myRank}</b></span><span class="ms"><small>누적 점수</small><b class="num">${fmt(P.total)}</b><small>최고 ${fmt(P.best)} · 클리어 ${P.clears}회</small></span></div>`;
+    let h = `<div class="mycard card">${avatarHTML(P.pic, P.ch, 'l')}<span class="mi"><small>내 순위</small><b class="num">${myRank}</b></span><span class="ms"><small>누적 점수</small><b class="num">${fmt(P.total)}</b><small>최고 ${fmt(P.best)} · 클리어 ${P.clears}회</small></span></div>`;
     if (note) h += `<p class="sub center">${note}</p>`;
     if (Store.db && Store.rankState === 'loading' && !rows.length) h += '<p class="empty">랭킹 불러오는 중...</p>';
     else if (Store.db && Store.rankState === 'error' && !rows.length) h += '<p class="empty">랭킹을 불러오지 못했어요. 잠시 뒤 다시 열어 주세요</p>';
@@ -2840,7 +2954,7 @@ const UI = {
     else {
       h += '<ol class="rlist">';
       rows.forEach((r, i) => {
-        h += `<li class="rrow card${i === mine ? ' me' : ''}"><span class="rk num${i < 3 ? ' g' + (i + 1) : ''}">${i + 1}</span>${ballHTML(r.ch, 's')}<span class="rn"><b>${esc(r.nick)}</b><small>최고 ${fmt(r.best)} · 클리어 ${r.clears}회</small></span><span class="rs num">${fmt(r.total)}</span></li>`;
+        h += `<li class="rrow card${i === mine ? ' me' : ''}"><span class="rk num${i < 3 ? ' g' + (i + 1) : ''}">${i + 1}</span>${avatarHTML(r.pic, r.ch, 's')}<span class="rn"><b>${esc(r.nick)}</b><small>최고 ${fmt(r.best)} · 클리어 ${r.clears}회</small></span><span class="rs num">${fmt(r.total)}</span></li>`;
       });
       h += '</ol>';
     }
@@ -2860,7 +2974,7 @@ const UI = {
     if (!Store.chat.length) { list.innerHTML = '<p class="empty">아직 메시지가 없어요. 첫 인사를 남겨 보세요!</p>'; return; }
     list.innerHTML = Store.chat.map(m => {
       const mine = m.uid === Store.uid;
-      return `<div class="cmsg${mine ? ' mine' : ''}">${mine ? '' : ballHTML(m.ch, 's')}<div class="mb">${mine ? '' : `<p class="mh"><b>${esc(m.nick)}</b> ${tfmt(m.t)}</p>`}<p class="bub">${esc(m.x)}</p>${mine ? `<p class="mh r">${tfmt(m.t)}</p>` : ''}</div></div>`;
+      return `<div class="cmsg${mine ? ' mine' : ''}">${mine ? '' : avatarHTML(Store.picOf(m.uid), m.ch, 's')}<div class="mb">${mine ? '' : `<p class="mh"><b>${esc(m.nick)}</b> ${tfmt(m.t)}</p>`}<p class="bub">${esc(m.x)}</p>${mine ? `<p class="mh r">${tfmt(m.t)}</p>` : ''}</div></div>`;
     }).join('');
     if (force || near) sc.scrollTop = sc.scrollHeight;
   },
@@ -2919,7 +3033,7 @@ async function onCreate(ev) {
   UI.toast(Store.moved ? '이 기기에 있던 기록을 옮겼어요!' : '가입 선물 300코인 + 체력 포션 2개!', 'good');
   enterLobby();
 }
-const HANGUL_RE = /[ㄱ-ㅎㅏ-ㅣ가-힣]/;
+const JAMO_RE = /[ㄱ-ㅎㅏ-ㅣ]/;
 function authErr(t, el) {
   const msg = $('#authMsg'); msg.textContent = t; msg.className = 'msg err'; sfx('fail');
   if (el) el.focus();
@@ -2929,9 +3043,8 @@ async function onSignIn(ev) {
   const idEl = $('#inId'), pwEl = $('#inPw'), btn = $('#bSignIn'), msg = $('#authMsg');
   const id = normId(idEl.value), pw = pwEl.value;
   if (!id) return authErr('아이디를 입력해 주세요', idEl);
-  if (HANGUL_RE.test(id)) return authErr('아이디는 영어·숫자예요. 한/영 키를 확인해 주세요', idEl);
   if (!pw) return authErr('비밀번호를 입력해 주세요', pwEl);
-  if (!ID_RE.test(id)) return authErr('아이디나 비밀번호가 틀렸어요');
+  if (!ID_LOGIN_RE.test(id)) return authErr('아이디나 비밀번호가 틀렸어요');
   idEl.value = id;
   btn.disabled = true; msg.className = 'msg'; msg.textContent = '로그인하는 중...';
   const r = await Store.signIn(id, pw);
@@ -2945,8 +3058,7 @@ async function onSignUp(ev) {
   ev.preventDefault(); SFX.init();
   const idEl = $('#upId'), pwEl = $('#upPw'), pw2El = $('#upPw2'), nickEl = $('#upNick'), btn = $('#bSignUp'), msg = $('#authMsg');
   const id = normId(idEl.value), pw = pwEl.value, nick = nickEl.value.trim();
-  if (HANGUL_RE.test(id)) return authErr('아이디는 영어 소문자·숫자로 만들어 주세요. 한/영 키를 확인해 주세요', idEl);
-  if (!ID_RE.test(id)) return authErr('아이디는 영어 소문자·숫자 3~12자로 만들어 주세요', idEl);
+  const idBad = checkId(id); if (idBad) return authErr(idBad, idEl);
   idEl.value = id;
   if (pw.length < 6) return authErr('비밀번호는 6자 이상이어야 해요', pwEl);
   if (pw !== pw2El.value) { pw2El.value = ''; return authErr('비밀번호 확인이 달라요. 다시 입력해 주세요', pw2El); }
@@ -2960,6 +3072,51 @@ async function onSignUp(ev) {
   sfx('up');
   UI.toast(Store.moved ? '가입 완료! 이 기기에 있던 기록을 옮겼어요' : '가입 완료! 선물 300코인 + 체력 포션 2개', 'good');
   enterLobby();
+}
+function checkId(id) {
+  if (JAMO_RE.test(id)) return '아이디는 ㅎㅈ 같은 자음·모음 말고 완성된 글자로 써 주세요';
+  if (/\s/.test(id)) return '아이디에는 띄어쓰기를 쓸 수 없어요';
+  if (!ID_RE.test(id)) return '아이디는 한글·영어·숫자 2~10자로 만들어 주세요';
+  return '';
+}
+async function onAccountChange(e) {
+  e.preventDefault(); SFX.init();
+  const idEl = $('#pfId'), pwEl = $('#pfPw'), pw2El = $('#pfPw2'), curEl = $('#pfCur'), m = $('#pfAccMsg'), btn = $('#pfAccBtn');
+  const bad = (t, el) => { m.textContent = t; m.className = 'msg err'; sfx('fail'); if (el) el.focus(); };
+  const id = normId(idEl.value), pw = pwEl.value, cur = curEl.value;
+  const idChange = id !== Store.loginId;
+  if (idChange) { const b = checkId(id); if (b) return bad(b, idEl); idEl.value = id; }
+  if (pw && pw.length < 6) return bad('새 비밀번호는 6자 이상이어야 해요', pwEl);
+  if (pw && pw !== pw2El.value) { pw2El.value = ''; return bad('새 비밀번호 확인이 달라요', pw2El); }
+  if (!idChange && !pw) return bad('바꿀 아이디나 새 비밀번호를 입력해 주세요', idEl);
+  if (!cur) return bad('바꾸려면 지금 비밀번호를 입력해 주세요', curEl);
+  btn.disabled = true; m.className = 'msg'; m.textContent = '바꾸는 중...';
+  const r = await Store.changeAccount(idChange ? id : '', pw, cur);
+  btn.disabled = false; curEl.value = '';
+  if (!r.ok) { idEl.value = Store.loginId; return bad(r.msg, r.f === 'cur' ? curEl : r.f === 'id' ? idEl : r.f === 'pw' ? pwEl : null); }
+  pwEl.value = ''; pw2El.value = ''; idEl.value = Store.loginId;
+  m.textContent = idChange && pw ? '아이디랑 비밀번호를 바꿨어요!' : idChange ? `아이디를 ${ro(Store.loginId)} 바꿨어요!` : '비밀번호를 바꿨어요!';
+  sfx('up'); UI.refreshMode();
+}
+/* 올린 사진을 가운데 정사각형으로 잘라 작은 JPEG로 */
+function shrinkPic(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      try {
+        const S = 112, cv = document.createElement('canvas'); cv.width = cv.height = S;
+        const x = cv.getContext('2d'), w = img.naturalWidth, h = img.naturalHeight, m = Math.min(w, h);
+        if (!m) throw new Error('empty');
+        x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+        x.drawImage(img, (w - m) / 2, (h - m) / 2, m, m, 0, 0, S, S);
+        let q = 0.82, out = cv.toDataURL('image/jpeg', q);
+        while (out.length > 30000 && q > 0.4) { q -= 0.12; out = cv.toDataURL('image/jpeg', q); }
+        URL.revokeObjectURL(url); res(out);
+      } catch (e) { URL.revokeObjectURL(url); rej(e); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
 }
 function onLogout(e) {
   const b = e && e.currentTarget;
