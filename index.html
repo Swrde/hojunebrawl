@@ -115,7 +115,7 @@ svg{display:block}
 .pf select{width:100%;font-family:var(--f-ui);font-size:1.05rem;padding:10px 12px;border-radius:12px;border:3px solid var(--ink);background:var(--paper);color:var(--ink)}
 .tabs.t4{grid-template-columns:repeat(4,1fr)}
 .tabs.t6{grid-template-columns:repeat(3,1fr)}
-.tab .dot2{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--rose);color:#fff;font-style:normal;font-size:.75rem;line-height:18px}
+.dot2,.tab .dot2{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--rose);color:#fff;font-style:normal;font-size:.75rem;line-height:18px}
 .modes{display:grid;gap:8px}
 .mode{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:14px;border:3px solid var(--ink);background:var(--panel-2);text-align:left;box-shadow:0 4px 0 var(--ink)}
 .mode:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
@@ -395,7 +395,71 @@ textarea{-webkit-user-select:text;user-select:text}
 @keyframes tin{from{transform:translateY(-8px);opacity:0}}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 @keyframes forge{to{width:100%}}
+/* 대전: 모드 고르기 · 열린 방 · 대기실 */
+.mpgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.mpm{display:grid;justify-items:center;align-content:start;gap:2px;padding:10px 6px 9px;border-radius:14px;border:3px solid var(--ink);background:var(--panel-2);box-shadow:0 4px 0 var(--ink);text-align:center;min-width:0}
+.mpm:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.mpm .mi{font-size:1.6rem;line-height:1.2}
+.mpm b{font-family:var(--f-disp);font-weight:400;font-size:1.05rem}
+.mpm small{color:var(--muted);font-size:.74rem;line-height:1.3}
+.olist{display:grid;gap:8px}
+.orow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:rgba(16,18,43,.38);text-align:left;min-width:0}
+.orow .mi{flex:none;font-size:1.4rem}
+.orow .on{flex:1;min-width:0;display:grid}
+.orow .on>b{font-family:var(--f-disp);font-weight:400}
+.orow small{color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}
+.orow small b{color:#fff;font-weight:400}
+.orow .btn{flex:none}
+.rpl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rpl li{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;border:2px solid var(--ink);background:rgba(16,18,43,.38);text-align:left;min-width:0}
+.rpl li.emp{justify-content:center;color:var(--muted);font-size:.85rem;border-style:dashed}
+.rpl .rn{flex:1}
+.vbtag,.metag{flex:none;font-style:normal;font-size:.72rem;padding:1px 6px;border-radius:7px;border:2px solid var(--ink);white-space:nowrap}
+.vbtag{background:var(--yolk);color:var(--ink)}
+.metag{background:var(--mint);color:var(--ink)}
+.tcols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.tcol{display:grid;gap:6px;align-content:start;padding:8px;border-radius:14px;border:3px solid var(--ink);min-width:0}
+.tcol.t0{background:rgba(89,184,255,.22)}.tcol.t1{background:rgba(255,79,109,.22)}
+.tcol h4{margin:0;font-family:var(--f-disp);font-weight:400;font-size:1rem}
+.tcol.t0 h4{color:#9fd4ff}.tcol.t1 h4{color:#ffb3c0}
+.tcol .rpl li{padding:5px 6px;gap:6px}
+.tcol .ttl,.tcol .atag{display:none}
+.rbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.rbtns:empty{display:none}
+.btn.red{background:var(--rose);color:#fff;box-shadow:0 5px 0 var(--ink),inset 0 -5px 0 #c93350,inset 0 3px 0 rgba(255,255,255,.4)}
+.btn.small.red{box-shadow:0 4px 0 var(--ink),inset 0 -4px 0 #c93350,inset 0 2px 0 rgba(255,255,255,.4)}
+.tscore{display:flex;align-items:center;justify-content:center;gap:14px;font-size:2.6rem;text-shadow:var(--ol)}
+.tscore b{font-weight:400}
+.ilist{display:grid;gap:8px;max-height:46vh;overflow-y:auto}
+.irow{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:rgba(16,18,43,.38);text-align:left}
+.irow .it{flex:1;min-width:0;display:grid}
+.irow b{font-family:var(--f-disp);font-weight:400}
+.irow small{color:var(--muted);font-size:.76rem}
+.irow em{font-style:normal;color:var(--yolk)}
+.irow.sent em{color:var(--mint)}
+/* 친구 · DM */
+.tabs.t2{grid-template-columns:repeat(2,1fr)}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.prow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;box-shadow:0 4px 0 var(--ink);cursor:pointer;min-width:0}
+.prow.me{border-color:var(--yolk);background:var(--panel-2)}
+.prow.new{border-color:var(--rose)}
+.prow .rn{flex:1}
+.prow .btn{flex:none}
+.prow:not(.on):not(.me) .ball{filter:grayscale(.55) brightness(.85)}
+.pav{position:relative;flex:none;display:inline-block}
+.sdot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#7c84ad;border:2px solid var(--ink);vertical-align:-1px;font-style:normal}
+.sdot.on{background:var(--mint)}
+.pav .sdot{position:absolute;right:-3px;bottom:-2px;width:14px;height:14px}
+.ct{flex:none;display:grid;justify-items:end;gap:3px}
+.ct small{color:var(--muted);font-size:.72rem}
+.ocnt{position:absolute;top:-8px;left:-8px;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--mint);color:var(--ink);border:3px solid var(--ink);font-family:var(--f-num);font-size:.75rem;line-height:16px;font-style:normal;text-shadow:none}
+.dot.n{width:auto;min-width:22px;height:22px;padding:0 4px;border-radius:11px;color:#fff;font-family:var(--f-num);font-size:.72rem;line-height:16px;font-style:normal;text-shadow:none}
+.dmst{flex:none;display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#dmScroll{display:flex;flex-direction:column}
+.dinv{display:grid;gap:6px;justify-items:start;margin-top:6px;padding-top:6px;border-top:2px dashed rgba(16,18,43,.25);font-size:.88rem}
+.dinv b{font-weight:400}
 @media (max-width:380px){.hero{padding-inline:88px}.sbtn{width:64px}}
+@media (max-height:520px) and (min-width:600px){.side{grid-template-columns:repeat(2,auto)}.side.r{direction:rtl}.side.r .sbtn{direction:ltr}}
 @media (max-height:520px){.side{top:6px;gap:8px}.sbtn{padding:5px 4px 4px;font-size:.8rem}.sbtn svg{width:24px;height:24px}.hero-meta{display:none}.play{padding:12px 22px;font-size:1.25rem}}
 @media (prefers-reduced-motion:reduce){.hero-ball,.roster>span{animation:none}.forge.go i{animation-duration:.2s}}
 </style>
@@ -433,6 +497,7 @@ textarea{-webkit-user-select:text;user-select:text}
       <nav class="side l" aria-label="같이 하기">
         <button class="sbtn" id="bRank" type="button"><span>랭킹</span></button>
         <button class="sbtn" id="bChat" type="button"><span>채팅</span><i class="dot" id="chatDot" hidden></i></button>
+        <button class="sbtn" id="bPeople" type="button"><span>친구</span><i class="dot n" id="dmDot" hidden></i><i class="ocnt" id="onBadge" hidden></i></button>
       </nav>
       <nav class="side r" aria-label="준비">
         <button class="sbtn" id="bChars" type="button"><span>캐릭터</span></button>
@@ -447,7 +512,7 @@ textarea{-webkit-user-select:text;user-select:text}
       </button>
     </div>
     <div class="playbar">
-      <div class="playrow"><button class="btn big play" id="bPlay" type="button">게임 시작</button><button class="btn big blue pvpb" id="bPvp" type="button">1대1</button></div>
+      <div class="playrow"><button class="btn big play" id="bPlay" type="button">게임 시작</button><button class="btn big blue pvpb" id="bPvp" type="button">대전</button></div>
       <p class="mode-note" id="modeNote"></p>
     </div>
   </section>
@@ -478,6 +543,17 @@ textarea{-webkit-user-select:text;user-select:text}
     <header class="phead"><button class="back" type="button" data-back aria-label="로비로"></button><h2>전체 채팅</h2></header>
     <div class="pbody" id="chatScroll"><p class="chat-note" id="chatNote"></p><div class="chatlist" id="chatList"></div></div>
     <form class="chatbar" id="chatForm"><label for="chatIn" class="sr">메시지</label><input id="chatIn" maxlength="80" autocomplete="off" placeholder="메시지 보내기"><button class="btn small" type="submit" id="chatSend">보내기</button></form>
+  </section>
+
+  <section id="s-people" class="scr panel" aria-label="친구" hidden>
+    <header class="phead"><button class="back" type="button" data-back aria-label="로비로"></button><h2>친구</h2></header>
+    <div class="pbody" id="peopleBody"></div>
+  </section>
+
+  <section id="s-dm" class="scr panel" aria-label="DM" hidden>
+    <header class="phead"><button class="back" type="button" id="dmBack" aria-label="친구 목록으로"></button><h2 id="dmTitle">DM</h2><span class="dmst" id="dmSt"></span></header>
+    <div class="pbody" id="dmScroll"><div class="chatlist" id="dmList"></div></div>
+    <form class="chatbar" id="dmForm"><label for="dmIn" class="sr">메시지</label><input id="dmIn" maxlength="100" autocomplete="off" placeholder="메시지 보내기"><button class="btn small" type="submit">보내기</button></form>
   </section>
 
   <div class="modal" id="modal" hidden><div class="mbox card" id="mbox" role="dialog" aria-modal="true"></div></div>
@@ -1006,6 +1082,7 @@ const Store = {
   },
   async logout() {
     this.stopWatch();
+    try { await Promise.race([Social.stop(true), sleep(1500)]); } catch (e) { /* 무시 */ }
     await this.settle(3000);
     try { if (this.auth) await this.auth.signOut(); } catch (e) { console.warn(e); }
     location.reload();
@@ -1519,7 +1596,7 @@ function drawObstNew(o) {
 const WW = 1800, WH = 1300, STEP = 1 / 60;
 let OBST = MAPS.gym.obst;
 const COL = { ink: '#10122b', yolk: '#ffd23f', sky: '#59b8ff', mint: '#3fe08e', rose: '#ff4f6d', violet: '#a07cff', orange: '#ff9f1c', paper: '#fffaf0' };
-const EB_COL = ['#ff4f6d', '#ff9f1c', '#d99252', '#a07cff', '#ff5fb0'];
+const EB_COL = ['#ff4f6d', '#ff9f1c', '#d99252', '#a07cff', '#ff5fb0', '#59b8ff'];
 const PLANKS = ['#e3ad70', '#dda366', '#e7b47a', '#d99f62', '#e0a96c'];
 const DROP_INFO = { heal: { c: COL.mint, t: '체력 회복' }, ult: { c: COL.violet, t: '궁극기 충전' }, power: { c: COL.rose, t: '공격력 UP' }, speed: { c: COL.sky, t: '이동속도 UP' } };
 const BUFS = [['rage', '분노', COL.orange], ['power', '공격력 UP', COL.rose], ['shield', '방패', COL.sky], ['speed', '이동속도 UP', COL.sky], ['apm', 'APM 폭주', COL.violet]];
@@ -1609,7 +1686,7 @@ function newGame(lo) {
   const mag = wp.mag + Math.floor(lo.wl / 5);
   G = {
     v: 4, t: 0, lo, over: false, ended: false, endT: 0, result: null, quit: false,
-    mode: lo.mode || 'story', map, scr: lo.mode === 'endless' ? [] : lo.mode === 'homom' ? [{ k: 'boss', ph: 4, boss: 'mom' }] : null,
+    mode: lo.mode || 'story', map, scr: lo.mode === 'endless' ? [] : lo.mode === 'homom' || lo.mode === 'coop' ? [{ k: 'boss', ph: 4, boss: 'mom' }] : null,
     ehm: 1, edm: 1, esm: 1, bhm: 1, bossT0: 0, bossT1: 0,
     step: -1, ss: { mode: 'start', t: 0.5 },
     score: 0, kills: 0,
@@ -1824,9 +1901,10 @@ function fireVolley(a, apm) {
   if (apm) { dmg = 60 * mul; spd = 1000; range = 620; r = 7; pierce = 0; for (const o of [-0.2, 0, 0.2]) angs.push(a + o + rand(-0.04, 0.04)); }
   else if (wp.pellets > 1) for (let i = 0; i < wp.pellets; i++) angs.push(a - wp.spread / 2 + (wp.spread * i) / (wp.pellets - 1) + rand(-0.03, 0.03));
   else angs.push(a + rand(-wp.spread / 2, wp.spread / 2));
+  if (p.isBoss) { r *= 1.6; if (angs.length === 1) angs.push(angs[0] - 0.3, angs[0] + 0.3); }
   const sx = p.x + Math.cos(a) * (p.r + 10), sy = p.y + Math.sin(a) * (p.r + 10);
   for (const b of angs) G.pb.push({ x: sx, y: sy, vx: Math.cos(b) * spd, vy: Math.sin(b) * spd, r, dmg, life: range / spd, pierce, hit: [], nc: !!apm, w: apm ? '' : G.lo.w, boom: apm ? 0 : wp.boom || 0 });
-  if (G.pvp) PvP.shot(sx, sy, angs, spd, r, range / spd);
+  if (G.pvp || G.coop) PvP.shot(sx, sy, angs, spd, r, range / spd);
   p.recoil = 1; sfx('shoot');
 }
 /* 궁극기: 궁 버튼을 끌어서 조준하고 놓으면 발사, 톡 치면 자동 조준 */
@@ -1834,8 +1912,8 @@ function ultReady() { return !!G && !G.over && !G.p.dead && G.p.ult >= 1 && !((G
 function denyUlt() { if (G) G.ultDeny = 0.35; }
 function ultRangeOf() { return ULT_RANGE[CHARS[G.lo.ch].ult] || ULT_RANGE.bomb; }
 function angDiff(a, b) { return ((((a - b + Math.PI) % TAU) + TAU) % TAU) - Math.PI; }
-function stunE(e, s) { if (e.rival) { PvP.pendFx('st', s); return; } e.stun = Math.max(e.stun || 0, e.boss ? s * 0.4 : s); }
-function confE(e, s) { if (e.rival) { PvP.pendFx('cf', s); return; } if (!e.boss) e.conf = Math.max(e.conf || 0, s); }
+function stunE(e, s) { if (e.rival) { PvP.pendFx(e, 'st', s); return; } if (e.mirror) { Coop.pendFx(e, 'st', s); return; } e.stun = Math.max(e.stun || 0, e.boss ? s * 0.4 : s); }
+function confE(e, s) { if (e.rival) { PvP.pendFx(e, 'cf', s); return; } if (e.mirror) { Coop.pendFx(e, 'cf', s); return; } if (!e.boss) e.conf = Math.max(e.conf || 0, s); }
 function areaHit(x, y, R, dmg, stun, push) {
   for (const e of G.en) {
     if (e.dead || Math.hypot(e.x - x, e.y - y) > R + e.r) continue;
@@ -1892,7 +1970,7 @@ function fireUlt(a, mag) {
     G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: a, len, w: 60, t: 0, dur: 0.45 });
     G.shake = Math.max(G.shake, 8);
   }
-  if (G.pvp) PvP.ult(kind, a, ox, oy, ex);
+  if (G.pvp || G.coop) PvP.ult(kind, a, ox, oy, ex);
 }
 function autoUlt() {
   if (!ultReady()) { denyUlt(); return; }
@@ -1955,19 +2033,21 @@ function damagePlayer(d, silent) {
     p.hp = 0; p.dead = true;
     burst(p.x, p.y, 40, ['#fff', CHARS[G.lo.ch].ring, COL.yolk], 420);
     if (G.pvp) { PvP.onDeath(); return; }
+    if (G.coop) { Coop.onDeath(); return; }
     G.slow = 0.8; sfx('lose'); finish(false);
   }
 }
-function knock(o, ang, power) { if (o.rival) { PvP.pendKnock(ang, power); return; } o.kvx = (o.kvx || 0) + Math.cos(ang) * power; o.kvy = (o.kvy || 0) + Math.sin(ang) * power; }
+function knock(o, ang, power) { if (o.rival) { PvP.pendKnock(o, ang, power); return; } if (o.mirror) { Coop.pendKnock(o, ang, power); return; } if (o.ally) return; o.kvx = (o.kvx || 0) + Math.cos(ang) * power; o.kvy = (o.kvy || 0) + Math.sin(ang) * power; }
 function finish(clear) {
   if (G.over) return;
   G.over = true;
   let bonus = 0;
-  if (clear) { bonus = G.mode === 'homom' ? 1000 + Math.round((1000 * G.p.hp) / G.p.maxHp) : 5000 + Math.round((3000 * G.p.hp) / G.p.maxHp); G.score += bonus; sfx('win'); }
+  if (clear) { bonus = G.mode === 'homom' || G.mode === 'coop' ? 1000 + Math.round((1000 * G.p.hp) / G.p.maxHp) : 5000 + Math.round((3000 * G.p.hp) / G.p.maxHp); G.score += bonus; sfx('win'); }
   const S = scr()[clamp(G.step, 0, scr().length - 1)];
   G.result = { clear, score: Math.floor(G.score), bonus, kills: G.kills, coins: Math.floor(G.score / SCORE_TO_COIN), where: S.k === 'boss' ? BOSS[S.boss].name : S.name, ph: S.ph, time: G.t, potUsed: G.potUsed, quit: G.quit,
     mode: G.mode, map: G.map, wave: S.wv || 0, htime: clear && G.bossT1 ? Math.round((G.bossT1 - G.bossT0) * 100) / 100 : 0 };
   G.endT = clear ? 2.6 : 1.8;
+  if (G.coop) Coop.onFinish(clear);
 }
 
 /* ---------- 적 ---------- */
@@ -1975,6 +2055,7 @@ function updateEnemies(dt) {
   for (const e of G.en) {
     if (e.dead) continue;
     if (e.rival) { PvP.updRival(e, dt); continue; }
+    if (e.mirror) { Coop.updMirror(e, dt); continue; }
     e.flash = Math.max(0, e.flash - dt); e.ct = Math.max(0, e.ct - dt); e.tell = Math.max(0, (e.tell || 0) - dt);
     if (e.spawnT > 0) { e.spawnT -= dt; continue; }
     if ((e.stun || 0) > 0) {
@@ -2057,7 +2138,7 @@ function updateMinion(e, dt) {
 function updateBoss(e, dt) {
   const B = BOSS[e.type], p = tgtOf(e);
   if (!e.enr && e.hp < e.maxHp * B.enrage) { e.enr = true; banner('보스가 화났다!', '공격이 빨라져요', COL.rose, 1.6); sfx('warn'); }
-  const sp = e.enr ? 1.3 : 1;
+  const sp = (e.enr ? 1.3 : 1) * (G.bsp || 1);
   const dx = p.x - e.x, dy = p.y - e.y, d = Math.hypot(dx, dy) || 1;
   if (!e.pat) {
     e.rest -= dt * sp;
@@ -2177,6 +2258,7 @@ const PAT = {
       ring(e, e.enr ? 20 : 16, rand(0, 1), 260, 70, 4);
       G.fx.push({ k: 'ring', x: e.x, y: e.y, r0: 30, r1: 170, t: 0, dur: 0.35, c: '#ff5fb0', w: 12 });
       G.shake = Math.max(G.shake, 12); sfx('boom');
+      if (G.coop) Coop.fx('sm', e.x, e.y);
     }
     return false;
   },
@@ -2199,6 +2281,7 @@ const PAT = {
 function hitEnemy(e, dmg, charge) {
   if (e.dead) return;
   if (e.rival) { PvP.hitRival(e, dmg, charge); return; }
+  if (e.mirror) { Coop.hitMirror(e, dmg, charge); return; }
   dmg = Math.round(dmg);
   e.hp -= dmg; e.flash = 0.09;
   if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: e.boss ? 26 : 21, t: 0, dur: 0.7, vy: -70 });
@@ -2213,6 +2296,7 @@ function killEnemy(e) {
   addText(e.x, e.y - 12, '+' + def.score, COL.yolk, e.boss ? 40 : 26, 1.1);
   burst(e.x, e.y, e.boss ? 70 : 16, e.boss ? ['#fff', COL.yolk, COL.orange, COL.rose] : ['#fff', COL.rose, COL.yolk], e.boss ? 560 : 300);
   sfx(e.boss ? 'boom' : 'kill');
+  if (G.coop) Coop.onKill(e, def.score);
   if (e.boss) onBossDead(e);
 }
 function onBossDead(e) {
@@ -2263,7 +2347,7 @@ function explode(x, y, dmg, R) {
   burst(x, y, 26, [COL.yolk, COL.orange, '#fff'], 420); G.shake = Math.max(G.shake, 10); sfx('boom');
 }
 function orbBurst(b) {
-  for (let i = 0; i < 8; i++) { const a = (TAU * i) / 8 + rand(0, 0.3); G.eb.push({ x: b.x, y: b.y, vx: Math.cos(a) * 290, vy: Math.sin(a) * 290, r: 9, dmg: 70, life: 2.4, c: 3, kind: 0, bt: 0 }); }
+  for (let i = 0; i < 8; i++) { const a = (TAU * i) / 8 + rand(0, 0.3); G.eb.push({ x: b.x, y: b.y, vx: Math.cos(a) * 290, vy: Math.sin(a) * 290, r: 9, dmg: 70, life: 2.4, c: 3, kind: 0, bt: 0, loc: 1 }); }
   G.fx.push({ k: 'ring', x: b.x, y: b.y, r0: 10, r1: 60, t: 0, dur: 0.3, c: COL.violet, w: 6 });
 }
 function updateEB(dt) {
@@ -2285,7 +2369,7 @@ function updateHZ(dt) {
   for (const h of G.hz) {
     h.t += dt;
     if (h.k === 'spawn') {
-      if (h.t >= h.dur) { h.dead = true; if (h.kind.startsWith('boss:')) spawnBoss(h.kind.slice(5), h.x, h.y); else spawnEnemy(h.kind, h.x, h.y); }
+      if (h.t >= h.dur) { h.dead = true; if (h.vis) continue; if (h.kind.startsWith('boss:')) spawnBoss(h.kind.slice(5), h.x, h.y); else spawnEnemy(h.kind, h.x, h.y); }
     } else if (h.k === 'warn') {
       if (h.t >= h.dur) {
         h.dead = true;
@@ -2365,7 +2449,9 @@ function update(dt) {
   if (G.note) { G.note.t -= dt; if (G.note.t <= 0) G.note = null; }
   if (G.hint > 0) G.hint -= dt;
   updatePlayer(dt);
-  if (G.pvp) PvP.update(dt); else if (!G.over) updateScript(dt);
+  if (G.pvp) PvP.update(dt);
+  else { if (G.coop) Coop.update(dt); if (!G.over && (!G.coop || G.coop.host)) updateScript(dt); }
+  if (G.allies) for (const e of G.allies) mpInterp(e, dt);
   updateEnemies(dt);
   updatePB(dt); updateLobs(dt); updateEB(dt); updateHZ(dt); updateDrops(dt); updateFX(dt);
   if (G.over && !G.ended) {
@@ -2390,7 +2476,8 @@ function bar(x, y, w, h, f, c) {
 }
 function updateCam() {
   const vw = VW / SC, vh = VH / SC, m = 70;
-  let tx = G.p.x - vw / 2, ty = G.p.y - vh / 2;
+  const f = G.p.dead && G.spec && !G.spec.gone ? G.spec : G.p;
+  let tx = f.x - vw / 2, ty = f.y - vh / 2;
   tx = vw > WW + 2 * m ? (WW - vw) / 2 : clamp(tx, -m, WW - vw + m);
   ty = vh > WH + 2 * m ? (WH - vh) / 2 : clamp(ty, -m, WH - vh + m);
   cam.x = tx; cam.y = ty;
@@ -2406,6 +2493,7 @@ function render() {
   ctx.setTransform(k, 0, 0, k, (-cam.x * SC + ox) * dpr, (-cam.y * SC + oy) * dpr);
   drawArena(); drawHZUnder(); drawJumpMarks(); drawAimGuide(); drawDrops(); drawShadows();
   for (const e of G.en) drawEnemy(e);
+  drawAllies();
   drawPlayer(); drawPB(); drawEB(); drawLobs(); drawHZOver(); drawFX(); drawOverheads();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   drawHUD();
@@ -2445,11 +2533,14 @@ function drawObst(o) {
 function drawShadows() {
   ctx.fillStyle = 'rgba(16,18,43,.28)';
   for (const e of G.en) { ctx.beginPath(); ctx.ellipse(e.x, e.y + e.r * 0.82, e.r * 0.95, e.r * 0.36, 0, 0, TAU); ctx.fill(); }
+  for (const e of G.allies || []) { ctx.beginPath(); ctx.ellipse(e.x, e.y + e.r * 0.82, e.r * 0.95, e.r * 0.36, 0, 0, TAU); ctx.fill(); }
   const p = G.p;
   if (!p.dead) { ctx.beginPath(); ctx.ellipse(p.x, p.y + p.r * 0.85, p.r * 0.95, p.r * 0.36, 0, 0, TAU); ctx.fill(); }
   ctx.lineWidth = 3;
   ctx.strokeStyle = 'rgba(255,79,109,.75)';
   for (const e of G.en) { ctx.beginPath(); ctx.ellipse(e.x, e.y + e.r * 0.82, e.r * 0.95, e.r * 0.36, 0, 0, TAU); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(89,184,255,.75)';
+  for (const e of G.allies || []) { ctx.beginPath(); ctx.ellipse(e.x, e.y + e.r * 0.82, e.r * 0.95, e.r * 0.36, 0, 0, TAU); ctx.stroke(); }
   if (!p.dead) { ctx.strokeStyle = 'rgba(89,184,255,.9)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + p.r * 0.85, p.r * 0.95, p.r * 0.36, 0, 0, TAU); ctx.stroke(); }
 }
 function weaponGuide(a, fill, stroke) {
@@ -2647,6 +2738,7 @@ function drawPlayer() {
   if (G.lo.fr) drawFrame(G.lo.fr, p.r, t);
   if (p.flash > 0) { ctx.beginPath(); ctx.arc(0, 0, p.r, 0, TAU); ctx.fillStyle = 'rgba(255,79,109,.45)'; ctx.fill(); }
   ctx.beginPath(); ctx.ellipse(-p.r * 0.4, -p.r * 0.52, p.r * 0.3, p.r * 0.14, -0.5, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill();
+  if (p.isBoss) drawCrown(p.r);
   ctx.restore();
   if (!behind) drawGun(p);
   ctx.globalAlpha = 1;
@@ -2785,8 +2877,9 @@ function drawFX() {
 function drawOverheads() {
   for (const e of G.en) {
     if (e.spawnT > 0) continue;
-    if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18, w, 7, e.hp / e.maxHp, COL.rose); }
-    if (e.rival) { ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25, '#ffc2cc', 4); }
+    const cr = e.isBoss ? 24 : 0;   // 5대1 보스는 왕관 위로
+    if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18 - cr, w, 7, e.hp / e.maxHp, COL.rose); }
+    if (e.rival) { ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25 - cr, G.pvp && G.pvp.kind === 'team' && e.tm === 0 ? '#bfe6ff' : '#ffc2cc', 4); }
     const sy = e.y - e.r - (e.boss ? 44 : 32);
     if ((e.stun || 0) > 0) {
       for (let i = 0; i < 3; i++) {
@@ -2798,12 +2891,14 @@ function drawOverheads() {
       outText('?', e.x + Math.sin(G.t * 8) * 4, sy, COL.mint, 4);
     }
   }
+  drawAllyHeads();
   const p = G.p; if (p.dead) return;
   if ((p.stun || 0) > 0) for (let i = 0; i < 3; i++) { const an = G.t * 6 + (i * TAU) / 3; ctx.beginPath(); ctx.arc(p.x + Math.cos(an) * 16, p.y - p.r - 50 + Math.sin(an) * 5, 5, 0, TAU); ctx.fillStyle = COL.yolk; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = COL.ink; ctx.stroke(); }
   else if ((p.conf || 0) > 0) { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 22px ${FONT_NUM}`; outText('?', p.x + Math.sin(G.t * 8) * 4, p.y - p.r - 50, COL.mint, 4); }
+  const cr = p.isBoss ? 24 : 0;
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-  ctx.font = `400 15px ${FONT_DISP}`; outText(G.lo.nick, p.x, p.y - p.r - 27, '#fff', 4);
-  const w = 78, x = p.x - w / 2, y = p.y - p.r - 21;
+  ctx.font = `400 15px ${FONT_DISP}`; outText(G.lo.nick, p.x, p.y - p.r - 27 - cr, '#fff', 4);
+  const w = 78, x = p.x - w / 2, y = p.y - p.r - 21 - cr;
   bar(x, y, w, 12, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? COL.rose : COL.mint);
   ctx.textBaseline = 'middle'; ctx.font = `400 11px ${FONT_NUM}`; outText(String(Math.ceil(p.hp)), p.x, y + 6.5, '#fff', 3);
   const ay = p.y + p.r + 11;
@@ -2842,7 +2937,8 @@ function drawBanner() {
 function drawIndicators() {
   const m = 26 * L.u, cx = VW / 2, cy = VH / 2;
   const list = [];
-  for (const e of G.en) list.push([e.x, e.y, COL.rose, e.boss ? 1.7 : 1]);
+  for (const e of G.en) list.push([e.x, e.y, e.rival && G.pvp && G.pvp.kind === 'team' ? TEAM_COL[e.tm] : COL.rose, e.boss || e.isBoss ? 1.7 : 1]);
+  for (const e of G.allies || []) if (!e.gone) list.push([e.x, e.y, COL.sky, 0.9]);
   for (const c of G.drops) list.push([c.x, c.y, COL.mint, 1.25]);
   for (const [wx, wy, c, s] of list) {
     const sx = (wx - cam.x) * SC, sy = (wy - cam.y) * SC;
@@ -2921,6 +3017,7 @@ function drawHUD() {
     : G.mode === 'homom' ? '호맘 타임어택' : G.mode === 'coop' ? `호맘 협동 · ${Coop.count()}명` : G.step < 0 ? '준비' : S.k === 'boss' ? `PHASE ${S.ph} · 보스전` : `PHASE ${S.ph} · ${S.name}`;
   ctx.font = `400 ${Math.round(17 * u)}px ${FONT_DISP}`; outText(label, 14 * u, 24 * u, '#fff', 4);
   let by = 47 * u;
+  if (G.coop) by = Coop.hud(by);
   if (G.ss.mode === 'wave') { ctx.font = `400 ${Math.round(14 * u)}px ${FONT_UI}`; outText(`남은 적 ${enemiesLeft()}`, 14 * u, by, COL.yolk, 3); by += 20 * u; }
   const boss = G.en.find(e => e.boss);
   if (boss) by = Math.max(by, 104 * u);
@@ -3117,16 +3214,17 @@ const Game = {
   },
   start(lo, onEnd) { newGame(lo); endCb = onEnd; paused = false; resetInput(); resize(); this.loop(); },
   startPvp(lo, m, onEnd) { newGame(lo); PvP.setup(m); endCb = onEnd; paused = false; resetInput(); resize(); this.loop(); },
+  startCoop(lo, m, onEnd) { newGame(Object.assign({}, lo, { mode: 'coop', map: m.map })); Coop.setup(m); endCb = onEnd; paused = false; resetInput(); resize(); this.loop(); },
   restore(g, onEnd) { G = g; endCb = onEnd; paused = true; resetInput(); resize(); this.loop(); UI.showPause(); },
   loop() { cancelAnimationFrame(raf); lastTs = performance.now(); acc = 0; raf = requestAnimationFrame(frame); },
   stop() { cancelAnimationFrame(raf); raf = 0; },
   pause(on) {
     if (!G || G.over) return;
-    if (G.pvp) { resetInput(); if (on) UI.showPvpMenu(); else UI.closeModal(); return; }
+    if (G.pvp || G.coop) { resetInput(); if (on) UI.showPvpMenu(); else UI.closeModal(); return; }
     paused = on; resetInput();
     if (on) UI.showPause(); else UI.closeModal();
   },
-  quit() { if (!G || G.over) return; if (G.pvp) { PvP.forfeit(); return; } paused = false; G.quit = true; finish(false); G.endT = 0.01; },
+  quit() { if (!G || G.over) return; if (G.pvp) { PvP.forfeit(); return; } if (G.coop) { Coop.forfeit(); return; } paused = false; G.quit = true; finish(false); G.endT = 0.01; },
   get paused() { return paused; },
 };
 
@@ -3295,229 +3393,417 @@ function drawFrame(k, r, t) {
   ctx.restore();
 }
 
-/* ================= 1대1 대결 =================
-   Firebase Realtime Database로 위치·공격을 주고받음 (웹사이트 버전 전용)
-   - 내 위치/체력은 0.08초마다 보내고, 상대 화면에서는 부드럽게 따라감
-   - 맞았는지는 쏜 사람 화면 기준으로 정해서 '맞음' 신호를 보내고, 맞은 사람이 자기 체력을 깎음  */
+/* ================= 대전: 1대1 · 3대3 팀전 · 5대1 보스전 (+ 호맘 협동 방) =================
+   Firebase Realtime Database로 방을 만들고 위치·공격을 주고받음 (웹사이트 버전 전용)
+   - 내 위치/체력은 0.08초마다 보내고, 다른 사람 화면에서는 부드럽게 따라감
+   - 맞았는지는 쏜 사람 화면 기준으로 정해서 '맞음' 신호를 보내고, 맞은 사람이 자기 체력을 깎음 */
+const MP = {
+  '1v1': { n: '1대1', cap: 2, min: 2, kills: 3, time: 150, resp: 3 },
+  team: { n: '3대3 팀전', cap: 6, min: 2, kills: 10, time: 180, resp: 3 },
+  boss: { n: '5대1 보스전', cap: 6, min: 2, time: 180, resp: 5, lives: 3 },
+  coop: { n: '호맘 협동', cap: 3, min: 2 },
+};
+const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 } };
 const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
+const PVP_REWARD = MP_REWARD['1v1'];
+const TEAM_COL = ['#59b8ff', '#ff4f6d'], TEAM_NAME = ['블루팀', '레드팀'];
+const SPAWN_T = [[[900, 1120], [600, 1100], [1200, 1100]], [[900, 180], [600, 200], [1200, 200]]];
 const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], [1600, 1120], [1600, 180], [200, 1120]];
-const PVP_REWARD = { win: 200, draw: 100, lose: 60 };
 const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
-const ridLong = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+/* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
+const fnum = (v, d = 0) => (typeof v === 'number' && isFinite(v) ? v : d);
+/* Realtime Database 를 쓸 수 있는지 (대전 · 접속 표시 · DM 공용) */
+function rtdbOk() {
+  const u = window.FB_CONFIG && window.FB_CONFIG.databaseURL;
+  return !!u && !/여기에/.test(String(u)) && !!window.firebase && typeof firebase.database === 'function';
+}
+/* ---------- 대전 · 협동 공용: 다른 사람 캐릭터 ---------- */
+function mpPl(uid) { return (G && G.pvp && G.pvp.pl[uid]) || (G && G.coop && G.coop.pl[uid]) || null; }
+/* 받은 위치로 부드럽게 따라감 (너무 멀면 순간이동) */
+function mpInterp(e, dt) {
+  e.flash = Math.max(0, (e.flash || 0) - dt);
+  const dx = e.tx - e.x, dy = e.ty - e.y;
+  if (Math.hypot(dx, dy) > 260) { e.x = e.tx; e.y = e.ty; return; }
+  const k = 1 - Math.pow(0.0004, dt);
+  e.x += dx * k; e.y += dy * k;
+}
+/* 내 상태 (0.08초마다 보냄) */
+function mpMyState() {
+  const p = G.p;
+  return { x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a, fr: G.lo.fr || '', r: p.r };
+}
+/* 받은 상태를 그 사람 캐릭터에 적용. list = 그 캐릭터가 들어 있는 배열 (적 G.en / 우리 편 G.allies) */
+function mpState(P, v, list) {
+  const e = P.e; P.seen = performance.now();
+  e.tx = num(v.x, e.tx); e.ty = num(v.y, e.ty);
+  if (typeof v.a === 'number' && isFinite(v.a)) e.ang = v.a;
+  e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
+  if (WEAPONS[v.w]) e.w = v.w;
+  if (ARMORS[v.ar]) e.ar = v.ar;
+  e.fr = FRAMES[v.fr] ? v.fr : '';
+  if (v.r) e.r = clamp(num(v.r, 30), 20, 70);
+  e.sh = v.s ? 1 : 0; e.inv = v.i ? 1 : 0; e.stun = v.st ? 0.2 : 0; e.conf = v.cf ? 0.2 : 0;
+  if (v.d && !e.gone) { e.gone = true; P.dead = true; const i = list.indexOf(e); if (i >= 0) list.splice(i, 1); burst(e.x, e.y, 30, ['#fff', (CHARS[e.ch] || CHARS.base).ring, COL.rose], 380); }
+  else if (!v.d && e.gone && !P.left) { e.gone = false; P.dead = false; e.x = e.tx; e.y = e.ty; if (!list.includes(e)) list.push(e); }
+}
 
 const Net = {
-  db: null, rid: null, role: null, me: null, opUid: null, opInfo: null, started: false, mmMine: false,
-  ls: [], timers: [],
+  db: null, rid: null, me: null, room: null, started: false, mmMine: false, host: false,
+  ls: [], lls: [], timers: [], onRoom: null, onGo: null,
   why() {
-    if (!Store.web) return '1대1은 웹사이트 버전에서만 할 수 있어요';
-    if (Store.mode !== 'online' || !Store.uid || Store.kicked) return '서버에 연결돼 있어야 1대1을 할 수 있어요';
-    const u = window.FB_CONFIG && window.FB_CONFIG.databaseURL;
-    if (!u || /여기에/.test(String(u)) || !window.firebase || typeof firebase.database !== 'function') return 'Firebase에 Realtime Database 설정이 아직 없어요 (databaseURL)';
+    if (!Store.web) return '대전은 웹사이트 버전에서만 할 수 있어요';
+    if (Store.mode !== 'online' || !Store.uid || Store.kicked) return '서버에 연결돼 있어야 대전을 할 수 있어요';
+    if (!rtdbOk()) return 'Firebase에 Realtime Database 설정이 아직 없어요 (databaseURL)';
     return '';
   },
   ref(p) { if (!this.db) this.db = firebase.database(); return this.db.ref(p); },
-  info() { const P = Store.P; return { n: P.nick, ch: P.ch, pr: P.pr, t: P.title || '', f: P.frame || '' }; },
-  on(ref, ev, fn) { ref.on(ev, fn); this.ls.push(() => ref.off(ev, fn)); },
-  clear() {
-    for (const f of this.ls) { try { f(); } catch (e) { /* 무시 */ } }
-    this.ls = []; this.timers.forEach(clearInterval); this.timers = [];
-  },
-  reset() { this.rid = null; this.role = null; this.opUid = null; this.opInfo = null; this.started = false; this.mmMine = false; },
-  /* 빠른 대전: 기다리는 사람이 있으면 그 방으로, 없으면 내가 기다림 */
-  async quick(onReady) {
+  info() { const P = Store.P; return { n: P.nick, ch: P.ch, pr: P.pr, t: P.title || '', f: P.frame || '', j: Date.now() }; },
+  on(ref, ev, fn, lobby) { ref.on(ev, fn); (lobby ? this.lls : this.ls).push(() => ref.off(ev, fn)); },
+  offLobby() { for (const f of this.lls) { try { f(); } catch (e) { /* 무시 */ } } this.lls = []; },
+  clear() { this.offLobby(); for (const f of this.ls) { try { f(); } catch (e) { /* 무시 */ } } this.ls = []; this.timers.forEach(clearInterval); this.timers = []; },
+  reset() { this.rid = null; this.room = null; this.started = false; this.mmMine = false; this.host = false; this.onRoom = null; this.onGo = null; },
+  /* 새 방에 가기 전에 예전 방 정리 */
+  fresh() { if (!this.rid) return; if (this.started) this.leave(); else { this.clear(); this.reset(); } },
+
+  /* ----- 1대1 빠른 대전: 기다리는 사람이 있으면 그 방으로, 없으면 내가 방을 만들고 기다림 ----- */
+  async quick(onGo) {
+    this.fresh();
     const me = Store.uid; let room = null, host = false;
     const r = await this.ref('mm/wait').transaction(cur => {
       if (cur && cur.u !== me && Date.now() - (cur.t || 0) < 25000) { room = cur.r; host = false; return null; }
-      room = ridLong(); host = true; return { u: me, r: room, t: Date.now() };
+      room = 'q' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); host = true; return { u: me, r: room, t: Date.now() };
     });
     if (!r.committed) throw new Error('busy');
     if (host) {
       this.mmMine = true;
-      await this.host(room, onReady, false);
+      await this.create('1v1', null, onGo, room, true);
       this.timers.push(setInterval(() => {
         this.ref('mm/wait').transaction(cur => (cur === null ? null : cur.u === me ? { u: me, r: cur.r, t: Date.now() } : undefined)).catch(() => {});
       }, 8000));
-    } else await this.join(room, onReady);
+    } else await this.join(room, null, onGo);
     return host;
-  },
-  /* 친구랑: 4자리 방 코드 */
-  async makeRoom(onReady) {
-    const me = Store.uid;
-    for (let i = 0; i < 8; i++) {
-      const code = rid4(); let mine = false;
-      const r = await this.ref('rooms/' + code).transaction(cur => {
-        if (cur && Date.now() - (cur.c || 0) < 30 * 60000) { mine = false; return; }
-        mine = true; return { h: me, hi: this.info(), c: Date.now() };
-      });
-      if (r.committed && mine) { await this.host(code, onReady, true); return code; }
-    }
-    throw new Error('code');
-  },
-  async host(room, onReady, made) {
-    this.rid = room; this.role = 'h'; this.me = Store.uid;
-    const R = this.ref('rooms/' + room);
-    if (!made) await R.set({ h: this.me, hi: this.info(), c: Date.now() });
-    R.onDisconnect().remove();
-    this.on(R, 'value', s => {
-      const v = s.val();
-      if (this.started || this.rid !== room) return;
-      if (v && v.g && v.gi) { this.opUid = v.g; this.opInfo = v.gi; this.begin(onReady); }
-    });
-  },
-  async join(room, onReady) {
-    const me = Store.uid; let st = 'none', hostInfo = null, hostUid = null;
-    const r = await this.ref('rooms/' + room).transaction(cur => {
-      if (!cur) { st = 'none'; return cur; }
-      if (cur.h === me) { st = 'self'; return; }
-      if (cur.g && cur.g !== me) { st = 'full'; return; }
-      st = 'ok'; hostInfo = cur.hi; hostUid = cur.h;
-      return Object.assign({}, cur, { g: me, gi: this.info() });
-    });
-    if (!r.committed || st !== 'ok') throw new Error(st);
-    this.rid = room; this.role = 'g'; this.me = me; this.opUid = hostUid; this.opInfo = hostInfo || { n: '상대', ch: 'base' };
-    this.begin(onReady);
-  },
-  begin(onReady) {
-    this.started = true; this.clearMm();
-    const base = 'rooms/' + this.rid;
-    try { this.ref(base).onDisconnect().cancel(); } catch (e) { /* 무시 */ }
-    this.ref(base + '/x/' + this.me).onDisconnect().set(true);
-    this.on(this.ref(base + '/s/' + this.opUid), 'value', s => { const v = s.val(); if (v) PvP.netState(v); });
-    this.on(this.ref(base + '/e'), 'child_added', s => { const v = s.val(); if (v && v.u !== this.me) PvP.netEvent(v); });
-    this.on(this.ref(base + '/x/' + this.opUid), 'value', s => { if (s.val()) PvP.opLeft(); });
-    onReady({ role: this.role, op: this.opInfo });
   },
   clearMm() {
     const me = Store.uid;
     this.timers.forEach(clearInterval); this.timers = [];
-    if (this.mmMine) {
-      this.mmMine = false;
-      this.ref('mm/wait').transaction(cur => (cur === null ? null : cur.u === me ? null : undefined)).catch(() => {});
-    }
+    if (this.mmMine) { this.mmMine = false; this.ref('mm/wait').transaction(cur => (cur === null ? null : cur.u === me ? null : undefined)).catch(() => {}); }
   },
+
+  /* ----- 방 만들기 (rid 를 주면 그 이름으로, 아니면 4자리 코드) ----- */
+  async create(mode, onRoom, onGo, rid, quick) {
+    if (!quick) this.fresh();
+    const me = Store.uid, info = Object.assign(this.info(), { tm: 0 });
+    const pref = lsGet('hb-map'), map = !pref || pref === 'random' || !MAPS[pref] ? randMap() : pref;
+    let code = rid || null;
+    for (let i = 0; !code && i < 8; i++) {
+      const c = rid4(); let mine = false;
+      const r = await this.ref('rooms/' + c).transaction(cur => {
+        if (cur && Date.now() - (cur.c || 0) < 30 * 60000) { mine = false; return; }
+        mine = true; return { m: mode, h: me, c: Date.now(), map, st: 'lobby', q: 0, p: { [me]: info } };
+      });
+      if (r.committed && mine) code = c;
+    }
+    if (!code) throw new Error('code');
+    if (rid) await this.ref('rooms/' + code).set({ m: mode, h: me, c: Date.now(), map, st: 'lobby', q: quick ? 1 : 0, p: { [me]: info } });
+    this.rid = code; this.me = me; this.host = true; this.onRoom = onRoom; this.onGo = onGo;
+    this.ref('rooms/' + code).onDisconnect().remove();
+    if (!quick) { const L = this.ref('lob/' + code); L.set({ m: mode, n: Store.P.nick, c: Date.now(), k: 1, cap: MP[mode].cap }); L.onDisconnect().remove(); }
+    this.watch();
+    return code;
+  },
+  async join(code, onRoom, onGo) {
+    if (this.rid !== code) this.fresh();
+    const me = Store.uid; let st = 'none';
+    const r = await this.ref('rooms/' + code).transaction(cur => {
+      if (!cur) { st = 'none'; return cur; }
+      if (cur.st !== 'lobby') { st = 'started'; return; }
+      const p = cur.p || {};
+      if (p[me]) { st = 'ok'; return cur; }
+      if (Object.keys(p).length >= (MP[cur.m] || MP['1v1']).cap) { st = 'full'; return; }
+      const cnt = [0, 0]; for (const k in p) cnt[p[k].tm ? 1 : 0]++;
+      st = 'ok';
+      return Object.assign({}, cur, { p: Object.assign({}, p, { [me]: Object.assign(this.info(), { tm: cur.m === 'team' ? (cnt[1] < cnt[0] ? 1 : 0) : 0 }) }) });
+    });
+    if (!r.committed || st !== 'ok') throw new Error(st);
+    this.rid = code; this.me = me; this.host = false; this.onRoom = onRoom; this.onGo = onGo;
+    this.ref('rooms/' + code + '/p/' + me).onDisconnect().remove();
+    this.watch();
+  },
+  /* 대기실: 방 정보가 바뀔 때마다 알려주고, 방장이 시작하면 게임 시작 */
+  watch() {
+    const R = this.ref('rooms/' + this.rid);
+    const fields = {}, got = new Set(), rid = this.rid, t0 = Date.now();
+    let seen = false;   // 방 안에 내가 있는 걸 한 번이라도 봤는지 (막 들어온 직후엔 옛날 값이 먼저 올 수 있음)
+    const gone = why => { const f = this.onRoom; this.clear(); this.reset(); if (f) f(null, why); };
+    const fire = () => {
+      if (this.started || got.size < 6 || this.rid !== rid) return;
+      const v = fields, me = this.me, inRoom = !!(v.h && v.p && v.p[me]);
+      if (!seen) {
+        if (!inRoom) { if (Date.now() - t0 > 6000) gone(v.h ? 'kicked' : 'closed'); return; }
+        seen = true;
+      }
+      if (!v.h) { gone('closed'); return; }
+      this.room = { m: v.m, h: v.h, map: v.map, q: v.q, p: v.p || {}, go: v.go, rid: this.rid };
+      if (!this.room.p[me]) { gone('kicked'); return; }
+      if (v.go) { this.begin(v.go); return; }
+      this.host = v.h === me;
+      const n = Object.keys(this.room.p).length;
+      if (this.host && this.room.m === '1v1' && n >= 2) { this.start(); return; }
+      if (this.onRoom) this.onRoom(this.room);
+      if (this.host && !this.room.q) this.ref('lob/' + this.rid + '/k').set(n).catch(() => {});
+    };
+    for (const k of ['m', 'h', 'map', 'q', 'p', 'go']) {
+      this.on(R.child(k), 'value', s => { fields[k] = s.val(); got.add(k); fire(); }, true);
+    }
+    this.timers.push(setTimeout(() => { if (!seen && this.rid === rid && !this.started) gone(fields.h ? 'kicked' : 'closed'); }, 6500));
+  },
+  setMine(k, v) { if (this.rid && !this.started) this.ref('rooms/' + this.rid + '/p/' + this.me + '/' + k).set(v).catch(() => {}); },
+  setMap(k) { if (this.rid && this.host) this.ref('rooms/' + this.rid + '/map').set(mapKey(k)).catch(() => {}); },
+  canStart() {
+    const R = this.room; if (!R) return { ok: false, why: '' };
+    const ids = Object.keys(R.p), cfg = MP[R.m];
+    if (ids.length < cfg.min) return { ok: false, why: `${cfg.min}명 이상 모여야 시작할 수 있어요` };
+    if (R.m === 'team') { const c = [0, 0]; for (const k of ids) c[R.p[k].tm ? 1 : 0]++; if (!c[0] || !c[1]) return { ok: false, why: '양쪽 팀에 1명 이상 있어야 해요' }; if (c[0] > 3 || c[1] > 3) return { ok: false, why: '한 팀은 3명까지예요' }; }
+    return { ok: true };
+  },
+  start() {
+    const R = this.room; if (!R || !this.host) return;
+    const ids = Object.keys(R.p).sort((a, b) => (R.p[a].j || 0) - (R.p[b].j || 0));
+    const teams = {}; let boss = null;
+    if (R.m === 'boss') {
+      const vol = ids.filter(k => R.p[k].vb), pool = vol.length ? vol : ids;
+      boss = pool[Math.floor(Math.random() * pool.length)];
+      for (const k of ids) teams[k] = k === boss ? 1 : 0;
+    } else if (R.m === 'team') for (const k of ids) teams[k] = R.p[k].tm ? 1 : 0;
+    else ids.forEach((k, i) => { teams[k] = R.m === '1v1' ? i : 0; });
+    const go = { t: Date.now(), map: mapKey(R.map), teams, boss, seed: Math.floor(Math.random() * 1e9) };
+    this.ref('rooms/' + this.rid + '/st').set('play');
+    this.ref('rooms/' + this.rid + '/go').set(go);
+    this.ref('lob/' + this.rid).remove().catch(() => {});
+  },
+  begin(go) {
+    if (this.started) return;
+    const R = this.room, base = 'rooms/' + this.rid, me = this.me;
+    /* 시작 직전에 들어와서 명단에 없으면 → 이 방은 이미 시작함 */
+    if (!go.teams || !(me in go.teams)) { const f = this.onRoom; this.clear(); this.clearMm(); this.reset(); if (f) f(null, 'started'); return; }
+    this.started = true; this.offLobby(); this.clearMm();
+    try { this.ref(base).onDisconnect().cancel(); this.ref(base + '/p/' + me).onDisconnect().cancel(); } catch (e) { /* 무시 */ }
+    this.ref(base + '/x/' + me).onDisconnect().set(true);
+    if (this.host) this.ref('lob/' + this.rid).remove().catch(() => {});
+    const players = Object.keys(R.p).filter(k => k in go.teams).map(k => Object.assign({ uid: k }, R.p[k], { tm: go.teams[k] }));
+    const mod = () => (G && G.coop ? Coop : PvP);
+    for (const pl of players) if (pl.uid !== me) {
+      this.on(this.ref(base + '/s/' + pl.uid), 'value', s => { const v = s.val(); if (v) mod().netState(pl.uid, v); });
+      this.on(this.ref(base + '/x/' + pl.uid), 'value', s => { if (s.val()) mod().left(pl.uid); });
+    }
+    this.on(this.ref(base + '/e'), 'child_added', s => { const v = s.val(); if (v && v.u !== me) mod().netEvent(v); });
+    const m = { kind: R.m, me, host: R.h === me, hostUid: R.h, players, boss: go.boss, map: go.map, seed: go.seed, rid: this.rid, role: R.h === me ? 'h' : 'g' };
+    m.op = players.find(x => x.uid !== me) || { n: '상대', ch: 'base' };
+    if (this.onGo) this.onGo(m);
+  },
+  listen(path, fn) { this.on(this.ref('rooms/' + this.rid + '/' + path), 'value', s => fn(s.val())); },
   send(st) { if (this.rid && this.started) this.ref('rooms/' + this.rid + '/s/' + this.me).set(st).catch(() => {}); },
   ev(o) { if (this.rid && this.started) { o.u = this.me; this.ref('rooms/' + this.rid + '/e').push(o); } },
-  /* 기다리다 취소 */
+  setW(w) { if (this.rid && this.started) this.ref('rooms/' + this.rid + '/w').set(w).catch(() => {}); },
+  /* 대기실에서 나가기 / 기다리다 취소 */
   async cancel() {
-    const rid = this.rid, started = this.started;
+    const rid = this.rid, started = this.started, host = this.host, me = this.me;
     this.clear(); this.clearMm();
-    if (rid && !started) { try { const R = this.ref('rooms/' + rid); R.onDisconnect().cancel(); await R.remove(); } catch (e) { /* 무시 */ } }
+    if (rid && !started) {
+      try {
+        if (host) { const R = this.ref('rooms/' + rid); R.onDisconnect().cancel(); await R.remove(); this.ref('lob/' + rid).remove().catch(() => {}); }
+        else { const P = this.ref('rooms/' + rid + '/p/' + me); P.onDisconnect().cancel(); await P.remove(); }
+      } catch (e) { /* 무시 */ }
+    }
     this.reset();
   },
+  /* 경기 끝나고 조금 뒤 나가기 (그 사이 새 방에 들어갔으면 건드리지 않음) */
+  leaveLater(ms) { const rid = this.rid; setTimeout(() => { if (this.rid && this.rid === rid) this.leave(); }, ms); },
   /* 경기 끝나고 나가기 */
   leave() {
-    const rid = this.rid, me = this.me, role = this.role;
+    const rid = this.rid, me = this.me, host = this.host;
     this.clear(); this.reset();
     if (!rid) return;
     const R = this.ref('rooms/' + rid);
     R.child('x/' + me).set(true).catch(() => {});
     try { R.child('x/' + me).onDisconnect().cancel(); } catch (e) { /* 무시 */ }
-    if (role === 'h') setTimeout(() => { R.remove().catch(() => {}); }, 5000);
+    if (host) setTimeout(() => { R.remove().catch(() => {}); }, 6000);
+  },
+  /* 열린 방 목록 */
+  watchOpen(fn) {
+    const L = this.ref('lob'); const h = s => {
+      const v = s.val() || {}, now = Date.now();
+      fn(Object.entries(v).filter(([, r]) => r && now - (r.c || 0) < 30 * 60000).map(([k, r]) => ({ code: k, m: r.m, n: str(r.n, 8), k: num(r.k, 1), cap: num(r.cap, 6) })).filter(r => MP[r.m]).sort((a, b) => b.code.localeCompare(a.code)));
+    };
+    L.on('value', h, e => { console.warn('lob', e); fn(null); }); return () => L.off('value', h);
   },
 };
 
+/* ================= 대전 게임 진행 ================= */
 const PvP = {
   setup(m) {
-    const host = m.role === 'h', me = host ? PVP_SPAWN[0] : PVP_SPAWN[1], op = host ? PVP_SPAWN[1] : PVP_SPAWN[0];
-    const p = G.p, oc = CHARS[m.op && m.op.ch] ? m.op.ch : 'base', nick = str(m.op && m.op.n, 8) || '상대';
-    p.x = me[0]; p.y = me[1]; p.ang = host ? -Math.PI / 2 : Math.PI / 2;
-    G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9;
-    const rival = { id: G.id++, type: 'rival', rival: true, x: op[0], y: op[1], tx: op[0], ty: op[1], r: 30, hp: 1000, maxHp: 1000, ang: -p.ang, flash: 0, spawnT: 0, kvx: 0, kvy: 0, ch: oc, nick, sh: 0, inv: 0, stun: 0, conf: 0, gone: false };
-    G.en.push(rival);
-    rival.fr = FRAMES[m.op && m.op.f] ? m.op.f : '';
-    G.pvp = { role: m.role, op: { n: nick, ch: oc, pr: m.op && typeof m.op.pr === 'number' ? m.op.pr : 1000 }, k: 0, d: 0, cd: 3.4, cdShown: -1, left: PVP_TIME, send: 0, resp: 0, pend: null, seen: performance.now(), rival };
-    banner('1 VS 1', `${nick} 등장!`, COL.yolk, 1.2);
+    const kind = m.kind || '1v1', cfg = MP[kind], me = m.me, p = G.p;
+    if (m.map) { G.map = mapKey(m.map); OBST = MAPS[G.map].obst; }
+    const myTm = m.players.find(x => x.uid === me).tm;
+    const V = G.pvp = {
+      kind, me, myTm, role: m.role, host: m.host, pl: {}, score: [0, 0], k: 0, d: 0, kills: 0, deaths: 0,
+      cd: 3.4, cdShown: -1, left: cfg.time, send: 0, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
+    };
+    G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9; G.allies = [];
+    const byTm = [[], []];
+    for (const pl of m.players.slice().sort((a, b) => (a.j || 0) - (b.j || 0))) byTm[pl.tm ? 1 : 0].push(pl.uid);
+    const spawnOf = (uid, tm) => {
+      if (kind === '1v1') return PVP_SPAWN[tm ? 1 : 0];
+      if (kind === 'boss' && uid === V.boss) return [900, 300];
+      const i = Math.max(0, byTm[tm].indexOf(uid));
+      return kind === 'boss' ? [[600, 1100], [900, 1120], [1200, 1100], [450, 950], [1350, 950]][i % 5] : SPAWN_T[tm][i % 3];
+    };
+    const sp = freeSpot(...spawnOf(me, myTm), 34);
+    p.x = sp.x; p.y = sp.y; p.ang = myTm ? Math.PI / 2 : -Math.PI / 2;
+    const hunters = m.players.filter(x => x.uid !== V.boss).length;
+    if (kind === 'boss') for (const pl of m.players) if (pl.uid !== V.boss) V.lives[pl.uid] = cfg.lives;
+    if (kind === 'boss' && me === V.boss) {
+      p.isBoss = true; p.r = 58; p.maxHp = p.hp = Math.round(8000 + 7000 * hunters);
+      p.dmgMul *= 1.8; p.spd *= 0.9; p.ultMul *= 2; G.potLeft = 0;
+    }
+    for (const pl of m.players) {
+      if (pl.uid === me) continue;
+      const s0 = freeSpot(...spawnOf(pl.uid, pl.tm), 34), ally = pl.tm === myTm;
+      const isB = kind === 'boss' && pl.uid === V.boss;
+      const e = { id: G.id++, uid: pl.uid, type: 'rival', rival: !ally, ally, tm: pl.tm, x: s0.x, y: s0.y, tx: s0.x, ty: s0.y, r: isB ? 58 : 30, hp: 1000, maxHp: 1000,
+        ang: pl.tm ? Math.PI / 2 : -Math.PI / 2, flash: 0, spawnT: 0, kvx: 0, kvy: 0, ch: CHARS[pl.ch] ? pl.ch : 'base', nick: str(pl.n, 8) || '???', title: TITLES[pl.t] ? pl.t : '',
+        fr: FRAMES[pl.f] ? pl.f : '', sh: 0, inv: 0, stun: 0, conf: 0, gone: false, isBoss: isB, pr: typeof pl.pr === 'number' ? pl.pr : 1000 };
+      V.pl[pl.uid] = { e, tm: pl.tm, nick: e.nick, ch: e.ch, seen: performance.now(), left: false };
+      if (ally) G.allies.push(e); else G.en.push(e);
+    }
+    const first = Object.values(V.pl).find(x => x.tm !== myTm);
+    V.rival = first ? first.e : null;
+    V.op = first ? { n: first.nick, ch: first.ch, pr: first.e.pr } : { n: '상대', ch: 'base', pr: 1000 };
+    const bossNick = (V.pl[V.boss] || {}).nick || '';
+    const title = kind === '1v1' ? '1 VS 1' : kind === 'team' ? (myTm ? '레드팀!' : '블루팀!') : me === V.boss ? '내가 보스!' : '보스를 잡아라!';
+    const sub = kind === '1v1' ? `${V.op.n} 등장!` : kind === 'team' ? `먼저 ${cfg.kills}킬 하는 팀이 승리` : me === V.boss ? `사냥꾼 ${hunters}명을 버텨내세요` : `보스: ${bossNick}`;
+    banner(title, sub, kind === 'team' ? TEAM_COL[myTm] : COL.yolk, 1.4);
   },
   update(dt) {
-    const V = G.pvp, p = G.p;
+    const V = G.pvp, p = G.p, cfg = MP[V.kind];
     if (V.cd > 0) {
       V.cd -= dt;
       const n = V.cd > 0 ? Math.ceil(V.cd) : 0;
-      if (V.cd < 2.6 && n !== V.cdShown) { V.cdShown = n; if (n > 0) { banner(String(n), '준비!', '#fff', 0.8); sfx('click'); } else { banner('FIGHT!', `${PVP_KILLS}번 먼저 쓰러뜨리면 승리`, COL.yolk, 1.1); sfx('warn'); } }
+      if (V.cd < 2.6 && n !== V.cdShown) { V.cdShown = n; if (n > 0) { banner(String(n), '준비!', '#fff', 0.8); sfx('click'); } else { banner('FIGHT!', V.kind === 'boss' ? (V.me === V.boss ? '다 쓸어버리세요' : '다 같이 보스를 노려요') : `${cfg.kills}킬 먼저 하면 승리`, COL.yolk, 1.1); sfx('warn'); } }
     } else if (!G.over) {
       V.left -= dt;
-      if (V.left <= 0) { V.left = 0; this.end(V.k > V.d ? 'win' : V.k < V.d ? 'lose' : 'draw', '시간 끝!'); }
+      if (V.left <= 0) {
+        V.left = 0;
+        if (V.kind === 'boss') this.end(V.me === V.boss ? 'win' : 'lose', '시간 끝! 보스가 버텼어요');
+        else this.end(V.score[V.myTm] > V.score[1 - V.myTm] ? 'win' : V.score[V.myTm] < V.score[1 - V.myTm] ? 'lose' : 'draw', '시간 끝!');
+      }
     }
-    if (p.dead && !G.over) { V.resp -= dt; if (V.resp <= 0) this.respawn(); }
-    if (V.pend) { const e = V.pend; V.pend = null; e.k = 'h'; if (e.d) e.d = Math.round(e.d); Net.ev(e); }
+    if (p.dead && !G.over && !V.outMe) { V.resp -= dt; if (V.resp <= 0) this.respawn(); }
+    for (const uid in V.pend) { const e = V.pend[uid]; e.k = 'h'; e.to = uid; if (e.d) e.d = Math.round(e.d); Net.ev(e); }
+    V.pend = {};
     V.send -= dt;
-    if (V.send <= 0 && !G.over) {
-      V.send = PVP_SEND;
-      Net.send({ x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a });
-    }
-    if (!G.over && performance.now() - V.seen > 20000) this.end('win', '상대 연결이 끊겼어요');
+    if (V.send <= 0 && !G.over) { V.send = PVP_SEND; Net.send(mpMyState()); }
+    for (const uid in V.pl) { const P = V.pl[uid]; if (!P.left && !G.over && performance.now() - P.seen > 20000) this.left(uid); }
+    V.feed = V.feed.filter(f => (f.t -= dt) > 0);
+    V.k = V.score[V.myTm]; V.d = V.score[1 - V.myTm];
+    /* 탈락하면 살아있는 우리 편을 따라가며 관전 */
+    G.spec = p.dead ? (G.allies.find(e => !e.gone) || null) : null;
   },
-  /* ----- 상대 화면 정보 ----- */
-  netState(v) {
+  /* ----- 다른 사람 화면 정보 ----- */
+  netState(uid, v) {
     if (!G || !G.pvp) return;
-    const V = G.pvp, e = V.rival;
-    V.seen = performance.now();
-    e.tx = num(v.x, e.tx); e.ty = num(v.y, e.ty);
-    if (typeof v.a === 'number') e.ang = v.a;
-    e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
-    if (WEAPONS[v.w]) e.w = v.w;
-    if (ARMORS[v.ar]) e.ar = v.ar;
-    e.sh = v.s ? 1 : 0; e.inv = v.i ? 1 : 0; e.stun = v.st ? 0.2 : 0; e.conf = v.cf ? 0.2 : 0;
-    if (v.d && !e.gone) { e.gone = true; G.en = G.en.filter(x => x !== e); burst(e.x, e.y, 30, ['#fff', CHARS[e.ch].ring, COL.rose], 380); }
-    else if (!v.d && e.gone) { e.gone = false; e.x = e.tx; e.y = e.ty; if (!G.en.includes(e)) G.en.push(e); }
+    const P = G.pvp.pl[uid]; if (!P) return;
+    mpState(P, v, P.e.ally ? G.allies : G.en);
   },
-  updRival(e, dt) {
-    e.flash = Math.max(0, e.flash - dt);
-    const dx = e.tx - e.x, dy = e.ty - e.y;
-    if (Math.hypot(dx, dy) > 260) { e.x = e.tx; e.y = e.ty; return; }
-    const k = 1 - Math.pow(0.0004, dt);
-    e.x += dx * k; e.y += dy * k;
-  },
+  updRival(e, dt) { mpInterp(e, dt); },
   netEvent(v) {
     if (!G || !G.pvp) return;
-    const V = G.pvp, p = G.p;
-    V.seen = performance.now();
+    const V = G.pvp, p = G.p, P = V.pl[v.u];
+    if (P) P.seen = performance.now();
     if (v.k === 's') this.cosShot(v);
     else if (v.k === 'u') this.cosUlt(v);
     else if (v.k === 'h') {
-      if (G.over || p.dead) return;
-      if (v.d > 0) damagePlayer(Math.min(v.d, 5000));
+      if (v.to !== V.me || G.over || p.dead) return;
+      V.lastHit = v.u;
+      if (v.d > 0) damagePlayer(Math.min(v.d, 9000));
       if (p.dead) return;
-      if (v.st > 0 && !((p.inv || 0) > 0)) p.stun = Math.max(p.stun || 0, Math.min(v.st, 3) * 0.6);
-      if (v.cf > 0 && !((p.inv || 0) > 0)) p.conf = Math.max(p.conf || 0, Math.min(v.cf, 3) * 0.7);
-      if (v.kp > 0) knock(p, v.ka || 0, Math.min(v.kp, 1200) * 0.6);
-    } else if (v.k === 'd') {
-      if (G.over) return;
-      V.k++; sfx('kill');
-      banner('처치!', `${V.op.n} 쓰러뜨림 · ${V.k} : ${V.d}`, COL.yolk, 1.4);
-      if (V.k >= PVP_KILLS) this.end('win');
-    } else if (v.k === 'q') { if (!G.over) this.end('win', '상대가 나갔어요'); }
+      const res = p.isBoss ? 0.4 : 1;
+      if (v.st > 0 && !((p.inv || 0) > 0)) p.stun = Math.max(p.stun || 0, Math.min(v.st, 3) * 0.6 * res);
+      if (v.cf > 0 && !((p.inv || 0) > 0)) p.conf = Math.max(p.conf || 0, Math.min(v.cf, 3) * 0.7 * res);
+      if (v.kp > 0) knock(p, v.ka || 0, Math.min(v.kp, 1200) * 0.6 * res);
+    } else if (v.k === 'd') this.onKill(v.u, v.by, v.tm);
+    else if (v.k === 'q') this.left(v.u);
   },
-  opLeft() { if (G && G.pvp && !G.over && G.pvp.left > 3) this.end('win', '상대가 나갔어요'); },
+  /* 누군가 쓰러짐: 쓰러진 사람이 직접 알려줌 */
+  onKill(victim, by, tm) {
+    const V = G.pvp; if (G.over) return;
+    const vn = victim === V.me ? Store.P.nick : (V.pl[victim] || {}).nick || '???';
+    const kn = by === V.me ? Store.P.nick : (V.pl[by] || {}).nick || '';
+    V.feed.unshift({ t: 3.5, a: kn, b: vn, tb: tm }); V.feed = V.feed.slice(0, 4);
+    if (by === V.me && victim !== V.me) { V.kills++; sfx('kill'); banner('처치!', `${vn} 쓰러뜨림`, COL.yolk, 1.0); }
+    if (V.kind === 'boss') {
+      if (victim === V.boss) { this.end(V.me === V.boss ? 'lose' : 'win', V.me === V.boss ? '보스가 쓰러졌어요' : '보스 처치!'); return; }
+      V.lives[victim] = Math.max(0, (V.lives[victim] || 0) - 1);
+      if (V.lives[victim] <= 0) V.out[victim] = true;
+      const alive = Object.keys(V.lives).filter(k => !V.out[k] && !(V.pl[k] && V.pl[k].left));
+      if (!alive.length) this.end(V.me === V.boss ? 'win' : 'lose', '사냥꾼 전멸!');
+      return;
+    }
+    V.score[tm ? 0 : 1]++;
+    V.k = V.score[V.myTm]; V.d = V.score[1 - V.myTm];
+    const cfg = MP[V.kind];
+    if (V.score[0] >= cfg.kills || V.score[1] >= cfg.kills) this.end(V.score[V.myTm] >= cfg.kills ? 'win' : 'lose');
+  },
+  left(uid) {
+    const V = G && G.pvp; if (!V || G.over) return;
+    const P = V.pl[uid]; if (!P || P.left) return;
+    P.left = true; P.e.gone = true;
+    for (const L of [G.en, G.allies]) { const i = L.indexOf(P.e); if (i >= 0) L.splice(i, 1); }
+    V.feed.unshift({ t: 4, a: '', b: `${P.nick} 나감`, tb: P.tm }); V.feed = V.feed.slice(0, 4);
+    if (V.kind === 'boss') {
+      if (uid === V.boss) { this.end('win', '보스가 나갔어요'); return; }
+      V.out[uid] = true;
+      const alive = Object.keys(V.lives).filter(k => !V.out[k] && !(V.pl[k] && V.pl[k].left));
+      if (!alive.length && V.me === V.boss) this.end('win', '사냥꾼이 다 나갔어요');
+      return;
+    }
+    const opp = Object.values(V.pl).filter(x => x.tm !== V.myTm && !x.left).length;
+    if (!opp) {
+      if (V.left > 3) this.end('win', V.kind === '1v1' ? '상대가 나갔어요' : '상대 팀이 다 나갔어요');
+      else this.end(V.score[V.myTm] >= V.score[1 - V.myTm] ? 'win' : 'lose', '시간 끝!');
+    }
+  },
+  opLeft() { const V = G && G.pvp; if (V && V.rival) this.left(V.rival.uid); },
   /* ----- 내가 공격 ----- */
-  shot(x, y, angs, spd, r, life) { Net.ev({ k: 's', x: Math.round(x), y: Math.round(y), as: angs.map(a => Math.round(a * 1000) / 1000), v: Math.round(spd), r, l: Math.round(life * 100) / 100 }); },
+  shot(x, y, angs, spd, r, life) { Net.ev({ k: 's', x: Math.round(x), y: Math.round(y), as: angs.map(a => Math.round(a * 1000) / 1000), v: Math.round(spd), r: Math.round(r * 10) / 10, l: Math.round(life * 100) / 100, tm: G.pvp ? G.pvp.myTm : 0 }); },
   ult(kind, a, ox, oy, ex) {
     const p = G.p, o = { k: 'u', u: kind, a: Math.round(a * 1000) / 1000, x: Math.round(ox), y: Math.round(oy) };
     if (ex) Object.assign(o, ex);
     if (kind === 'tele') { o.tx = Math.round(p.x); o.ty = Math.round(p.y); }
     Net.ev(o);
   },
-  pend() { return G.pvp.pend || (G.pvp.pend = { d: 0 }); },
+  pendOf(e) { const V = G.pvp, k = e.uid; return V.pend[k] || (V.pend[k] = { d: 0 }); },
   hitRival(e, dmg, charge) {
-    if (G.over || e.gone || e.inv) return;
+    if (G.over || e.gone || e.inv || e.ally) return;
     dmg = Math.round(dmg);
-    const P = this.pend(); P.d += dmg;
+    this.pendOf(e).d += dmg;
     e.hp = Math.max(1, e.hp - dmg); e.flash = 0.09;
     if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: 21, t: 0, dur: 0.7, vy: -70 });
     if (charge) G.p.ult = Math.min(1, G.p.ult + (Math.min(dmg, 400) / 1300) * G.p.ultMul);
     sfx('hit');
   },
-  pendFx(k, s) { if (G.over || G.pvp.rival.inv) return; const P = this.pend(); P[k] = Math.max(P[k] || 0, Math.round(s * 10) / 10); },
-  pendKnock(ang, power) { if (G.over) return; const P = this.pend(); P.ka = Math.round(ang * 100) / 100; P.kp = Math.round(power); },
-  /* ----- 상대 공격은 화면에만 보여줌 (진짜 피해는 상대가 보낸 '맞음' 신호로) ----- */
+  pendFx(e, k, s) { if (G.over || e.inv || e.ally) return; const P = this.pendOf(e); P[k] = Math.max(P[k] || 0, Math.round(s * 10) / 10); },
+  pendKnock(e, ang, power) { if (G.over || e.ally) return; const P = this.pendOf(e); P.ka = Math.round(ang * 100) / 100; P.kp = Math.round(power); },
+  /* ----- 남의 공격은 화면에만 보여줌 (진짜 피해는 쏜 사람이 보낸 '맞음' 신호로) ----- */
   cosShot(v) {
     const as = Array.isArray(v.as) ? v.as.slice(0, 12) : [];
-    const spd = clamp(num(v.v, 900), 100, 3000), r = clamp(num(v.r, 7), 2, 20), life = clamp(Number(v.l) || 0.6, 0.05, 2);
-    for (const a of as) if (typeof a === 'number') G.eb.push({ x: num(v.x), y: num(v.y), vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, r, dmg: 0, life, c: 0, kind: 0, bt: 0, cos: true });
-    const e = G.pvp.rival; if (as.length && typeof as[0] === 'number') e.ang = as[0];
+    const spd = clamp(num(v.v, 900), 100, 3000), r = clamp(Number(v.r) || 7, 2, 24), life = clamp(Number(v.l) || 0.6, 0.05, 2);
+    const ally = !!G.coop || (G.pvp && v.tm === G.pvp.myTm);
+    for (const a of as) if (typeof a === 'number') G.eb.push({ x: num(v.x), y: num(v.y), vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, r, dmg: 0, life, c: ally ? 5 : 0, kind: 0, bt: 0, cos: true });
+    const P = mpPl(v.u); if (P && as.length && typeof as[0] === 'number') P.e.ang = as[0];
   },
   cosUlt(v) {
-    const e = G.pvp.rival, c = CHARS[e.ch] || CHARS.base, a = Number(v.a) || 0, x = num(v.x), y = num(v.y);
+    const P = mpPl(v.u), ch = P ? P.ch : 'base', c = CHARS[ch] || CHARS.base, a = Number(v.a) || 0, x = num(v.x), y = num(v.y);
     sfx('ult');
     addText(x, y - 70, c.ultName, c.ring, 22, 1.1);
     if (v.u === 'bomb') G.lobs.push({ x0: x, y0: y, tx: num(v.tx, x), ty: num(v.ty, y), t: 0, dur: clamp(Number(v.dur) || 0.6, 0.2, 2), dmg: 0, cos: true });
@@ -3527,6 +3813,7 @@ const PvP = {
     else if (v.u === 'roll') G.eb.push({ x: x + Math.cos(a) * 20, y: y + Math.sin(a) * 20, vx: Math.cos(a) * 520, vy: Math.sin(a) * 520, r: 64, dmg: 0, life: ULT_RANGE.roll / 520, c: 2, kind: 0, bt: 0, cos: true, giant: true });
     else if (v.u === 'qring') for (let i = 0; i < 24; i++) { const b = a + (TAU * i) / 24; G.eb.push({ x, y, vx: Math.cos(b) * 700, vy: Math.sin(b) * 700, r: 12, dmg: 0, life: 600 / 700, c: 3, kind: 0, bt: 0, cos: true }); }
     else if (v.u === 'laser') G.fx.push({ k: 'beam', x, y, ang: a, len: ULT_RANGE.laser, w: 60, t: 0, dur: 0.45 });
+    else if (v.u === 'dash') G.fx.push({ k: 'beam', x, y, ang: a, len: ULT_RANGE.dash, w: 70, t: 0, dur: 0.35 });
   },
   boomFx(x, y) {
     G.fx.push({ k: 'ring', x, y, r0: 20, r1: 165, t: 0, dur: 0.35, c: COL.orange, w: 10 });
@@ -3534,45 +3821,73 @@ const PvP = {
   },
   /* ----- 죽음 / 부활 / 끝 ----- */
   onDeath() {
-    const V = G.pvp;
-    V.d++; V.resp = 3; G.shake = 12;
-    Net.ev({ k: 'd' });
-    if (V.d >= PVP_KILLS) { this.end('lose'); return; }
-    banner('쓰러졌어요!', `3초 뒤 부활 · ${V.k} : ${V.d}`, COL.rose, 1.6);
+    const V = G.pvp, cfg = MP[V.kind];
+    V.deaths++; G.shake = 12;
+    Net.ev({ k: 'd', by: V.lastHit || '', tm: V.myTm });
+    this.onKill(V.me, V.lastHit || '', V.myTm);
+    if (G.over) return;
+    if (V.kind === 'boss' && V.out[V.me]) { V.outMe = true; banner('탈락!', '목숨을 다 썼어요 · 친구들을 응원해요', COL.rose, 2); sfx('hurt'); return; }
+    V.resp = cfg.resp;
+    banner('쓰러졌어요!', V.kind === 'boss' ? `${cfg.resp}초 뒤 부활 · 남은 목숨 ${V.lives[V.me]}` : `${cfg.resp}초 뒤 부활`, COL.rose, 1.6);
     sfx('hurt');
   },
   respawn() {
-    const p = G.p, e = G.pvp.rival;
+    const V = G.pvp, p = G.p;
     let best = PVP_SPAWN[0], bd = -1;
-    for (const s of PVP_SPAWN) { const d = Math.hypot(s[0] - e.tx, s[1] - e.ty); if (d > bd) { bd = d; best = s; } }
-    p.x = best[0]; p.y = best[1]; p.dead = false; p.hp = p.maxHp; p.inv = 1.5; p.stun = 0; p.conf = 0;
+    const foes = Object.values(V.pl).filter(x => x.tm !== V.myTm && !x.left).map(x => x.e);
+    const cands = V.kind === 'team' ? SPAWN_T[V.myTm].concat(PVP_SPAWN) : PVP_SPAWN;
+    for (const s of cands) { const d = foes.length ? Math.min(...foes.map(e => Math.hypot(s[0] - e.tx, s[1] - e.ty))) : 1; if (d > bd) { bd = d; best = s; } }
+    const sp = freeSpot(best[0], best[1], 34);
+    p.x = sp.x; p.y = sp.y; p.dead = false; p.hp = p.maxHp; p.inv = 1.5; p.stun = 0; p.conf = 0;
     p.ammo = p.mag; p.rl = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.dashT = 0;
     burst(p.x, p.y, 20, ['#fff', CHARS[G.lo.ch].ring], 300); sfx('pick');
   },
   end(res, why) {
     if (G.over) return;
-    const V = G.pvp;
+    const V = G.pvp, rw = V.kind === 'boss' ? MP_REWARD[V.me === V.boss ? 'bossB' : 'bossH'] : MP_REWARD[V.kind];
     G.over = true; G.endT = 2.4;
-    G.result = { pvp: true, kind: '1v1', res, k: V.k, d: V.d, op: V.op.n, opCh: V.op.ch, opPr: V.op.pr, why: why || '', coins: PVP_REWARD[res], time: G.t, potUsed: G.potUsed };
-    banner(res === 'win' ? '승리!' : res === 'lose' ? '패배' : '무승부', why || `${V.k} : ${V.d}`, res === 'win' ? COL.yolk : res === 'lose' ? COL.rose : '#fff', 2.4);
+    G.result = { pvp: true, kind: V.kind, res, k: V.score[V.myTm], d: V.score[1 - V.myTm], kills: V.kills, deaths: V.deaths, op: V.op.n, opCh: V.op.ch, opPr: V.kind === '1v1' ? V.op.pr : undefined,
+      boss: V.kind === 'boss' && V.me === V.boss, myTm: V.myTm, why: why || '', coins: rw[res], time: G.t, potUsed: G.potUsed };
+    banner(res === 'win' ? '승리!' : res === 'lose' ? '패배' : '무승부', why || (V.kind === 'boss' ? '' : `${V.score[V.myTm]} : ${V.score[1 - V.myTm]}`), res === 'win' ? COL.yolk : res === 'lose' ? COL.rose : '#fff', 2.4);
     sfx(res === 'lose' ? 'lose' : 'win');
-    if (V.pend) { const e = V.pend; V.pend = null; e.k = 'h'; Net.ev(e); }
-    setTimeout(() => Net.leave(), 2500);
+    for (const uid in V.pend) { const e = V.pend[uid]; e.k = 'h'; e.to = uid; Net.ev(e); }
+    V.pend = {};
+    Net.leaveLater(2500);
   },
   forfeit() { if (!G || G.over) return; Net.ev({ k: 'q' }); this.end('lose', '중간에 나갔어요'); G.endT = 0.4; },
   hud() {
-    const u = L.u, V = G.pvp, p = G.p;
+    const u = L.u, V = G.pvp, p = G.p, cfg = MP[V.kind];
     ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-    ctx.font = `400 ${Math.round(16 * u)}px ${FONT_DISP}`; outText('1 VS 1', 14 * u, 24 * u, '#fff', 4);
+    ctx.font = `400 ${Math.round(16 * u)}px ${FONT_DISP}`; outText(cfg.n, 14 * u, 24 * u, '#fff', 4);
     let by = 48 * u;
+    if (V.kind === 'boss') { ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`; outText(V.me === V.boss ? '나는 보스!' : `내 목숨 ${V.out[V.me] ? 0 : V.lives[V.me]}`, 14 * u, by, COL.yolk, 3); by += 20 * u; }
     ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`;
     for (const [k, name, c] of BUFS) if (p.buf[k] > 0) { outText(`${name} ${Math.ceil(p.buf[k])}초`, 14 * u, by, c, 3); by += 18 * u; }
     ctx.textAlign = 'center';
-    ctx.font = `400 ${Math.round(30 * u)}px ${FONT_NUM}`; outText(`${V.k} : ${V.d}`, VW / 2, 30 * u, COL.yolk, 5);
-    fitFont(`나  vs  ${V.op.n}`, Math.round(13 * u), VW * 0.4, FONT_UI); outText(`나  vs  ${V.op.n}`, VW / 2, 56 * u, '#fff', 3);
+    if (V.kind === 'boss') {
+      /* 가운데 위: 보스 이름 · 체력 (왼쪽 글씨, 오른쪽 일시정지 버튼이랑 안 겹치게 폭 제한) */
+      const bossE = V.me === V.boss ? p : (V.pl[V.boss] || {}).e;
+      const w = Math.max(120 * u, Math.min(VW - 230 * u, 420 * u)), x = (VW - w) / 2;
+      const nm = V.me === V.boss ? Store.P.nick : (V.pl[V.boss] || {}).nick || '보스';
+      fitFont(`보스 ${nm}`, Math.round(16 * u), w, FONT_DISP); outText(`보스 ${nm}`, VW / 2, 22 * u, COL.rose, 4);
+      if (bossE) { bar(x, 36 * u, w, 14 * u, (bossE.hp || 0) / (bossE.maxHp || 1), COL.orange); ctx.font = `400 ${Math.round(11 * u)}px ${FONT_NUM}`; outText(fmt(Math.max(0, bossE.hp || 0)), VW / 2, 43 * u, '#fff', 3); }
+      const alive = Object.keys(V.lives).filter(k => !V.out[k]).length;
+      ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`; outText(`남은 사냥꾼 ${alive}명`, VW / 2, 66 * u, '#fff', 3);
+    } else if (V.kind === 'team') {
+      ctx.font = `400 ${Math.round(30 * u)}px ${FONT_NUM}`;
+      outText(String(V.score[0]), VW / 2 - 34 * u, 30 * u, TEAM_COL[0], 5); outText(':', VW / 2, 30 * u, '#fff', 5); outText(String(V.score[1]), VW / 2 + 34 * u, 30 * u, TEAM_COL[1], 5);
+      ctx.font = `400 ${Math.round(12 * u)}px ${FONT_UI}`; outText(`${TEAM_NAME[V.myTm]} · ${cfg.kills}킬 먼저`, VW / 2, 56 * u, TEAM_COL[V.myTm], 3);
+    } else {
+      ctx.font = `400 ${Math.round(30 * u)}px ${FONT_NUM}`; outText(`${V.score[V.myTm]} : ${V.score[1 - V.myTm]}`, VW / 2, 30 * u, COL.yolk, 5);
+      fitFont(`나  vs  ${V.op.n}`, Math.round(13 * u), VW * 0.4, FONT_UI); outText(`나  vs  ${V.op.n}`, VW / 2, 56 * u, '#fff', 3);
+    }
     const t = Math.ceil(V.left);
-    ctx.font = `400 ${Math.round(15 * u)}px ${FONT_NUM}`; outText(mmss(t), VW / 2, 77 * u, t <= 10 && V.cd <= 0 ? COL.rose : '#fff', 3);
-    if (p.dead && !G.over) { ctx.font = `400 ${Math.round(22 * u)}px ${FONT_DISP}`; outText(`부활까지 ${Math.max(1, Math.ceil(V.resp))}`, VW / 2, VH * 0.5, '#fff', 5); }
+    ctx.font = `400 ${Math.round(15 * u)}px ${FONT_NUM}`; outText(mmss(t), VW / 2, (V.kind === 'boss' ? 86 : 77) * u, t <= 10 && V.cd <= 0 ? COL.rose : '#fff', 3);
+    /* 킬 알림: 오른쪽, 일시정지 버튼 아래 */
+    ctx.textAlign = 'right';
+    V.feed.forEach((f, i) => { const s = f.a ? `${f.a} ➜ ${f.b}` : f.b; fitFont(s, Math.round(12 * u), VW * 0.4, FONT_UI); outText(s, VW - 12 * u, ((V.kind === 'boss' ? 108 : 100) + i * 17) * u, V.kind === 'team' && f.tb != null ? TEAM_COL[f.tb] : '#fff', 3); });
+    ctx.textAlign = 'center';
+    if (p.dead && !G.over) { ctx.font = `400 ${Math.round(22 * u)}px ${FONT_DISP}`; outText(V.outMe ? '관전 중' : `부활까지 ${Math.max(1, Math.ceil(V.resp))}`, VW / 2, VH * 0.5, '#fff', 5); }
   },
 };
 
@@ -3584,7 +3899,8 @@ function drawRival(e) {
   const gun = () => { ctx.save(); ctx.rotate(e.ang); drawWeapon(e.w || 'blaster', r, 0); ctx.restore(); };
   drawArmorBack(e.ar || 'gym', e.ang, r, G.t, true);
   if (behind) gun();
-  ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, TAU); ctx.fillStyle = COL.rose; ctx.fill();
+  const tc = e.ally ? '#59b8ff' : G.pvp && G.pvp.kind === 'team' ? TEAM_COL[e.tm] : COL.rose;
+  ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, TAU); ctx.fillStyle = tc; ctx.fill();
   ctx.beginPath(); ctx.arc(0, 0, r + 3, 0, TAU); ctx.fillStyle = COL.ink; ctx.fill();
   ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fillStyle = c.ring; ctx.fill();
   const f = FACE_CV[c.face], fr = r - 4;
@@ -3592,9 +3908,490 @@ function drawRival(e) {
   drawArmorFront(e.ar || 'gym', e.ang, r);
   if (e.fr) drawFrame(e.fr, r, G.t);
   ctx.beginPath(); ctx.ellipse(-r * 0.4, -r * 0.52, r * 0.3, r * 0.14, -0.5, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill();
+  if (e.isBoss) drawCrown(r);
   if (!behind) gun();
   ctx.globalAlpha = 1;
 }
+function drawCrown(r) {
+  ctx.save(); ctx.translate(0, -r - 8);
+  ctx.beginPath(); ctx.moveTo(-22, 6); ctx.lineTo(-22, -10); ctx.lineTo(-11, 0); ctx.lineTo(0, -16); ctx.lineTo(11, 0); ctx.lineTo(22, -10); ctx.lineTo(22, 6); ctx.closePath();
+  ctx.fillStyle = COL.yolk; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = COL.ink; ctx.stroke(); ctx.restore();
+}
+/* 우리 팀 친구 (맞지 않음) */
+function drawAllies() {
+  for (const e of G.allies || []) { if (e.gone) continue; ctx.save(); ctx.translate(e.x, e.y); drawRival(e); ctx.restore(); }
+}
+function drawAllyHeads() {
+  for (const e of G.allies || []) {
+    if (e.gone) continue;
+    const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18, w, 7, e.hp / e.maxHp, COL.mint);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25, '#bfe6ff', 4);
+  }
+}
+
+/* ================= 호맘 협동 (2~3명) =================
+   방장 화면이 진짜 호맘을 움직임 (인공지능 · 총알 · 장판 · 쫄병)
+   - 보스/쫄병 위치·체력: 방장이 0.1초마다 w 에 덮어씀 → 다른 사람 화면은 그걸 따라 그림
+   - 새로 생긴 보스 총알·장판: 방장이 묶어서 이벤트로 보냄 → 각자 화면에서 날아가고, 맞았는지는 각자 판정
+   - 내가 보스를 때리면 'bh' 이벤트로 방장에게 → 방장 화면의 보스 체력이 깎임
+   - 쓰러지면 20초 뒤 부활, 다 같이 쓰러져 있으면(전멸) 실패. 3명이서 깨면 시간이 랭킹에 남음 */
+const COOP_RESP = 20, COOP_W = 0.1, COOP_EB = 0.066;
+const COOP_SPAWN = [[900, 1000], [740, 1030], [1060, 1030]];
+const r2 = v => Math.round(v * 100) / 100;
+
+const Coop = {
+  setup(m) {
+    const me = m.me, p = G.p;
+    if (m.map) { G.map = mapKey(m.map); OBST = MAPS[G.map].obst; }
+    const list = m.players.slice().sort((a, b) => (a.j || 0) - (b.j || 0));
+    const n = list.length;
+    const C = G.coop = {
+      host: !!m.host, me, hostUid: m.hostUid, pl: {}, n, names: list.map(x => str(x.n, 8) || '???'),
+      resp: 0, send: 0, wT: 0, ebT: 0, pend: {}, mir: new Map(), lastW: 0, why: '', sentEnd: false,
+    };
+    /* 보스 강화: 인원수만큼 체력 ↑, 공격력 1.3배, 공격 템포 조금 빠르게 */
+    G.coopHm = 0.9 + 0.75 * n; G.edm = 1.3; G.bsp = 1.12;
+    G.allies = [];
+    list.forEach((pl, i) => {
+      const s = COOP_SPAWN[i % 3];
+      if (pl.uid === me) { const sp = freeSpot(s[0], s[1], 34); p.x = sp.x; p.y = sp.y; return; }
+      const s0 = freeSpot(s[0], s[1], 34);
+      const e = { id: 900000 + i, uid: pl.uid, type: 'rival', rival: false, ally: true, tm: 0, x: s0.x, y: s0.y, tx: s0.x, ty: s0.y, r: 30, hp: 1000, maxHp: 1000,
+        ang: -Math.PI / 2, flash: 0, spawnT: 0, kvx: 0, kvy: 0, ch: CHARS[pl.ch] ? pl.ch : 'base', nick: str(pl.n, 8) || '???', title: TITLES[pl.t] ? pl.t : '',
+        fr: FRAMES[pl.f] ? pl.f : '', sh: 0, inv: 0, stun: 0, conf: 0, gone: false };
+      C.pl[pl.uid] = { e, nick: e.nick, ch: e.ch, seen: performance.now(), left: false, dead: false };
+      G.allies.push(e);
+    });
+    if (!C.host) {
+      G.ss = { mode: 'boss' }; G.step = 0;       // 대본(보스 등장)은 방장 화면에서만
+      C.lastW = performance.now();
+      Net.listen('w', v => this.applyW(v));
+    }
+    G.nextDrop = rand(16, 24);                  // 보급 상자는 각자 화면에 따로 떨어짐
+    banner('호맘 협동', `${n}명이서 호맘 잡기!${n >= 3 ? ' · 기록 도전' : ''}`, COL.yolk, 1.6);
+  },
+  count() { const C = G.coop; return 1 + Object.values(C.pl).filter(x => !x.left).length; },
+  /* ----- 방장 화면: 적이 노릴 사람 ----- */
+  players() { const a = []; if (!G.p.dead) a.push(G.p); for (const e of G.allies) if (!e.gone) a.push(e); return a; },
+  tgt(e) {
+    const al = this.players();
+    if (!al.length) return G.p;
+    if (e.tq && al.includes(e.tq) && G.t < (e.tqT || 0)) return e.tq;
+    let best = al[0], bd = 1e9;
+    for (const q of al) { const d = Math.hypot(q.x - e.x, q.y - e.y) * (q === e.tq ? 0.8 : 1); if (d < bd) { bd = d; best = q; } }
+    e.tq = best; e.tqT = G.t + (e.boss ? 2.2 : 1.4);
+    return best;
+  },
+  /* 방장 화면에서 친구가 부딪히거나 내려찍기에 맞음 → 그 친구에게 알려줌 */
+  hurtRemote(q, dmg, ang, power) {
+    if (!q || !q.uid || G.over) return;
+    Net.ev({ k: 'hu', to: q.uid, d: Math.round(dmg), ka: r2(ang || 0), kp: Math.round(power || 0) });
+  },
+  fx(kind, x, y) { if (G.coop && G.coop.host) Net.ev({ k: 'fx', f: kind, x: Math.round(x), y: Math.round(y) }); },
+  onKill(e, sc) { if (G.coop && G.coop.host) Net.ev({ k: 'kl', id: e.id, sc, b: e.boss ? 1 : 0 }); },
+
+  update(dt) {
+    const C = G.coop, p = G.p;
+    if (p.dead && !G.over) { C.resp -= dt; if (C.resp <= 0) this.respawn(); }
+    if (!C.host) { for (const id in C.pend) { const o = C.pend[id]; o.k = 'bh'; o.id = Number(id); o.d = Math.round(o.d); Net.ev(o); } C.pend = {}; }
+    C.send -= dt;
+    if (C.send <= 0 && !G.over) { C.send = PVP_SEND; Net.send(mpMyState()); }
+    if (C.host && !G.over) {
+      C.ebT -= dt; if (C.ebT <= 0) { C.ebT = COOP_EB; this.flushNew(); }
+      C.wT -= dt; if (C.wT <= 0) { C.wT = COOP_W; Net.setW(this.snap()); }
+      if (p.dead && !Object.values(C.pl).some(x => !x.left && !x.dead)) this.end('lose', '전멸! 다 같이 쓰러졌어요');
+    }
+    G.spec = p.dead ? (G.allies.find(e => !e.gone) || null) : null;
+    for (const uid in C.pl) { const P = C.pl[uid]; if (!P.left && !G.over && performance.now() - P.seen > 20000) this.left(uid); }
+    if (!C.host && !G.over && performance.now() - C.lastW > 15000) this.end('lose', '방장 화면이랑 연결이 끊겼어요');
+  },
+
+  /* ---------- 방장: 세상 상태 보내기 ---------- */
+  snap() {
+    const en = [];
+    for (const e of G.en) {
+      if (e.dead) continue;
+      const bits = (e.enr ? 1 : 0) | (e.dashing ? 2 : 0) | ((e.stun || 0) > 0 ? 4 : 0) | ((e.conf || 0) > 0 ? 8 : 0) | ((e.tell || 0) > 0 ? 16 : 0)
+        | (e.spawnT > 0 ? 32 : 0) | (e.pat === 'smash' && e.jtx != null ? 64 : 0) | (e.st === 'warn' ? 128 : 0);
+      const a = [e.id, e.type, Math.round(e.x), Math.round(e.y), Math.max(0, Math.round(e.hp)), Math.round(e.maxHp), bits];
+      if (e.boss) a.push(Math.round(e.air || 0), Math.round(e.jtx || 0), Math.round(e.jty || 0), r2(e.lang || 0), r2(e.da || e.dang || 0));
+      else a.push(0, 0, 0, 0, r2(e.da || 0));
+      en.push(a);
+    }
+    return { t: r2(G.t), bt: G.bossT0 ? r2((G.bossT1 || G.t) - G.bossT0) : -1, en };
+  },
+  /* 새로 생긴 보스 총알 · 장판만 묶어서 보냄 (장판 웅덩이는 각자 화면에서 생김) */
+  flushNew() {
+    const b = [], h = [];
+    for (const o of G.eb) if (!o.sent && !o.cos && !o.loc && !o.dead) { o.sent = 1; b.push([Math.round(o.x), Math.round(o.y), Math.round(o.vx), Math.round(o.vy), o.r, Math.round(o.dmg), r2(o.life), o.c, o.kind || 0, r2(o.bt || 0)]); }
+    for (const z of G.hz) if (!z.sent && z.k !== 'puddle') { z.sent = 1; h.push(this.hzOut(z)); }
+    if (b.length || h.length) Net.ev({ k: 'wb', b, h });
+  },
+  hzOut(z) {
+    const o = { k: z.k, t: r2(z.t), dur: r2(z.dur) };
+    for (const f of ['x', 'y', 'r', 'len', 'w', 'dmg', 'n', 'id']) if (typeof z[f] === 'number') o[f] = Math.round(z[f]);
+    for (const f of ['ang', 'spread']) if (typeof z[f] === 'number') o[f] = Math.round(z[f] * 1000) / 1000;
+    if (z.kind) o.kind = z.kind;
+    return o;
+  },
+  hzIn(z) {
+    if (!z || !['spawn', 'warn', 'line', 'lwarn', 'laser'].includes(z.k)) return null;
+    const o = { k: z.k, t: clamp(fnum(z.t), 0, 5), dur: clamp(fnum(z.dur, 1), 0.05, 6) };
+    for (const f of ['x', 'y', 'r', 'len', 'w', 'dmg', 'n', 'id', 'ang', 'spread']) if (typeof z[f] === 'number' && isFinite(z[f])) o[f] = z[f];
+    if (o.k === 'spawn') {
+      o.kind = typeof z.kind === 'string' && (EN[z.kind] || /^boss:[a-z]+$/.test(z.kind)) ? z.kind : 'hw'; o.vis = 1;
+      if (o.kind.startsWith('boss:')) { banner('WARNING', '호맘 협동 · 시간 재는 중!', COL.rose, 2.0, true); sfx('warn'); }
+    }
+    if (o.k === 'laser') { o.hit = false; o.n = clamp(o.n || 1, 1, 5); o.dmg = clamp(o.dmg || 0, 0, 2000); G.shake = Math.max(G.shake, 8); sfx('ult'); }
+    if (o.k === 'warn') o.dmg = clamp(o.dmg || 0, 0, 2000);
+    return o;
+  },
+
+  /* ---------- 방장 아닌 사람: 받은 걸 내 화면에 ---------- */
+  applyW(w) {
+    if (!w || !G || !G.coop || G.coop.host || G.over) return;
+    const C = G.coop; C.lastW = performance.now();
+    if (typeof w.bt === 'number' && w.bt >= 0) { const want = G.t - w.bt; if (!G.bossT0 || Math.abs(G.bossT0 - want) > 0.25) G.bossT0 = Math.max(0.0001, want); }
+    const seen = new Set();
+    for (const a of Array.isArray(w.en) ? w.en.slice(0, 40) : []) {
+      if (!Array.isArray(a)) continue;
+      const id = a[0], type = a[1], bits = num(a[6]);
+      const boss = !!BOSS[type];
+      if (!boss && !EN[type]) continue;
+      seen.add(id);
+      let e = C.mir.get(id);
+      if (!e) {
+        e = { id, type, mirror: true, boss, x: fnum(a[2]), y: fnum(a[3]), tx: fnum(a[2]), ty: fnum(a[3]), r: boss ? BOSS[type].r : EN[type].r, hp: num(a[4], 1), maxHp: Math.max(1, num(a[5], 1)),
+          flash: 0, ct: 0, spawnT: bits & 32 ? (boss ? 0.5 : 0.35) : 0, kvx: 0, kvy: 0, enr: false, st: 'move', air: 0, sa: 0 };
+        C.mir.set(id, e); G.en.push(e);
+        if (boss) { G.shake = 10; sfx('boss'); }
+      }
+      e.tx = fnum(a[2], e.tx); e.ty = fnum(a[3], e.ty); e.hp = Math.min(e.hp, num(a[4], e.hp)); e.maxHp = Math.max(1, num(a[5], e.maxHp));
+      const enr = !!(bits & 1);
+      if (boss && enr && !e.enr) { banner('보스가 화났다!', '공격이 빨라져요', COL.rose, 1.6); sfx('warn'); }
+      e.enr = enr; e.dashing = !!(bits & 2); e.stun = bits & 4 ? 0.15 : 0; e.conf = bits & 8 ? 0.15 : 0; e.tell = bits & 16 ? 0.12 : 0;
+      e.st = bits & 128 ? 'warn' : 'move'; e.da = fnum(a[11]); e.dang = e.da;
+      if (boss) { e.air = fnum(a[7]); e.pat = bits & 64 ? 'smash' : null; e.jtx = bits & 64 ? fnum(a[8]) : null; e.jty = fnum(a[9]); e.lang = fnum(a[10]); }
+    }
+    for (const [id, e] of C.mir) if (!seen.has(id)) { e.dead = true; C.mir.delete(id); }
+  },
+  updMirror(e, dt) {
+    e.flash = Math.max(0, e.flash - dt); e.tell = Math.max(0, (e.tell || 0) - dt);
+    if (e.spawnT > 0) e.spawnT -= dt;
+    const dx = e.tx - e.x, dy = e.ty - e.y;
+    if (Math.hypot(dx, dy) > 300) { e.x = e.tx; e.y = e.ty; return; }
+    const k = 1 - Math.pow(0.0008, dt);
+    e.x += dx * k; e.y += dy * k;
+  },
+  /* 내가 때린 건 내 화면에 바로 보이고, 방장에게 모아서 보냄 (진짜로 쓰러뜨리는 건 방장 화면) */
+  pendOf(e) { const C = G.coop; return C.pend[e.id] || (C.pend[e.id] = { d: 0 }); },
+  hitMirror(e, dmg, charge) {
+    if (e.dead || G.over) return;
+    dmg = Math.round(dmg);
+    this.pendOf(e).d += dmg;
+    e.hp = Math.max(1, e.hp - dmg); e.flash = 0.09;
+    if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: e.boss ? 26 : 21, t: 0, dur: 0.7, vy: -70 });
+    if (charge) G.p.ult = Math.min(1, G.p.ult + (Math.min(dmg, 400) / 1300) * G.p.ultMul);
+    sfx('hit');
+  },
+  pendFx(e, k, s) { if (G.over) return; const P = this.pendOf(e); P[k] = Math.max(P[k] || 0, Math.round(s * 10) / 10); },
+  pendKnock(e, ang, power) { if (G.over || e.boss) return; const P = this.pendOf(e); P.ka = r2(ang); P.kp = Math.round(power); },
+  /* 방장 화면: 친구가 때린 만큼 진짜 체력 깎기 */
+  remoteHit(e, d) {
+    e.hp -= d; e.flash = 0.09;
+    if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(d), c: '#bfe6ff', s: e.boss ? 22 : 18, t: 0, dur: 0.6, vy: -70 });
+    if (e.hp <= 0) killEnemy(e);
+  },
+
+  /* ---------- 이벤트 ---------- */
+  netState(uid, v) {
+    if (!G || !G.coop) return;
+    const P = G.coop.pl[uid]; if (!P) return;
+    const was = P.dead;
+    mpState(P, v, G.allies);
+    if (!was && P.dead && !G.over) { G.note = { text: `${P.nick} 쓰러짐! 20초 뒤 부활`, t: 2.2 }; }
+  },
+  netEvent(v) {
+    if (!G || !G.coop) return;
+    const C = G.coop, p = G.p, P = C.pl[v.u];
+    if (P) P.seen = performance.now();
+    if (v.k === 's') PvP.cosShot(v);
+    else if (v.k === 'u') PvP.cosUlt(v);
+    else if (v.k === 'bh') {
+      if (!C.host || G.over) return;
+      const e = G.en.find(x => x.id === v.id && !x.dead); if (!e) return;
+      const d = clamp(num(v.d), 0, 30000);
+      if (d > 0) this.remoteHit(e, d);
+      if (e.dead) return;
+      if (v.st > 0) stunE(e, Math.min(fnum(v.st), 3));
+      if (v.cf > 0) confE(e, Math.min(fnum(v.cf), 3));
+      if (v.kp > 0 && !e.boss) knock(e, fnum(v.ka), Math.min(fnum(v.kp), 1200));
+    } else if (v.k === 'hu') {
+      if (v.to !== C.me || G.over || p.dead) return;
+      damagePlayer(clamp(num(v.d), 0, 5000));
+      if (!p.dead && v.kp > 0) knock(p, fnum(v.ka), Math.min(fnum(v.kp), 1200));
+    } else if (v.k === 'wb') {
+      if (C.host || G.over) return;
+      for (const a of Array.isArray(v.b) ? v.b.slice(0, 220) : []) {
+        if (!Array.isArray(a)) continue;
+        G.eb.push({ x: fnum(a[0]), y: fnum(a[1]), vx: clamp(fnum(a[2]), -3000, 3000), vy: clamp(fnum(a[3]), -3000, 3000), r: clamp(fnum(a[4], 9), 2, 40), dmg: clamp(fnum(a[5]), 0, 2000), life: clamp(fnum(a[6], 1), 0.05, 6),
+          c: [0, 1, 2, 3, 4].includes(a[7]) ? a[7] : 0, kind: a[8] === 1 ? 1 : 0, bt: clamp(fnum(a[9]), 0, 5) });
+      }
+      for (const z of Array.isArray(v.h) ? v.h.slice(0, 40) : []) { const o = this.hzIn(z); if (o) G.hz.push(o); }
+    } else if (v.k === 'kl') {
+      if (C.host || v.u !== C.hostUid) return;
+      const sc = clamp(num(v.sc), 0, 20000), e = C.mir.get(v.id);
+      G.score += sc; G.kills++;
+      if (e) {
+        e.dead = true; C.mir.delete(v.id);
+        addText(e.x, e.y - 12, '+' + sc, COL.yolk, e.boss ? 40 : 26, 1.1);
+        burst(e.x, e.y, e.boss ? 70 : 16, e.boss ? ['#fff', COL.yolk, COL.orange, COL.rose] : ['#fff', COL.rose, COL.yolk], e.boss ? 560 : 300);
+        sfx(e.boss ? 'boom' : 'kill');
+      }
+      if (v.b) {
+        G.shake = 18; G.slow = 0.9; G.eb.length = 0; G.hz.length = 0;
+        for (const m of G.en) if (m.mirror && !m.boss) { m.dead = true; C.mir.delete(m.id); burst(m.x, m.y, 10, ['#fff', COL.rose], 260); }
+        banner('CLEAR!', BOSS.mom.name, COL.yolk, 2.6);
+      }
+    } else if (v.k === 'fx') {
+      if (v.f === 'sm') { const x = fnum(v.x), y = fnum(v.y); G.fx.push({ k: 'ring', x, y, r0: 30, r1: 170, t: 0, dur: 0.35, c: '#ff5fb0', w: 12 }); G.shake = Math.max(G.shake, 12); sfx('boom'); }
+    } else if (v.k === 'd') {
+      if (P && !P.dead && !G.over) { G.note = { text: `${P.nick} 쓰러짐! 20초 뒤 부활`, t: 2.2 }; }
+    } else if (v.k === 'q') this.left(v.u);
+    else if (v.k === 'end') {
+      if (v.u !== C.hostUid || C.host) return;
+      if (Array.isArray(v.n) && v.n.length) C.names = v.n.slice(0, 3).map(x => str(x, 8) || '???');
+      if (typeof v.sc === 'number') G.score = Math.max(G.score, clamp(v.sc, 0, 1e7));
+      this.end(v.res === 'win' ? 'win' : 'lose', str(v.why, 30), clamp(fnum(v.ht), 0, 36000));
+    }
+  },
+  left(uid) {
+    const C = G && G.coop; if (!C || G.over) return;
+    const P = C.pl[uid]; if (!P || P.left) return;
+    P.left = true; P.e.gone = true;
+    const i = G.allies.indexOf(P.e); if (i >= 0) G.allies.splice(i, 1);
+    G.note = { text: `${P.nick} 나감`, t: 2.4 };
+    if (uid === C.hostUid && !C.host) this.end('lose', '방장이 나가서 끝났어요');
+  },
+  /* ---------- 쓰러짐 / 부활 / 끝 ---------- */
+  onDeath() {
+    const C = G.coop;
+    G.shake = 12; sfx('hurt');
+    C.resp = COOP_RESP;
+    Net.ev({ k: 'd' });
+    const mates = G.allies.filter(e => !e.gone).length;
+    banner('쓰러졌어요!', mates ? `${COOP_RESP}초 뒤 부활 · 친구들이 버텨 줘야 해요!` : '다 쓰러지면 실패!', COL.rose, 2);
+  },
+  respawn() {
+    const p = G.p, mate = G.allies.find(e => !e.gone);
+    const sp = mate ? freeSpot(clamp(mate.x + rand(-70, 70), 60, WW - 60), clamp(mate.y + rand(-70, 70), 60, WH - 60), 34) : freeSpot(COOP_SPAWN[0][0], COOP_SPAWN[0][1], 34);
+    p.x = sp.x; p.y = sp.y; p.dead = false; p.hp = p.maxHp; p.inv = 2; p.stun = 0; p.conf = 0;
+    p.ammo = p.mag; p.rl = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.dashT = 0;
+    burst(p.x, p.y, 20, ['#fff', CHARS[G.lo.ch].ring], 300); sfx('pick');
+    banner('부활!', '다시 싸워요!', COL.mint, 1.1);
+  },
+  end(res, why, ht) {
+    if (G.over) return;
+    const C = G.coop; C.why = why || '';
+    if (typeof ht === 'number' && ht > 0) { G.bossT0 = 0.0001; G.bossT1 = 0.0001 + ht; }
+    finish(res === 'win');
+  },
+  /* finish() 에서 부름: 결과에 팀 정보 붙이고, 방장이면 모두에게 끝났다고 알림 */
+  onFinish(clear) {
+    const C = G.coop, r = G.result;
+    if (C.host) {
+      C.names = [Store.P.nick].concat(Object.values(C.pl).filter(x => !x.left).map(x => x.nick)).slice(0, 3);
+      if (!C.sentEnd) { C.sentEnd = true; Net.ev({ k: 'end', res: clear ? 'win' : 'lose', ht: r.htime, why: C.quit ? '방장이 나가서 끝났어요' : C.why, n: C.names, sc: r.score - r.bonus }); }
+    }
+    r.coop = true; r.team = C.names.slice(); r.n = C.names.length; r.why = C.why;
+    if (!clear) { r.where = BOSS.mom.name; if (!C.quit) r.coins = Math.max(r.coins, 60); }   // 끝까지 싸웠으면 참가 보상
+    G.endT = clear ? 3.0 : 2.4;
+    Net.leaveLater(3200);
+  },
+  forfeit() {
+    if (!G || G.over) return;
+    G.coop.quit = true; Net.ev({ k: 'q' });
+    this.end('lose', '중간에 나갔어요'); G.result.quit = true; G.endT = 0.4;
+  },
+  /* 왼쪽 위: 친구들 상태 */
+  hud(by) {
+    const u = L.u, C = G.coop, p = G.p;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    for (const uid in C.pl) {
+      const P = C.pl[uid];
+      const s = P.left ? `${P.nick} · 나감` : P.dead ? `${P.nick} · 쓰러짐` : P.nick;
+      ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`;
+      outText(s, 14 * u, by, P.left ? 'rgba(255,255,255,.5)' : P.dead ? COL.rose : '#bfe6ff', 3);
+      if (!P.left && !P.dead) { const w = ctx.measureText(s).width; bar(14 * u + w + 8 * u, by - 4 * u, 46 * u, 8 * u, P.e.hp / P.e.maxHp, COL.mint); }
+      by += 19 * u;
+    }
+    if (p.dead && !G.over) {
+      ctx.textAlign = 'center'; ctx.font = `400 ${Math.round(22 * u)}px ${FONT_DISP}`;
+      outText(`부활까지 ${Math.max(1, Math.ceil(C.resp))}`, VW / 2, VH * 0.5, '#fff', 5);
+      ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`; outText(G.spec ? `${G.spec.nick} 관전 중` : '', VW / 2, VH * 0.5 + 26 * u, '#bfe6ff', 3);
+      ctx.textAlign = 'left';
+    }
+    return by;
+  },
+};
+
+/* ================= 친구 목록 · 접속 표시 · DM =================
+   웹사이트 버전 + Realtime Database 가 있을 때만 (클로드 안 버전은 목록만 보여줌)
+   st/<uid>                    : 접속 상태 {on, t, n, g}   나만 씀, 로그인한 사람은 다 읽음
+   dm/<보낸 사람>/<받는 사람>   : {n, t, m:[{t, x, c?, k?}]} 보낸 사람만 씀, 두 사람만 읽음
+   dmi/<받는 사람>/<보낸 사람>  : {t, n, x} 새 메시지 알림  보낸 사람이 씀, 받는 사람만 읽음
+   dmr/<나>/<상대>              : 어디까지 읽었는지        나만                                */
+const DM_MAX = 40, DM_LEN = 100;
+const WHERE_TXT = { lobby: '로비에 있어요', solo: '게임 하는 중', mp: '대전 하는 중', room: '대전 기다리는 중' };
+const UID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+function agoTxt(t) {
+  if (!t) return '';
+  const s = Math.max(0, (Date.now() - t) / 1000);
+  if (s < 90) return '방금';
+  if (s < 3600) return `${Math.round(s / 60)}분 전`;
+  if (s < 86400) return `${Math.round(s / 3600)}시간 전`;
+  return `${Math.min(99, Math.round(s / 86400))}일 전`;
+}
+const Social = {
+  on: false, st: {}, stState: 'idle', where: 'lobby', out: {}, inc: {}, ptr: {}, rd: {}, ready: false,
+  ls: [], incL: {}, noteT: {}, lastSend: 0, openPeer: '', t0: 0, myRef: null,
+  ok() { return !!(Store.web && Store.mode === 'online' && Store.uid && !Store.kicked && rtdbOk()); },
+  dmOk() { return this.on && this.ok(); },
+  db() { return firebase.database(); },
+  ts() { const S = firebase.database.ServerValue; return S && S.TIMESTAMP ? S.TIMESTAMP : Date.now(); },
+  listen(ref, fn, err) { ref.on('value', fn, err || (e => console.warn('rtdb', e))); this.ls.push(() => ref.off('value', fn)); },
+
+  start() {
+    if (this.on || !this.ok()) return;
+    this.on = true; this.t0 = Date.now();
+    const db = this.db(), me = Store.uid;
+    this.myRef = db.ref('st/' + me);
+    /* 연결될 때마다: 끊기면 '오프라인'으로 바뀌게 예약해 두고 '온라인' 표시 */
+    this.listen(db.ref('.info/connected'), s => {
+      if (s.val() !== true || !this.on) return;
+      Promise.resolve(this.myRef.onDisconnect().set({ on: false, t: this.ts(), n: Store.P.nick, g: '' })).then(() => this.writeSt()).catch(e => console.warn('presence', e));
+    });
+    this.listen(db.ref('st'), s => { this.st = s.val() || {}; this.stState = 'ready'; Store.emit('presence'); }, e => { console.warn('presence read', e); this.stState = 'error'; Store.emit('presence'); });
+    this.listen(db.ref('dm/' + me), s => {
+      const v = s.val() || {}; this.out = {};
+      for (const k of Object.keys(v)) if (UID_RE.test(k)) this.out[k] = this.norm(v[k]);
+      this.ready = true; Store.emit('dm');
+    }, e => { console.warn('dm read', e); this.ready = 'error'; Store.emit('dm'); });
+    this.listen(db.ref('dmi/' + me), s => { this.ptr = s.val() || {}; this.syncInc(); Store.emit('dm'); }, () => {});
+    this.listen(db.ref('dmr/' + me), s => { const v = s.val() || {}; for (const k in v) if (typeof v[k] === 'number') this.rd[k] = Math.max(this.rd[k] || 0, v[k]); Store.emit('dm'); }, () => {});
+  },
+  writeSt() { if (this.on && this.myRef) this.myRef.set({ on: true, t: this.ts(), n: Store.P.nick, g: this.where }).catch(() => {}); },
+  setWhere(g) { if (this.where === g) return; this.where = g; this.writeSt(); },
+  /* offline=true: 로그아웃 → 바로 오프라인으로. false: 다른 기기가 차지함 → 그 기기 표시는 건드리지 않음 */
+  stop(offline) {
+    if (!this.on) return Promise.resolve();
+    this.on = false;
+    for (const f of this.ls.concat(Object.values(this.incL))) { try { f(); } catch (e) { /* 무시 */ } }
+    this.ls = []; this.incL = {};
+    let p = Promise.resolve();
+    try {
+      if (offline) p = this.myRef.set({ on: false, t: this.ts(), n: Store.P ? Store.P.nick : '', g: '' }).catch(() => {});
+      else this.myRef.onDisconnect().cancel();
+    } catch (e) { /* 무시 */ }
+    return p;
+  },
+  norm(v) {
+    if (!v || typeof v !== 'object') return { n: '', m: [] };
+    const raw = Array.isArray(v.m) ? v.m : Object.values(v.m || {});
+    const m = raw.filter(validMsg).slice(-DM_MAX).map(x => ({ t: x.t, x: clean(str(x.x, DM_LEN)), c: /^\d{4}$/.test(String(x.c || '')) ? String(x.c) : '', k: MP[x.k] ? x.k : '' }));
+    return { n: str(v.n, 8), m };
+  },
+  /* 나한테 보낸 적 있는 사람마다 그 사람 → 나 대화를 들음 */
+  syncInc() {
+    const me = Store.uid;
+    for (const peer of Object.keys(this.ptr)) {
+      if (this.incL[peer] || !UID_RE.test(peer) || peer === me) continue;
+      const ref = this.db().ref('dm/' + peer + '/' + me);
+      const fn = s => { this.inc[peer] = this.norm(s.val()); this.notify(peer); Store.emit('dm'); };
+      ref.on('value', fn, e => console.warn('dm in', e));
+      this.incL[peer] = () => ref.off('value', fn);
+    }
+  },
+  notify(peer) {
+    const c = this.inc[peer], last = c && c.m.length ? c.m[c.m.length - 1] : null;
+    if (!last) return;
+    const prev = this.noteT[peer] || 0;
+    this.noteT[peer] = Math.max(prev, last.t);
+    if (last.t <= Math.max(prev, this.t0 - 2000)) return;
+    if (this.openPeer === peer && UI.cur === 'dm') { this.markRead(peer); return; }
+    if (last.t <= (this.rd[peer] || 0)) return;
+    if (UI.cur !== 'game') { UI.toast(`💬 ${this.nickOf(peer)}: ${last.c ? '방 초대가 왔어요!' : last.x}`, 'good'); sfx('coin'); }
+  },
+
+  /* ---------- 읽기 ---------- */
+  pub(id) { return Store.rank.find(r => r.id === id) || null; },
+  nickOf(id) {
+    const r = this.pub(id); if (r) return r.nick;
+    const p = this.ptr[id], s = this.st[id];
+    return (this.inc[id] && this.inc[id].n) || (p && str(p.n, 8)) || (s && str(s.n, 8)) || '???';
+  },
+  online(id) { if (id === Store.uid) return this.on; const s = this.st[id]; return !!(s && s.on === true); },
+  lastT(id) { const s = this.st[id], r = this.pub(id); return Math.max(s && typeof s.t === 'number' ? s.t : 0, r ? r.upd || 0 : 0); },
+  whereTxt(id) {
+    if (this.online(id)) { const s = id === Store.uid ? { g: this.where } : this.st[id]; return WHERE_TXT[s && s.g] || '온라인'; }
+    const t = this.lastT(id);
+    return t ? `${agoTxt(t)} 접속` : '오프라인';
+  },
+  onlineCount(excludeMe) { let n = 0; for (const k in this.st) if (this.st[k] && this.st[k].on === true && !(excludeMe && k === Store.uid)) n++; return n; },
+  /* 전체 플레이어: 온라인이 위로, 그다음 최근에 들어온 순 */
+  people() {
+    const src = Store.rank.slice();
+    if (Store.uid && Store.P && !src.some(r => r.id === Store.uid)) src.push(Object.assign(parsePub(Store.uid, Store.pubData()), { id: Store.uid }));
+    const on = r => (this.online(r.id) ? 1 : 0);
+    return src.sort((a, b) => on(b) - on(a) || (a.id === Store.uid ? -1 : b.id === Store.uid ? 1 : 0) || this.lastT(b.id) - this.lastT(a.id) || a.nick.localeCompare(b.nick, 'ko'));
+  },
+  conv(peer) {
+    const a = ((this.out[peer] || {}).m || []).map(m => Object.assign({ mine: true }, m));
+    const b = ((this.inc[peer] || {}).m || []).map(m => Object.assign({ mine: false }, m));
+    return a.concat(b).sort((x, y) => x.t - y.t);
+  },
+  unread(peer) { const r = this.rd[peer] || 0; return ((this.inc[peer] || {}).m || []).filter(m => m.t > r).length; },
+  unreadTotal() { let n = 0; for (const k in this.inc) n += this.unread(k); return n; },
+  /* 대화 목록: 최근 대화가 위로 */
+  convs() {
+    const ids = new Set([...Object.keys(this.out), ...Object.keys(this.inc)]);
+    const L = [];
+    for (const id of ids) { const c = this.conv(id); if (!c.length) continue; L.push({ id, last: c[c.length - 1], n: this.unread(id) }); }
+    return L.sort((a, b) => b.last.t - a.last.t);
+  },
+  markRead(peer) {
+    const m = (this.inc[peer] || {}).m || [], t = m.length ? m[m.length - 1].t : 0;
+    if (!t || t <= (this.rd[peer] || 0)) return;
+    this.rd[peer] = t; Store.emit('dm');
+    if (this.dmOk()) this.db().ref('dmr/' + Store.uid + '/' + peer).set(t).catch(() => {});
+  },
+
+  /* ---------- 보내기 ---------- */
+  async send(peer, text, ex) {
+    if (!this.dmOk()) return { ok: false, msg: 'DM은 웹사이트에서 로그인해야 보낼 수 있어요' };
+    if (this.ready !== true) return { ok: false, msg: this.ready === 'error' ? 'DM 규칙이 아직 없어요 (Realtime Database 규칙 확인)' : '잠깐만요, 불러오는 중이에요' };
+    if (!UID_RE.test(peer) || peer === Store.uid) return { ok: false, msg: '보낼 수 없는 상대예요' };
+    text = clean(String(text || '').replace(/\s+/g, ' ').trim()).slice(0, DM_LEN);
+    if (!text) return { ok: false, msg: '메시지를 입력해 주세요' };
+    const now = Date.now();
+    if (now - this.lastSend < 700) return { ok: false, msg: '조금만 천천히 보내 주세요' };
+    this.lastSend = now;
+    const me = Store.uid, nick = Store.P.nick, cur = this.out[peer] || { m: [] };
+    const prevT = cur.m.length ? cur.m[cur.m.length - 1].t : 0;
+    const msg = { t: Math.max(now, prevT + 1), x: text };
+    if (ex && /^\d{4}$/.test(String(ex.c || ''))) { msg.c = String(ex.c); msg.k = MP[ex.k] ? ex.k : '1v1'; }
+    const m = cur.m.map(o => { const q = { t: o.t, x: o.x }; if (o.c) { q.c = o.c; q.k = o.k || '1v1'; } return q; }).concat([msg]).slice(-DM_MAX);
+    this.out[peer] = { n: nick, m: m.map(o => Object.assign({ c: '', k: '' }, o)) }; Store.emit('dm');
+    try {
+      await this.db().ref('dm/' + me + '/' + peer).set({ n: nick, t: msg.t, m });
+      await this.db().ref('dmi/' + peer + '/' + me).set({ t: msg.t, n: nick, x: msg.c ? '방 초대' : text.slice(0, 40) });
+      return { ok: true };
+    } catch (e) {
+      console.warn('dm send', e);
+      return { ok: false, msg: /permission|denied/i.test(String((e && (e.code || e.message)) || '')) ? 'DM 규칙이 아직 없어요 (Realtime Database 규칙 확인)' : 'DM을 보내지 못했어요' };
+    }
+  },
+};
 
 /* ================= 화면 / 메뉴 ================= */
 const $ = s => document.querySelector(s);
@@ -3697,8 +4494,9 @@ const UI = {
       if (['lobby', 'gear', 'shop', 'chars'].includes(this.cur)) this.show(this.cur); else this.updateCoins();
     });
     Store.on('kick', () => {
-      if (G && G.pvp && !G.over) { Net.ev({ k: 'q' }); Net.leave(); }
+      if (G && (G.pvp || G.coop) && !G.over) { Net.ev({ k: 'q' }); Net.leave(); }
       else if (Net.rid) Net.cancel();
+      Social.stop(false);
       clearInterval(this.vT);
       if (this.cur === 'game') this.show('lobby');
       this.refreshMode(); sfx('fail');
@@ -4197,67 +4995,7 @@ const UI = {
     });
   },
 
-  /* ---------- 1대1 ---------- */
   vT: 0,
-  showPvp(msg) {
-    clearInterval(this.vT);
-    const why = Net.why();
-    if (why) {
-      this.modal(`<p class="eyebrow">1 VS 1</p><h2>1대1 대결</h2><p class="sub">${esc(why)}</p><div class="mbtns"><button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
-      $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
-      return;
-    }
-    this.modal(`
-      <p class="eyebrow">1 VS 1</p><h2>1대1 대결</h2>
-      <p class="sub">상대를 ${PVP_KILLS}번 먼저 쓰러뜨리면 승리! (제한 시간 ${mmss(PVP_TIME)})<br>이기면 <b class="num">${PVP_REWARD.win}</b>코인 · 비기면 ${PVP_REWARD.draw} · 져도 ${PVP_REWARD.lose}코인</p>
-      <div class="mbtns col">
-        <button class="btn big" type="button" id="vQuick" data-focus>빠른 대전</button>
-        <button class="btn blue" type="button" id="vMake">친구랑 하기 · 방 만들기</button>
-      </div>
-      <form class="pf" id="vJoinF" novalidate>
-        <h3>방 코드로 들어가기</h3>
-        <div class="field row"><input id="vCode" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4자리 숫자" aria-label="방 코드"><button class="btn small" type="submit">들어가기</button></div>
-        <p class="msg${msg ? ' err' : ''}" id="vMsg">${esc(msg || '친구가 만든 방 코드를 넣으세요')}</p>
-      </form>
-      <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button></div>`, true);
-    $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
-    $('#vQuick').addEventListener('click', pvpQuick);
-    $('#vMake').addEventListener('click', pvpMake);
-    $('#vJoinF').addEventListener('submit', pvpJoin);
-  },
-  pvpWait(title, sub, code) {
-    clearInterval(this.vT);
-    const t0 = Date.now();
-    this.modal(`
-      <p class="eyebrow">1 VS 1</p><h2>${esc(title)}</h2>
-      ${code ? `<p class="vcode">${esc(code)}</p>` : '<span class="vwait" aria-hidden="true"></span>'}
-      <p class="sub">${esc(sub)}</p>
-      <p class="sub" id="vTime">0초째 기다리는 중</p>
-      <div class="mbtns"><button class="btn ghost" type="button" id="vCancel" data-focus>취소</button></div>`, false);
-    this.vT = setInterval(() => { const e = $('#vTime'); if (e) e.textContent = `${Math.floor((Date.now() - t0) / 1000)}초째 기다리는 중`; }, 1000);
-    $('#vCancel').addEventListener('click', async () => { sfx('click'); clearInterval(this.vT); $('#vCancel').disabled = true; await Net.cancel(); this.showPvp(); });
-  },
-  showPvpMenu() {
-    this.modal(`
-      <p class="eyebrow">1 VS 1</p><h2>나갈까요?</h2>
-      <p class="sub">1대1은 멈출 수 없어요. 지금 나가면 패배로 처리돼요.</p>
-      <div class="mbtns col"><button class="btn big" type="button" id="pResume" data-focus>계속 싸우기</button><button class="btn ghost" type="button" id="pQuit">나가기 (패배)</button></div>`, true);
-    $('#pResume').addEventListener('click', () => { sfx('click'); this.closeModal(); });
-    $('#pQuit').addEventListener('click', () => { sfx('click'); this.closeModal(); Game.quit(); });
-  },
-  showPvpResult(r) {
-    const P = Store.P, title = r.res === 'win' ? '승리!' : r.res === 'lose' ? '패배' : '무승부';
-    this.modal(`
-      <p class="eyebrow">1 VS 1</p><h2 class="${r.res === 'win' ? 'win' : r.res === 'lose' ? 'lose' : ''}">${title}</h2>
-      <div class="vsrow">${avatarHTML(P.pic, P.ch, 'l')}<b class="num">${r.k} : ${r.d}</b>${ballHTML(r.opCh, 'l')}</div>
-      <p class="sub">나 vs ${esc(r.op)}${r.why ? ` · ${esc(r.why)}` : ''}</p>
-      ${typeof r.dpr === 'number' ? `<p class="sub">1대1 점수 <b class="num">${r.dpr >= 0 ? '+' : ''}${r.dpr}</b> → ${tierHTML(P.pr)} <b class="num">${fmt(P.pr)}</b></p>` : ''}
-      <div class="res"><div class="wide big"><span>받은 코인</span><b class="num">+${fmt(r.coins)}</b></div><div class="wide"><span>1대1 전적</span><b class="num">${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div></div>
-      <div class="mbtns"><button class="btn ghost" type="button" id="vLobby">로비로</button><button class="btn" type="button" id="vAgain" data-focus>다시 1대1</button></div>`, false);
-    $('#vLobby').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('lobby'); });
-    $('#vAgain').addEventListener('click', () => { sfx('click'); this.show('lobby'); this.showPvp(); });
-  },
-
   /* ---------- 게임 중 모달 ---------- */
   showPause() {
     const S = scr()[clamp(G.step, 0, scr().length - 1)];
@@ -4539,40 +5277,7 @@ function startGame(mode) {
   SFX.init(); sfx('click');
   UI.show('game');
   Game.start(Object.assign(loadoutFrom(Store.P), { mode, map: chosenMap() }), onGameEnd);
-}
-function pvpGo(m) {
-  clearInterval(UI.vT); UI.closeModal();
-  UI.show('game');
-  Game.startPvp(loadoutFrom(Store.P), m, onGameEnd);
-}
-async function pvpQuick() {
-  SFX.init(); sfx('click');
-  UI.pvpWait('상대 찾는 중...', '1대1 빠른 대전을 누른 사람이랑 바로 붙어요');
-  for (let i = 0; i < 3; i++) {
-    try { await Net.quick(pvpGo); return; }
-    catch (e) { console.warn(e); Net.clear(); Net.reset(); if (!['none', 'full', 'busy', 'self'].includes(e && e.message)) break; }
-  }
-  UI.showPvp('상대를 찾지 못했어요. 다시 해 주세요');
-}
-async function pvpMake() {
-  SFX.init(); sfx('click');
-  UI.pvpWait('방 만드는 중...', '잠깐만요');
-  try {
-    const code = await Net.makeRoom(pvpGo);
-    if (!Net.started) UI.pvpWait('방 코드', '친구가 1대1 → 방 코드로 들어가기에 이 숫자를 넣으면 시작해요', code);
-  } catch (e) { console.warn(e); Net.clear(); Net.reset(); UI.showPvp('방을 만들지 못했어요. 다시 해 주세요'); }
-}
-async function pvpJoin(ev) {
-  ev.preventDefault(); SFX.init();
-  const code = $('#vCode').value.trim(), m = $('#vMsg');
-  if (!/^\d{4}$/.test(code)) { m.textContent = '방 코드는 4자리 숫자예요'; m.className = 'msg err'; sfx('fail'); return; }
-  m.className = 'msg'; m.textContent = '들어가는 중...';
-  try { await Net.join(code, pvpGo); }
-  catch (e) {
-    Net.clear(); Net.reset();
-    const t = { none: '그런 방이 없어요. 코드를 다시 확인해 주세요', full: '이미 둘이 들어간 방이에요', self: '내가 만든 방이에요. 친구가 들어와야 해요' }[e && e.message] || '들어가지 못했어요. 다시 해 주세요';
-    const mm = $('#vMsg'); if (mm) { mm.textContent = t; mm.className = 'msg err'; } sfx('fail');
-  }
+  Social.setWhere('solo');
 }
 function onGameEnd(r) {
   if (r && r.pvp) { Store.applyPvp(r); Game.stop(); UI.showPvpResult(r); UI.flushTitles(); return; }
@@ -4582,7 +5287,7 @@ function onGameEnd(r) {
   UI.showResult(r, r.score > prevBest && r.score > 0);
 }
 function enterLobby() {
-  Store.startSubs(); Store.claim(); UI.show('lobby');
+  Store.startSubs(); Promise.resolve(Store.claim()).then(() => Social.start()).catch(e => console.warn(e)); UI.show('lobby');
   const a = Store.checkAttendance();
   if (a) setTimeout(() => UI.showAttendance(a), 350); else UI.flushTitles();
 }
@@ -4630,6 +5335,12 @@ Object.assign(UI, {
       eyebrow = 'TIME ATTACK'; title = r.clear ? '호맘 처치!' : r.quit ? '중간에 나감' : '실패...'; cls = r.clear ? 'win' : 'lose';
       if (r.clear) mid = `<p class="bigtime num">${clockTxt(r.htime)}</p>`;
       sub = r.clear ? (r.newRecord ? '<b class="best">최고 기록 갱신!</b>' : `내 최고 기록 ${clockTxt(P.hts / 100)}`) : (P.hts ? `내 최고 기록 ${clockTxt(P.hts / 100)}` : '호맘을 쓰러뜨리면 기록이 남아요');
+    } else if (mode === 'coop') {
+      eyebrow = '🤝 호맘 협동'; title = r.clear ? '호맘 처치!' : r.quit ? '중간에 나감' : '실패...'; cls = r.clear ? 'win' : 'lose';
+      if (r.clear) mid = `<p class="bigtime num">${clockTxt(r.htime)}</p>`;
+      const team = (r.team || []).map(esc).join(' · ');
+      const rec = r.clear ? (r.n >= 3 ? (r.newRecord ? '<b class="best">팀 최고 기록 갱신! 랭킹에 올라갔어요</b>' : `내 협동 최고 기록 ${P.ht3 ? clockTxt(P.ht3 / 100) : '-'}`) : '3명이서 깨면 호맘 협동 랭킹에 올라가요') : esc(r.why || '다 같이 쓰러지면 실패예요');
+      sub = `${team ? `팀: ${team}<br>` : ''}${rec}`;
     } else {
       eyebrow = r.clear ? 'ALL CLEAR' : r.quit ? '중간에 나감' : 'GAME OVER'; title = r.clear ? '클리어!' : '게임 오버'; cls = r.clear ? 'win' : 'lose';
       sub = r.clear ? `보스 ${SCRIPT.filter(x => x.k === 'boss').length}명을 전부 쓰러뜨렸어요` : `PHASE ${r.ph} · ${esc(r.where)}에서 끝났어요`;
@@ -4646,10 +5357,10 @@ Object.assign(UI, {
       </div>
       <div class="earn"><i class="coin"></i><b class="num">+${fmt(r.coins)}</b><span>코인 획득</span></div>
       <p class="sub">누적 점수 <b class="num">${fmt(P.total)}</b> · 이번 주 <b class="num">${fmt(P.ws)}</b>${newBest && mode === 'story' ? ' · <b class="best">최고 점수!</b>' : ''}</p>
-      <div class="mbtns"><button class="btn big" type="button" id="rAgain" data-focus>다시 하기</button><button class="btn ghost big" type="button" id="rLobby">로비로</button></div>
+      <div class="mbtns"><button class="btn big" type="button" id="rAgain" data-focus>${mode === 'coop' ? '다시 대전' : '다시 하기'}</button><button class="btn ghost big" type="button" id="rLobby">로비로</button></div>
       <button class="btn small ghost copyres" type="button" id="rCopy">결과 복사해서 단톡방에 자랑하기</button>
       <textarea class="copybox" id="rCopyText" rows="3" readonly hidden aria-label="복사할 결과"></textarea>`, false);
-    $('#rAgain').addEventListener('click', () => { this.closeModal(); startGame(lastMode); });
+    $('#rAgain').addEventListener('click', () => { if (mode === 'coop') { sfx('click'); this.show('lobby'); this.showPvp(); return; } this.closeModal(); startGame(lastMode); });
     $('#rLobby').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('lobby'); });
     const txt = resultText(r), cb = $('#rCopy');
     cb.addEventListener('click', () => {
@@ -4755,16 +5466,404 @@ function resultText(r) {
   const P = Store.P, ch = CHARS[P.ch].name;
   let head;
   if (r.mode === 'endless') head = `[호준 브롤] 무한 모드 WAVE ${r.wave} · ${fmt(r.score)}점`;
+  else if (r.mode === 'coop') head = r.clear ? `[호준 브롤] 호맘 협동 ${clockTxt(r.htime)}${r.newRecord ? ' (팀 최고 기록!)' : ''} · ${(r.team || []).join(', ')}` : '[호준 브롤] 호맘 협동 실패';
   else if (r.mode === 'homom') head = r.clear ? `[호준 브롤] 호맘 타임어택 ${clockTxt(r.htime)}${r.newRecord ? ' (최고 기록!)' : ''}` : '[호준 브롤] 호맘 타임어택 실패';
   else head = r.clear ? `[호준 브롤] 클리어! ${fmt(r.score)}점` : `[호준 브롤] PHASE ${r.ph} ${r.where}까지 · ${fmt(r.score)}점`;
   return `${head}\n${ch} · 처치 ${fmt(r.kills)} · ${mmss(r.time)}\n${P.nick}의 누적 점수 ${fmt(P.total)}점`;
 }
 
+/* ================= 대전 화면: 모드 고르기 · 대기실 · 결과 ================= */
+const MP_INFO = {
+  '1v1': { ic: '⚔️', n: '1대1', d: '3번 먼저 쓰러뜨리면 승리' },
+  team: { ic: '🛡️', n: '3대3 팀전', d: '10킬 먼저 하는 팀이 승리 · 2~6명' },
+  boss: { ic: '👑', n: '5대1 보스전', d: '한 명이 거대 보스, 나머지가 사냥 · 2~6명' },
+  coop: { ic: '🤝', n: '호맘 협동', d: '더 세진 호맘을 같이 잡기 · 2~3명' },
+};
+let mpOpenUn = null;
+function mpStopOpen() { if (mpOpenUn) { try { mpOpenUn(); } catch (e) { /* 무시 */ } mpOpenUn = null; } }
+const JOIN_ERR = { none: '그런 방이 없어요. 코드를 다시 확인해 주세요', full: '방이 꽉 찼어요', started: '이미 게임을 시작한 방이에요', busy: '잠깐 뒤에 다시 해 주세요' };
+
+Object.assign(UI, {
+  /* ---------- 대전 첫 화면 ---------- */
+  showPvp(msg) {
+    clearInterval(this.vT); mpStopOpen(); Social.setWhere('lobby');
+    const why = Net.why();
+    if (why) {
+      this.modal(`<p class="eyebrow">MULTIPLAYER</p><h2>대전</h2><p class="sub">${esc(why)}</p><div class="mbtns"><button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
+      $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+      return;
+    }
+    this.modal(`
+      <p class="eyebrow">MULTIPLAYER</p><h2>대전</h2>
+      <button class="btn big" type="button" id="vQuick" data-focus>⚔️ 1대1 빠른 대전</button>
+      <p class="sub small">빠른 대전을 누른 사람끼리 바로 붙어요 · 이기면 1대1 점수(티어)가 올라요</p>
+      <section class="pf"><h3>친구랑 방 만들기</h3>
+        <div class="mpgrid">${Object.entries(MP_INFO).map(([k, m]) => `<button class="mpm" type="button" data-mk="${k}"><span class="mi" aria-hidden="true">${m.ic}</span><b>${m.n}</b><small>${m.d}</small></button>`).join('')}</div>
+      </section>
+      <section class="pf"><h3>열린 방</h3><div class="olist" id="vOpen"><p class="msg">찾는 중...</p></div></section>
+      <form class="pf" id="vJoinF" novalidate>
+        <h3>방 코드로 들어가기</h3>
+        <div class="field row"><input id="vCode" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4자리 숫자" aria-label="방 코드"><button class="btn small" type="submit">들어가기</button></div>
+        <p class="msg${msg ? ' err' : ''}" id="vMsg">${esc(msg || '친구가 알려준 방 코드를 넣으세요')}</p>
+      </form>
+      <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button></div>`, true);
+    $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+    $('#vQuick').addEventListener('click', pvpQuick);
+    $('#mbox .mpgrid').addEventListener('click', e => { const b = e.target.closest('[data-mk]'); if (b) pvpMake(b.dataset.mk); });
+    $('#vOpen').addEventListener('click', e => { const b = e.target.closest('[data-join]'); if (b && !b.disabled) { SFX.init(); sfx('click'); pvpJoinCode(b.dataset.join); } });
+    $('#vJoinF').addEventListener('submit', ev => {
+      ev.preventDefault(); SFX.init();
+      const code = $('#vCode').value.trim(), m = $('#vMsg');
+      if (!/^\d{4}$/.test(code)) { m.textContent = '방 코드는 4자리 숫자예요'; m.className = 'msg err'; sfx('fail'); return; }
+      m.className = 'msg'; m.textContent = '들어가는 중...';
+      pvpJoinCode(code);
+    });
+    try { mpOpenUn = Net.watchOpen(list => this.renderOpen(list)); } catch (e) { const b = $('#vOpen'); if (b) b.innerHTML = '<p class="msg">열린 방을 못 불러왔어요</p>'; }
+  },
+  renderOpen(list) {
+    const box = $('#vOpen'); if (!box) { mpStopOpen(); return; }
+    if (!list) { box.innerHTML = '<p class="msg err">열린 방 목록을 못 불러왔어요 (Realtime Database 규칙에 lob 추가 필요). 방 코드로는 들어갈 수 있어요</p>'; return; }
+    if (!list.length) { box.innerHTML = '<p class="msg">지금 열린 방이 없어요. 방을 만들어 친구를 불러 보세요!</p>'; return; }
+    box.innerHTML = list.slice(0, 12).map(r => {
+      const full = r.k >= r.cap;
+      return `<div class="orow"><span class="mi" aria-hidden="true">${MP_INFO[r.m].ic}</span><span class="on"><b>${MP_INFO[r.m].n}</b><small>${esc(r.n)}의 방 · <b class="num">${r.k}/${r.cap}</b>명 · 코드 ${esc(r.code)}</small></span><button class="btn small${full ? ' ghost' : ''}" type="button" data-join="${esc(r.code)}"${full ? ' disabled' : ''}>${full ? '꽉 참' : '들어가기'}</button></div>`;
+    }).join('');
+  },
+  pvpWait(title, sub, code) {
+    clearInterval(this.vT); mpStopOpen();
+    const t0 = Date.now();
+    this.modal(`
+      <p class="eyebrow">MULTIPLAYER</p><h2>${esc(title)}</h2>
+      ${code ? `<p class="vcode">${esc(code)}</p>` : '<span class="vwait" aria-hidden="true"></span>'}
+      <p class="sub">${esc(sub)}</p>
+      <p class="sub" id="vTime">0초째 기다리는 중</p>
+      <div class="mbtns"><button class="btn ghost" type="button" id="vCancel" data-focus>취소</button></div>`, false);
+    this.vT = setInterval(() => { const e = $('#vTime'); if (e) e.textContent = `${Math.floor((Date.now() - t0) / 1000)}초째 기다리는 중`; else clearInterval(this.vT); }, 1000);
+    $('#vCancel').addEventListener('click', async () => { sfx('click'); clearInterval(this.vT); $('#vCancel').disabled = true; await Net.cancel(); this.showPvp(); });
+  },
+
+  /* ---------- 대기실 ---------- */
+  showRoom(R) {
+    clearInterval(this.vT); mpStopOpen(); Social.setWhere('room');
+    const me = Store.uid, host = R.h === me, cfg = MP[R.m], info = MP_INFO[R.m];
+    const ids = Object.keys(R.p).sort((a, b) => (R.p[a].j || 0) - (R.p[b].j || 0));
+    const mine = R.p[me] || {};
+    const cs = Net.canStart();
+    const row = k => { const p = R.p[k] || {}; return `<li>${ballHTML(CHARS[p.ch] ? p.ch : 'base', 's', p.f)}<span class="rn"><b>${esc(str(p.n, 8) || '???')}</b>${TITLES[p.t] ? titleHTML(p.t) : ''}</span>${k === R.h ? '<i class="atag">방장</i>' : ''}${R.m === 'boss' && p.vb ? '<i class="vbtag">👑 보스 지원</i>' : ''}${k === me ? '<em class="metag">나</em>' : ''}</li>`; };
+    let plist;
+    if (R.m === 'team') {
+      const t = [ids.filter(k => !R.p[k].tm), ids.filter(k => R.p[k].tm)];
+      plist = `<div class="tcols">${[0, 1].map(i => `<div class="tcol t${i}"><h4>${TEAM_NAME[i]} <span class="num">${t[i].length}/3</span></h4><ul class="rpl">${t[i].map(row).join('') || '<li class="emp">비어 있어요</li>'}</ul></div>`).join('')}</div>`;
+    } else plist = `<ul class="rpl">${ids.map(row).join('')}</ul>`;
+    const note = { '1v1': '친구가 들어오면 바로 시작해요', team: '팀은 자유롭게 바꿀 수 있어요 (한 팀 최대 3명)', boss: '보스 지원한 사람 중에서 1명이 랜덤으로 보스가 돼요 (아무도 없으면 전체에서 랜덤)', coop: '3명이서 깨야 호맘 협동 랭킹에 기록돼요 · 쓰러지면 20초 뒤 부활, 다 같이 쓰러지면 실패' }[R.m];
+    const mapRow = host && R.m !== '1v1'
+      ? `<section class="pf"><h3>맵</h3><div class="chips" id="rMaps">${MAP_ORDER.map(k => `<button class="chip2${R.map === k ? ' on' : ''}" type="button" data-rmap="${k}">${MAPS[k].name}</button>`).join('')}<button class="chip2" type="button" data-rmap="random">랜덤</button></div></section>`
+      : `<p class="sub">맵: <b>${esc((MAPS[R.map] || MAPS.gym).name)}</b></p>`;
+    this.modal(`
+      <p class="eyebrow">${info.ic} ${esc(info.n)} · 대기실</p>
+      <h2 class="sm">방 코드</h2><p class="vcode">${esc(R.rid)}</p>
+      <p class="sub">친구는 <b>대전 → 방 코드</b>에 이 숫자를 넣거나 열린 방에서 들어와요 · <b class="num">${ids.length}/${cfg.cap}</b>명</p>
+      ${plist}
+      <p class="sub small">${note}</p>
+      <div class="rbtns">
+        ${R.m === 'team' ? `<button class="btn small ${mine.tm ? 'blue' : 'red'}" type="button" id="rTeam">${TEAM_NAME[mine.tm ? 0 : 1]}으로 옮기기</button>` : ''}
+        ${R.m === 'boss' ? `<button class="btn small${mine.vb ? '' : ' ghost'}" type="button" id="rVb">${mine.vb ? '👑 보스 지원 취소' : '👑 보스 하고 싶어요'}</button>` : ''}
+        ${Social.dmOk() ? '<button class="btn small ghost" type="button" id="rInv">친구 초대</button>' : ''}
+      </div>
+      ${mapRow}
+      <p class="msg${host && !cs.ok && ids.length >= 2 ? ' err' : ''}" id="rMsg">${host ? (cs.ok ? '준비되면 시작을 눌러요!' : esc(cs.why)) : R.m === '1v1' ? '곧 시작해요!' : '방장이 시작하면 바로 시작돼요'}</p>
+      <div class="mbtns"><button class="btn ghost" type="button" id="rLeave">나가기</button>${host && R.m !== '1v1' ? `<button class="btn big" type="button" id="rStart" data-focus${cs.ok ? '' : ' disabled'}>시작!</button>` : ''}</div>`, false);
+    $('#rLeave').addEventListener('click', async () => { sfx('click'); $('#rLeave').disabled = true; await Net.cancel(); this.showPvp(); });
+    const st = $('#rStart'); if (st) st.addEventListener('click', () => { const c = Net.canStart(); if (!c.ok) { $('#rMsg').textContent = c.why; sfx('fail'); return; } st.disabled = true; sfx('up'); Net.start(); });
+    const tb = $('#rTeam');
+    if (tb) tb.addEventListener('click', () => {
+      const to = mine.tm ? 0 : 1, n = ids.filter(k => (R.p[k].tm ? 1 : 0) === to).length;
+      if (n >= 3) { this.toast(`${TEAM_NAME[to]}은 꽉 찼어요`, 'bad'); sfx('fail'); return; }
+      sfx('click'); tb.disabled = true; Net.setMine('tm', to);
+    });
+    const vb = $('#rVb'); if (vb) vb.addEventListener('click', () => { sfx('click'); vb.disabled = true; Net.setMine('vb', !mine.vb); });
+    const mp = $('#rMaps'); if (mp) mp.addEventListener('click', e => { const b = e.target.closest('[data-rmap]'); if (!b) return; sfx('click'); Net.setMap(b.dataset.rmap === 'random' ? randMap() : b.dataset.rmap); });
+    const iv = $('#rInv'); if (iv) iv.addEventListener('click', () => { sfx('click'); this.showInvite(R); });
+  },
+  /* 온라인인 친구에게 DM으로 방 초대 */
+  showInvite(R) {
+    const back = () => { if (Net.room && Net.rid === R.rid && !Net.started) this.showRoom(Net.room); };
+    const inRoom = new Set(Object.keys(R.p));
+    const list = Social.people().filter(r => r.id !== Store.uid && Social.online(r.id) && !inRoom.has(r.id));
+    this.modal(`
+      <p class="eyebrow">INVITE</p><h2>친구 초대</h2>
+      <p class="sub">고른 친구에게 DM으로 초대장을 보내요. 친구가 DM에서 <b>들어가기</b>를 누르면 이 방으로 와요</p>
+      <div class="ilist">${list.length ? list.slice(0, 30).map(r => `<button class="irow" type="button" data-inv="${esc(r.id)}">${avatarHTML(r.pic, r.ch, 's', r.frame)}<span class="it"><b>${esc(r.nick)}</b><small>${esc(Social.whereTxt(r.id))}</small></span><em>초대</em></button>`).join('') : '<p class="msg">지금 온라인인 친구가 없어요</p>'}</div>
+      <div class="mbtns"><button class="btn ghost" type="button" id="iBack" data-focus>대기실로</button></div>`, false);
+    $('#iBack').addEventListener('click', () => { sfx('click'); back(); });
+    $('#mbox .ilist').addEventListener('click', async e => {
+      const b = e.target.closest('[data-inv]'); if (!b || b.disabled) return;
+      b.disabled = true;
+      const r = await Social.send(b.dataset.inv, `${MP_INFO[R.m].n} 같이 하자! 방 코드 ${R.rid}`, { c: R.rid, k: R.m });
+      if (r.ok) { b.querySelector('em').textContent = '보냄!'; b.classList.add('sent'); sfx('coin'); } else { b.disabled = false; this.toast(r.msg, 'bad'); sfx('fail'); }
+    });
+  },
+
+  /* ---------- 게임 중 메뉴 ---------- */
+  showPvpMenu() {
+    const coop = !!(G && G.coop), host = coop && G.coop.host;
+    const kind = coop ? 'coop' : (G && G.pvp && G.pvp.kind) || '1v1';
+    const sub = coop ? (host ? '대전은 멈출 수 없어요. 방장이 나가면 친구들 게임도 끝나요.' : '대전은 멈출 수 없어요. 지금 나가면 친구들끼리 계속해요.') : '대전은 멈출 수 없어요. 지금 나가면 패배로 처리돼요.';
+    this.modal(`
+      <p class="eyebrow">${MP_INFO[kind].ic} ${esc(MP_INFO[kind].n)}</p><h2>나갈까요?</h2>
+      <p class="sub">${sub}</p>
+      <div class="mbtns col"><button class="btn big" type="button" id="pResume" data-focus>계속 싸우기</button><button class="btn ghost" type="button" id="pQuit">${coop ? '나가기' : '나가기 (패배)'}</button></div>`, true);
+    $('#pResume').addEventListener('click', () => { sfx('click'); this.closeModal(); });
+    $('#pQuit').addEventListener('click', () => { sfx('click'); this.closeModal(); Game.quit(); });
+  },
+  /* ---------- 대전 결과 ---------- */
+  showPvpResult(r) {
+    const P = Store.P, kind = r.kind || '1v1', info = MP_INFO[kind];
+    let title = r.res === 'win' ? '승리!' : r.res === 'lose' ? '패배' : '무승부', mid = '', rec = '';
+    if (kind === 'boss') {
+      title = r.boss ? (r.res === 'win' ? '보스 승리!' : '보스 패배') : r.res === 'win' ? '보스 처치!' : '사냥 실패';
+      mid = `<p class="sub">${r.boss ? '내가 보스였어요' : '사냥꾼'} · 처치 <b class="num">${r.kills}</b> · 쓰러짐 <b class="num">${r.deaths}</b>${r.why ? `<br>${esc(r.why)}` : ''}</p>`;
+      rec = `<div class="wide"><span>5대1 전적</span><b class="num">보스 ${fmt(P.bw)}승 ${fmt(P.bl)}패 · 사냥꾼 ${fmt(P.hw2)}승 ${fmt(P.hl2)}패</b></div>`;
+    } else if (kind === 'team') {
+      const s0 = r.myTm ? r.d : r.k, s1 = r.myTm ? r.k : r.d;
+      mid = `<div class="tscore"><b class="num" style="color:${TEAM_COL[0]}">${s0}</b><span>:</span><b class="num" style="color:${TEAM_COL[1]}">${s1}</b></div>
+        <p class="sub">나는 <b style="color:${TEAM_COL[r.myTm]}">${TEAM_NAME[r.myTm]}</b> · 처치 <b class="num">${r.kills}</b> · 쓰러짐 <b class="num">${r.deaths}</b>${r.why ? ` · ${esc(r.why)}` : ''}</p>`;
+      rec = `<div class="wide"><span>3대3 전적</span><b class="num">${fmt(P.tw)}승 ${fmt(P.tl)}패${P.td ? ` ${fmt(P.td)}무` : ''}</b></div>`;
+    } else {
+      mid = `<div class="vsrow">${avatarHTML(P.pic, P.ch, 'l', P.frame)}<b class="num">${r.k} : ${r.d}</b>${ballHTML(r.opCh, 'l')}</div>
+        <p class="sub">나 vs ${esc(r.op)}${r.why ? ` · ${esc(r.why)}` : ''}</p>
+        ${typeof r.dpr === 'number' ? `<p class="sub">1대1 점수 <b class="num">${r.dpr >= 0 ? '+' : ''}${r.dpr}</b> → ${tierHTML(P.pr)} <b class="num">${fmt(P.pr)}</b></p>` : ''}`;
+      rec = `<div class="wide"><span>1대1 전적</span><b class="num">${fmt(P.pw || 0)}승 ${fmt(P.pl || 0)}패${P.pd ? ` ${fmt(P.pd)}무` : ''}</b></div>`;
+    }
+    this.modal(`
+      <p class="eyebrow">${info.ic} ${esc(info.n)}</p><h2 class="${r.res === 'win' ? 'win' : r.res === 'lose' ? 'lose' : ''}">${title}</h2>
+      ${mid}
+      <div class="res"><div class="wide big"><span>받은 코인</span><b class="num">+${fmt(r.coins)}</b></div>${rec}</div>
+      <div class="mbtns"><button class="btn ghost" type="button" id="vLobby">로비로</button><button class="btn" type="button" id="vAgain" data-focus>다시 대전</button></div>`, false);
+    $('#vLobby').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('lobby'); });
+    $('#vAgain').addEventListener('click', () => { sfx('click'); this.show('lobby'); this.showPvp(); });
+  },
+});
+/* 다른 창을 띄우거나 닫으면 열린 방 목록 구독도 끔 */
+{
+  const om = UI.modal, oc = UI.closeModal;
+  UI.modal = function (html, dismiss) { mpStopOpen(); return om.call(this, html, dismiss); };
+  UI.closeModal = function () { mpStopOpen(); return oc.call(this); };
+}
+
+/* ---------- 버튼 동작 ---------- */
+function pvpGo(m) {
+  clearInterval(UI.vT); mpStopOpen(); UI.closeModal();
+  UI.show('game');
+  if (m.kind === 'coop') Game.startCoop(loadoutFrom(Store.P), m, onGameEnd);
+  else Game.startPvp(loadoutFrom(Store.P), m, onGameEnd);
+  Social.setWhere('mp');
+}
+function onRoom(room, why) {
+  if (!room) { UI.showPvp(why === 'kicked' ? '방에서 나왔어요' : why === 'started' ? '이미 시작한 방이에요' : '방장이 방을 닫았어요'); return; }
+  if (UI.cur !== 'lobby' && UI.cur !== 'game') UI.show('lobby');
+  if (UI.cur === 'game') return;
+  if ($('#iBack')) return;   // 친구 초대 창을 보는 중이면 그대로
+  UI.showRoom(room);
+}
+async function pvpQuick() {
+  SFX.init(); sfx('click');
+  UI.pvpWait('상대 찾는 중...', '1대1 빠른 대전을 누른 사람이랑 바로 붙어요');
+  for (let i = 0; i < 3; i++) {
+    try { await Net.quick(pvpGo); return; }
+    catch (e) { console.warn(e); Net.clear(); Net.reset(); if (!['none', 'full', 'busy', 'started'].includes(e && e.message)) break; }
+  }
+  UI.showPvp('상대를 찾지 못했어요. 다시 해 주세요');
+}
+async function pvpMake(mode) {
+  if (!MP[mode]) return;
+  SFX.init(); sfx('click');
+  UI.pvpWait('방 만드는 중...', '잠깐만요');
+  try { await Net.create(mode, onRoom, pvpGo); }
+  catch (e) { console.warn(e); Net.clear(); Net.reset(); UI.showPvp('방을 만들지 못했어요. 다시 해 주세요'); }
+}
+async function pvpJoinCode(code) {
+  const why = Net.why();
+  if (why) { UI.toast(why, 'bad'); sfx('fail'); return; }
+  try { await Net.join(String(code), onRoom, pvpGo); }
+  catch (e) {
+    Net.clear(); Net.reset();
+    const t = JOIN_ERR[e && e.message] || '들어가지 못했어요. 다시 해 주세요';
+    const mm = $('#vMsg');
+    if (mm) { mm.textContent = t; mm.className = 'msg err'; } else UI.toast(t, 'bad');
+    sfx('fail');
+  }
+}
+
+/* ================= 친구 화면 (전체 플레이어 · 접속 표시) · DM 화면 ================= */
+const PEOPLE_ICON = `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="11.5" cy="11" r="5.5" fill="#3fe08e" stroke="${INK}" stroke-width="2.5"/><path d="M2.5 27c0-5.5 4-9 9-9s9 3.5 9 9z" fill="#3fe08e" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="22" cy="10" r="4.5" fill="#ffd23f" stroke="${INK}" stroke-width="2.5"/><path d="M19 16.6c1-.4 2-.6 3-.6 4.2 0 7.5 3 7.5 7.6h-7" fill="#ffd23f" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
+function updateDmDot() {
+  const d = $('#dmDot'), n = Social.unreadTotal();
+  if (d) { d.hidden = !n || UI.cur === 'dm'; d.textContent = n > 9 ? '9+' : String(n); }
+  const b = $('#onBadge'), on = Social.on ? Social.onlineCount(true) : 0;
+  if (b) { b.hidden = !on; b.textContent = String(on); }
+}
+
+Object.assign(UI, {
+  peopleTab: 'all', peopleQ: '',
+  initSocial() {
+    $('#bPeople').insertAdjacentHTML('afterbegin', PEOPLE_ICON);
+    $('#bPeople').addEventListener('click', () => { SFX.init(); sfx('click'); this.peopleTab = Social.unreadTotal() ? 'msg' : 'all'; this.show('people'); });
+    $('#dmBack').innerHTML = ICON.back;
+    $('#dmBack').addEventListener('click', () => { sfx('click'); Social.openPeer = ''; this.peopleTab = 'msg'; this.show('people'); });
+    $('#peopleBody').addEventListener('click', e => {
+      const t = e.target.closest('[data-pt]');
+      if (t) { sfx('click'); this.peopleTab = t.dataset.pt; this.renderPeople(true); return; }
+      const d = e.target.closest('[data-dm]');
+      if (d) { sfx('click'); this.openDm(d.dataset.dm); return; }
+      const r = e.target.closest('[data-pid]');
+      if (r) { sfx('click'); this.showPlayer(r.dataset.pid); }
+    });
+    $('#peopleBody').addEventListener('input', e => { if (e.target.id === 'pSearch') { this.peopleQ = e.target.value.trim(); this.renderPeopleList(); } });
+    $('#dmForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const inp = $('#dmIn'), peer = Social.openPeer, text = inp.value;
+      if (!peer || !text.trim()) return;
+      const r = await Social.send(peer, text);
+      if (!r.ok) { this.toast(r.msg, 'bad'); sfx('fail'); return; }
+      if (inp.value === text) inp.value = '';
+      sfx('click'); this.renderDm(true);
+    });
+    $('#dmList').addEventListener('click', e => {
+      const b = e.target.closest('[data-jc]'); if (!b) return;
+      SFX.init(); sfx('click');
+      Social.openPeer = ''; this.show('lobby'); pvpJoinCode(b.dataset.jc);
+    });
+    Store.on('presence', () => { if (this.cur === 'people') this.renderPeopleList(); else if (this.cur === 'dm') this.renderDmHead(); updateDmDot(); });
+    Store.on('rank', () => { if (this.cur === 'people') this.renderPeopleList(); });
+    Store.on('dm', () => {
+      if (this.cur === 'dm') { this.renderDm(false); Social.markRead(Social.openPeer); }
+      else if (this.cur === 'people') this.renderPeople(false);
+      updateDmDot();
+    });
+    const os = this.show;
+    this.show = function (name) {
+      os.call(this, name);
+      if (name === 'people') this.renderPeople(true);
+      else if (name === 'dm') this.renderDm(true);
+      if (name !== 'game') Social.setWhere('lobby');
+      if (name !== 'dm') Social.openPeer = '';
+      updateDmDot();
+    };
+  },
+
+  /* ---------- 친구 화면 ---------- */
+  renderPeople(force) {
+    const box = $('#peopleBody'), tab = this.peopleTab;
+    if (!force && tab === 'all' && $('#pList')) { this.renderPeopleList(); this.renderPeopleTabs(); return; }
+    let h = `<div class="pin"><div class="tabs t2" role="tablist" id="pTabs"></div>`;
+    if (tab === 'all') {
+      h += `<div class="field"><input id="pSearch" maxlength="8" autocomplete="off" spellcheck="false" placeholder="닉네임으로 찾기" aria-label="닉네임으로 찾기" value="${esc(this.peopleQ)}"></div><p class="sub center" id="pNote"></p><ul class="plist" id="pList"></ul>`;
+    } else h += '<ul class="plist" id="cList"></ul>';
+    box.innerHTML = h + '</div>';
+    this.renderPeopleTabs();
+    if (tab === 'all') this.renderPeopleList(); else this.renderConvs();
+  },
+  renderPeopleTabs() {
+    const t = $('#pTabs'); if (!t) return;
+    const n = Social.unreadTotal(), tab = this.peopleTab;
+    t.innerHTML = `<button class="tab" type="button" role="tab" data-pt="all" aria-selected="${tab === 'all'}">플레이어</button><button class="tab" type="button" role="tab" data-pt="msg" aria-selected="${tab === 'msg'}">메시지${n ? ` <i class="dot2">${n > 99 ? '99+' : n}</i>` : ''}</button>`;
+  },
+  renderPeopleList() {
+    const ul = $('#pList'); if (!ul) return;
+    const me = Store.uid, q = this.peopleQ;
+    const all = Social.people(), rows = q ? all.filter(r => r.nick.includes(q)) : all;
+    const live = Social.on && Social.stState === 'ready';
+    const onN = all.filter(r => Social.online(r.id)).length;
+    const note = $('#pNote');
+    if (note) note.innerHTML = live ? `<b class="sdot on"></b> 온라인 <b class="num">${onN}</b>명 · 전체 <b class="num">${all.length}</b>명` : !Store.web ? '클로드 안에서는 접속 표시랑 DM이 안 돼요. 웹사이트 버전에서 써 보세요!' : Social.on ? (Social.stState === 'error' ? 'Realtime Database 규칙에 st를 추가해야 접속 표시가 돼요' : '접속 표시 불러오는 중...') : Store.mode === 'online' ? 'Realtime Database가 연결돼야 접속 표시랑 DM을 쓸 수 있어요' : '서버에 연결돼야 접속 표시랑 DM을 쓸 수 있어요';
+    if (Store.rankState === 'loading' && !Store.rank.length) { ul.innerHTML = '<li class="empty">불러오는 중...</li>'; return; }
+    if (!rows.length) { ul.innerHTML = `<li class="empty">${q ? '그런 닉네임이 없어요' : '아직 아무도 없어요'}</li>`; return; }
+    const dm = Social.dmOk();
+    ul.innerHTML = rows.slice(0, 300).map(r => {
+      const on = Social.online(r.id), mine = r.id === me, un = Social.unread(r.id);
+      return `<li class="prow card${mine ? ' me' : ''}${on ? ' on' : ''}" data-pid="${esc(r.id)}"><span class="pav">${avatarHTML(r.pic, r.ch, 's', r.frame)}${live || mine ? `<i class="sdot${on ? ' on' : ''}"></i>` : ''}</span><span class="rn"><b>${esc(r.nick)}${r.admin ? '<i class="atag">관리자</i>' : ''}${titleHTML(r.title)}</b><small>${live || mine ? esc(Social.whereTxt(r.id)) : `누적 ${fmt(r.total)}점`}</small></span>${mine ? '<em class="metag">나</em>' : dm ? `<button class="btn small${un ? '' : ' ghost'}" type="button" data-dm="${esc(r.id)}">${un ? `DM <i class="dot2">${un}</i>` : 'DM'}</button>` : ''}</li>`;
+    }).join('');
+  },
+  renderConvs() {
+    const ul = $('#cList'); if (!ul) return;
+    if (!Social.dmOk()) { ul.innerHTML = `<li class="empty">${Store.web ? 'Realtime Database가 연결돼야 DM을 쓸 수 있어요' : 'DM은 웹사이트 버전에서만 돼요'}</li>`; return; }
+    if (Social.ready === 'error') { ul.innerHTML = '<li class="empty">DM을 못 불러왔어요. Realtime Database 규칙을 확인해 주세요</li>'; return; }
+    const L = Social.convs();
+    if (!L.length) { ul.innerHTML = '<li class="empty">아직 대화가 없어요. 플레이어 탭에서 친구에게 DM을 보내 보세요!</li>'; return; }
+    ul.innerHTML = L.map(c => {
+      const r = Social.pub(c.id) || { nick: Social.nickOf(c.id), ch: 'base', pic: '', frame: '' }, on = Social.online(c.id);
+      const pv = c.last.c ? `${c.last.mine ? '내가 ' : ''}방 초대 · ${MP_INFO[c.last.k] ? MP_INFO[c.last.k].n : '대전'}` : `${c.last.mine ? '나: ' : ''}${c.last.x}`;
+      return `<li class="prow card${c.n ? ' new' : ''}" data-dm="${esc(c.id)}"><span class="pav">${avatarHTML(r.pic, r.ch, 's', r.frame)}<i class="sdot${on ? ' on' : ''}"></i></span><span class="rn"><b>${esc(r.nick)}</b><small>${esc(pv)}</small></span><span class="ct"><small>${tfmt(c.last.t)}</small>${c.n ? `<i class="dot2">${c.n}</i>` : ''}</span></li>`;
+    }).join('');
+  },
+  /* 다른 사람 프로필 (보기만) */
+  showPlayer(id) {
+    const me = id === Store.uid;
+    const r = me ? Object.assign(parsePub(id, Store.pubData()), { id }) : Social.pub(id);
+    if (!r) return;
+    const live = Social.on && Social.stState === 'ready';
+    this.modal(`
+      <div class="acc-top">${avatarHTML(r.pic, r.ch, 'l', r.frame)}<h2>${esc(r.nick)}</h2>${r.title ? titleHTML(r.title) : ''}${r.admin ? '<i class="atag">관리자</i>' : ''}
+        <p class="acc-id">${live || me ? `<b class="sdot${Social.online(id) ? ' on' : ''}"></b> ${esc(Social.whereTxt(id))}` : `캐릭터 ${esc(CHARS[r.ch].name)}`}</p></div>
+      <div class="res">
+        <div><span>누적 점수</span><b class="num">${fmt(r.total)}</b></div>
+        <div><span>최고 점수</span><b class="num">${fmt(r.best)}</b></div>
+        <div class="wide"><span>1대1</span><b class="num">${tierHTML(r.pr)} ${fmt(r.pr)}점 · ${fmt(r.pw)}승 ${fmt(r.pl)}패</b></div>
+        <div><span>무한 최고</span><b class="num">${r.ew ? 'WAVE ' + r.ew : '-'}</b></div>
+        <div><span>호맘 기록</span><b class="num">${r.hts ? clockTxt(r.hts / 100) : '-'}</b></div>
+        <div><span>3대3</span><b class="num">${fmt(r.tw)}승 ${fmt(r.tl)}패</b></div>
+        <div><span>5대1</span><b class="num">보스 ${fmt(r.bw)}승 · 사냥 ${fmt(r.hw2)}승</b></div>
+      </div>
+      <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button>${!me && Social.dmOk() ? '<button class="btn" type="button" id="pfDm" data-focus>DM 보내기</button>' : ''}</div>
+      ${Store.isAdmin && !me ? '<button class="btn small ghost" type="button" id="pfAdm">관리자 메뉴로 보기</button>' : ''}`, true);
+    $('#mbox [data-close]').addEventListener('click', () => { sfx('click'); this.closeModal(); });
+    const d = $('#pfDm'); if (d) d.addEventListener('click', () => { sfx('click'); this.closeModal(); this.openDm(id); });
+    const a = $('#pfAdm'); if (a) a.addEventListener('click', () => { sfx('click'); this.showAdminPlayer(id); });
+  },
+
+  /* ---------- DM ---------- */
+  openDm(peer) {
+    if (!peer || peer === Store.uid) return;
+    if (!Social.dmOk()) { this.toast(Store.web ? 'Realtime Database가 연결돼야 DM을 쓸 수 있어요' : 'DM은 웹사이트 버전에서만 돼요', 'bad'); sfx('fail'); return; }
+    Social.openPeer = peer;
+    this.show('dm');
+    Social.markRead(peer);
+    setTimeout(() => { const i = $('#dmIn'); if (i && !COARSE) i.focus({ preventScroll: true }); }, 50);
+  },
+  renderDmHead() {
+    const peer = Social.openPeer; if (!peer) return;
+    const r = Social.pub(peer);
+    $('#dmTitle').textContent = r ? r.nick : Social.nickOf(peer);
+    const on = Social.online(peer);
+    $('#dmSt').innerHTML = `<i class="sdot${on ? ' on' : ''}"></i>${esc(Social.whereTxt(peer))}`;
+  },
+  renderDm(force) {
+    const peer = Social.openPeer, sc = $('#dmScroll'), list = $('#dmList');
+    if (!peer) return;
+    this.renderDmHead();
+    const near = sc.scrollHeight - sc.scrollTop - sc.clientHeight < 90;
+    const r = Social.pub(peer) || { nick: Social.nickOf(peer), ch: 'base', pic: '', frame: '' };
+    const msgs = Social.conv(peer);
+    const can = Social.dmOk() && Social.ready === true;
+    $('#dmIn').disabled = !can; $('#dmForm button').disabled = !can;
+    $('#dmIn').placeholder = can ? `${r.nick}에게 메시지 (최대 ${DM_LEN}자)` : Social.ready === 'error' ? 'DM 규칙을 확인해 주세요' : '불러오는 중...';
+    let h = `<p class="chat-note">${esc(r.nick)}님과 나만 볼 수 있는 대화예요. 욕설은 ♡로 바뀌어요.</p>`;
+    if (!msgs.length) h += `<p class="empty">아직 대화가 없어요. ${esc(r.nick)}에게 인사해 보세요!</p>`;
+    h += msgs.map(m => {
+      const inv = m.c ? `<span class="dinv"><span><b>${MP_INFO[m.k] ? MP_INFO[m.k].ic + ' ' + MP_INFO[m.k].n : '⚔️ 대전'}</b> · 방 코드 <b class="num">${esc(m.c)}</b></span>${m.mine ? '' : `<button class="btn small" type="button" data-jc="${esc(m.c)}">들어가기</button>`}</span>` : '';
+      return `<div class="cmsg${m.mine ? ' mine' : ''}">${m.mine ? '' : avatarHTML(r.pic, r.ch, 's', r.frame)}<div class="mb"><p class="bub">${esc(m.x)}${inv}</p><p class="mh${m.mine ? ' r' : ''}">${tfmt(m.t)}</p></div></div>`;
+    }).join('');
+    list.innerHTML = h;
+    if (force || near) sc.scrollTop = sc.scrollHeight;
+  },
+});
+
 /* ================= 시작 ================= */
 async function boot(hot) {
   hot = hot || {};
   prepFaces();
-  Game.init(); UI.init();
+  Game.init(); UI.init(); UI.initSocial();
   try { if (document.fonts) ['400 20px "Black Han Sans"', '400 20px "Lilita One"', '400 20px "Jua"'].forEach(f => document.fonts.load(f, '호준 브롤 123').catch(() => {})); } catch (e) { /* 글꼴 없어도 진행 */ }
   UI.show('title'); UI.setAuth('loading');
   await Store.init();
@@ -4772,16 +5871,16 @@ async function boot(hot) {
   if (st === 'login' && hot.screen && hot.screen !== 'title') {
     enterLobby();
     if (hot.game && hot.game.v === 4 && !hot.game.pvp && !hot.game.coop) { UI.show('game'); Game.restore(hot.game, onGameEnd); }
-    else if (['gear', 'shop', 'rank', 'chat'].includes(hot.screen)) UI.show(hot.screen);
+    else if (['gear', 'shop', 'rank', 'chat', 'people'].includes(hot.screen)) UI.show(hot.screen);
     return;
   }
   UI.setAuth(st);
 }
 try {
-  window.claude?.hot?.snapshot?.(() => ({ v: 1, screen: UI.cur, game: G && !G.over && UI.cur === 'game' ? JSON.parse(JSON.stringify(G)) : null }));
+  window.claude?.hot?.snapshot?.(() => ({ v: 1, screen: UI.cur, game: G && !G.over && !G.pvp && !G.coop && UI.cur === 'game' ? JSON.parse(JSON.stringify(G)) : null }));
 } catch (e) { /* 뷰어 밖 */ }
 if (location.protocol === 'file:') {
-  window.__HB = { get G() { return G; }, set G(v) { G = v; }, Store, UI, Game, IN, L, SCRIPT, step(n) { for (let i = 0; i < n && G && !G.ended; i++) update(STEP); }, render() { render(); }, onGameEnd, actPotion, tryAttack, fireUlt, autoUlt, autoTarget, get Net() { return Net; }, get PvP() { return PvP; } };
+  window.__HB = { get G() { return G; }, set G(v) { G = v; }, Store, UI, Game, IN, L, SCRIPT, step(n) { for (let i = 0; i < n && G && !G.ended; i++) update(STEP); }, render() { render(); }, onGameEnd, actPotion, tryAttack, fireUlt, autoUlt, autoTarget, get Net() { return Net; }, get PvP() { return PvP; }, get Coop() { return Coop; }, get Social() { return Social; }, killEnemy, hitEnemy, damagePlayer };
 }
 if (window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data ?? {});
 
