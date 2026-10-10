@@ -7,6 +7,5 @@ window.FB_CONFIG = {
   storageBucket: "hojunebrawl.firebasestorage.app",
   messagingSenderId: "782981937656",
   appId: "1:782981937656:web:bd817192bfa891214e3e0d",
-  databaseURL: "https://hojunebrawl-default-rtdb.asia-southeast1.firebasedatabase.app/",
   measurementId: "G-JX2YGV1ZG1"
 };
