@@ -601,6 +601,10 @@ textarea{-webkit-user-select:text;user-select:text}
 .starbox b{font-family:var(--f-disp);font-weight:400;color:var(--yolk)}.starbox span{font-size:.88rem}.starbox small{font-size:.76rem;color:var(--muted)}
 .chtile{position:relative}.mlv{position:absolute;top:6px;left:6px;font-family:var(--f-num);font-size:.72rem;padding:0 5px;border-radius:6px;background:var(--mint);color:var(--ink);border:2px solid var(--ink)}
 .spst{position:absolute;top:4px;right:6px;font-size:1rem}.gstar2{position:relative}
+.protck{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:rgba(89,208,255,.18);text-align:left;cursor:pointer}
+.protck.off{opacity:.6;cursor:default}.protck input{width:20px;height:20px;accent-color:#59d0ff;flex:none}
+.protck .pi svg{width:26px;height:26px}.protck small{display:block;font-size:.74rem;color:var(--muted)}
+.gprot svg{width:72px;height:72px}.gcard .gprot svg{width:40px;height:40px}
 .tag.ultra{background:linear-gradient(90deg,#e23a3a,#2b4fd6);color:#fff;white-space:normal}
 .gspecial{display:grid;gap:8px;padding:10px 8px;border-radius:14px;border:2px solid var(--ink);background:rgba(255,95,176,.16)}
 .gsh{margin:0;text-align:center;font-family:var(--f-disp);color:#ffb3dd;text-shadow:var(--ol)}
@@ -945,6 +949,7 @@ const ICON = {
   gear: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8c0 7-4.5 11-10 14C10.5 26 6 22 6 15V7z" fill="#ff9f1c" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 9v14M10 15h12" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/></svg>`,
   back: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   cog: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.0 9.6 L22.0 10.1 L22.0 13.9 L19.0 14.4 L18.7 15.2 L20.5 17.7 L17.7 20.5 L15.2 18.7 L14.4 19.0 L13.9 22.0 L10.1 22.0 L9.6 19.0 L8.8 18.7 L6.3 20.5 L3.5 17.7 L5.3 15.2 L5.0 14.4 L2.0 13.9 L2.0 10.1 L5.0 9.6 L5.3 8.8 L3.5 6.3 L6.3 3.5 L8.8 5.3 L9.6 5.0 L10.1 2.0 L13.9 2.0 L14.4 5.0 L15.2 5.3 L17.7 3.5 L20.5 6.3 L18.7 8.8Z" fill="#fff" stroke="${INK}" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.6" fill="#59b8ff" stroke="${INK}" stroke-width="1.8"/></svg>`,
+  prot: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7z" fill="#59d0ff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M11 16l4 4 7-8" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   soundOn: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#fff" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`,
   soundOff: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#fff" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/><path d="M16 9l5 6M21 9l-5 6" stroke="#ff4f6d" stroke-width="2.4" stroke-linecap="round"/></svg>`,
   lock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="#ffd23f" stroke="${INK}" stroke-width="2"/><path d="M8 10V8a4 4 0 0 1 8 0v2" fill="none" stroke="${INK}" stroke-width="2"/></svg>`,
@@ -1000,7 +1005,7 @@ const PHOTO_SKINS = {
   p_jymon:  { n: '종윤몬',     ch: 'jongyun', img: 2, ring: '#5b8fd6', fx: 'dino',   say: '쿠아앙!',   emo: '🦖', fxn: '공룡 꼬리 · 걸으면 쿵쿵 먼지 · 궁 쓰면 "쿠아앙!"' },
   p_spy:    { n: '스파이도헌', ch: 'doheon',  img: 3, ring: '#e0453a', fx: 'web',    say: '거미줄 발사!', emo: '🕸️', fxn: '얼굴에 거미줄 · 걸으면 거미줄 자국 · 궁 쓰면 "거미줄 발사!"' },
   p_gong:   { n: '공종윤', ch: 'jongyun', img: 6, ring: '#f2c49b', fx: 'ball', say: '배 공격!', emo: '🥟', fxn: '걸으면 통통 튀는 먼지 · 궁 쓰면 "배 공격!"' },
-  p_model:  { n: '모델서원', ch: 'seowon', img: 7, ring: '#9aa3b5', fx: 'model', say: '찰칵! 📸', emo: '📸', fxn: '걸으면 카메라 플래시 반짝 · 궁 쓰면 "찰칵!"' },
+  p_model:  { n: '모델서원', ch: 'seowon', img: 7, ring: '#9aa3b5', fx: 'model', say: '셀카! 🤳', emo: '📸', fxn: '걸으면 카메라 플래시 반짝 · 궁 쓰면 "셀카!"' },
   p_bad:    { n: 'BAD서원', ch: 'seowon', img: 8, ring: '#7b4dd6', fx: 'bad', say: 'BAD!', emo: '😈', fxn: '보랏빛 오라 · 걸으면 보라 연기 · 궁 쓰면 "BAD!"' },
   p_riz:    { n: '리즈현우', ch: 'hyunwoo', img: 9, ring: '#f2b8c6', fx: 'riz', say: '내 리즈 시절!', emo: '👔', fxn: '걸으면 하트 뿅뿅 · 궁 쓰면 "내 리즈 시절!"' },
   p_chad:   { n: '기가채드 서진', ch: 'seojin', img: 5, ring: '#4a4a4a', fx: 'chad', say: '그래.', emo: '🗿', fxn: '흑백 카리스마 · 걸으면 반짝이는 오라 · 궁 쓰면 "그래."' },
@@ -1131,7 +1136,10 @@ const FRAMES = {
 /* 뽑기 가격 (예전 300 / 2,700) · 이미 가진 게 나오면 돌려주는 코인도 가격에 맞춰 줄임 */
 const GACHA_COST = 200, GACHA10_COST = 1800;
 const DUP_REFUND = { c: 40, r: 120, e: 300, l: 900, s: 2000, u: 5000 };
-const ULTRA_CH = 'seongbin', ULTRA_MAX = 5;   // 울트라 캐릭터: 전체에서 5명까지만
+const ULTRA_CH = 'seongbin', ULTRA_MAX = 5;
+const PROT_RATE = 0.02;   // 뽑기 1번에 강화 보호권 나올 확률
+/* 피파식 보호권: 강화 레벨이 높을수록 많이 필요 · 쓰면 성공해도 실패해도 사라짐 · 실패해도 레벨 안 떨어짐 */
+const protNeed = lv => (lv >= 8 ? 3 : lv >= 6 ? 2 : 1);   // 울트라 캐릭터: 전체에서 5명까지만
 /* s = 특별 스킨(사진). 뽑기에서만 나옴 */
 const GACHA_RATE = [['u', 0.01], ['s', 1.5], ['l', 2], ['e', 10], ['r', 28], ['c', 58.49]];
 /* 등급마다 나오는 것 (같은 등급 안에서는 확률이 똑같음) */
@@ -1151,6 +1159,7 @@ function gachaPool(rar) {
 /* ultraOk: 울트라가 아직 나올 수 있는지 (5명 다 찼거나 이미 가졌으면 전설로 바뀜) */
 /* have = 이미 가진 특별 스킨 → 특별 스킨은 안 가진 것부터 나옴 */
 function gachaRoll(minRar, have, ultraOk, stars) {
+  if (Math.random() < PROT_RATE) return { rar: 'r', type: 'prot', n: 1 };   // 강화 보호권 2%
   let rar = wpick(GACHA_RATE);
   if (rar === 'u' && !ultraOk) rar = 'l';
   if (rar === 'e' && stars && stars.length && Math.random() < 0.5) return { rar, type: 'star', k: stars[Math.floor(Math.random() * stars.length)] };   // 스타파워
@@ -1166,6 +1175,7 @@ function gachaName(g) {
   if (g.type === 'title') return `칭호 「${TITLES[g.k].n}」`;
   if (g.type === 'frame') return FRAMES[g.k].n;
   if (g.type === 'coins') return `코인 ${fmt(g.n)}개`;
+  if (g.type === 'prot') return `강화 보호권 ${g.n}장`;
   return `${POTIONS[g.k].name} ${g.n}개`;
 }
 
@@ -1241,7 +1251,7 @@ function newProfile(nick) {
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
     att: { d: '', s: 0, t: 0 }, tix: 0, titles: [], frames: [], cr: 1,
-    skins: [], sk: { b: '', t: '', u: '', c: {} }, sp: [], mas: {},
+    skins: [], sk: { b: '', t: '', u: '', c: {} }, sp: [], mas: {}, prot: 0,
   };
 }
 function lvMap(src, table, must) {
@@ -1275,6 +1285,7 @@ function normProfile(pub, priv) {
     const at = priv.att || {};
     P.att = { d: str(at.d, 10), s: clamp(num(at.s), 0, 7), t: num(at.t) };
     P.tix = num(priv.tix);
+    P.prot = num(priv.prot);
     P.cr = num(priv.cr);
     P.titles = [...new Set((Array.isArray(priv.titles) ? priv.titles : []).filter(k => TITLES[k]))];
     P.frames = [...new Set((Array.isArray(priv.frames) ? priv.frames : []).filter(k => FRAMES[k]))];
@@ -1656,7 +1667,7 @@ const Store = {
   },
   privData() {
     const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, att: { ...P.att }, tix: P.tix || 0, titles: P.titles.slice(), frames: P.frames.slice(), cr: P.cr || 0,
-      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, sp: (P.sp || []).slice(), mas: { ...(P.mas || {}) }, v: 2 };
+      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, sp: (P.sp || []).slice(), mas: { ...(P.mas || {}) }, prot: P.prot || 0, v: 2 };
     if (this.web) o.sess = this.sess;
     return o;
   },
@@ -1785,6 +1796,7 @@ const Store = {
       else if (g.type === 'title') { if (P.titles.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.titles.push(g.k); }
       else if (g.type === 'frame') { if (P.frames.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.frames.push(g.k); }
       else if (g.type === 'coins') P.coins += g.n;
+      else if (g.type === 'prot') P.prot = (P.prot || 0) + g.n;   // 강화 보호권
       else P.pot[g.k] = (P.pot[g.k] || 0) + g.n;
       res.push(g);
     }
@@ -4482,6 +4494,7 @@ const MP = {
 const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 },
   heist: { win: 260, draw: 120, lose: 80 }, zombie: { win: 260, draw: 100, lose: 80 } };
 const TEAM_KIND = k => k === 'team' || k === 'heist';   // 블루팀 · 레드팀으로 나뉘는 모드
+const PVP_HP = 2;   // 대전 체력 배수
 const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
 const PVP_REWARD = MP_REWARD['1v1'];
 const TEAM_COL = ['#59b8ff', '#ff4f6d'], TEAM_NAME = ['블루팀', '레드팀'];
@@ -4490,8 +4503,8 @@ const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], 
 const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
 /* 대전 규칙 버전: 1대1 라운드제부터 12. 예전 버전이랑은 같이 못 하게 (빠른 대전 줄도 따로) */
 /* 14: 모든 캐릭터 이동속도 낮춤 → 속도가 다른 예전 버전이랑은 모든 모드에서 같이 못 하게 */
-const MP_VER = 17, MM_PATH = 'mm/wait6';   // 17: 주승호 흡혈
-const modeVer = m => 17;
+const MP_VER = 18, MM_PATH = 'mm/wait7';   // 18: 대전 체력 2배
+const modeVer = m => 18;
 const mpOld = R => Object.values((R && R.p) || {}).some(p => !(p && p.v >= modeVer(R && R.m)));
 /* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
 const fnum = (v, d = 0) => (typeof v === 'number' && isFinite(v) ? v : d);
@@ -4780,8 +4793,10 @@ const PvP = {
     p.x = sp.x; p.y = sp.y; p.ang = myTm ? Math.PI / 2 : -Math.PI / 2;
     const hunters = m.players.filter(x => x.uid !== V.boss).length;
     if (kind === 'boss') for (const pl of m.players) if (pl.uid !== V.boss) V.lives[pl.uid] = cfg.lives;
+    /* 대전은 체력 2배 (보스 · 좀비도 이 체력 기준) */
+    p.maxHp = Math.round(p.maxHp * PVP_HP); p.hp = p.maxHp;
     if (kind === 'boss' && me === V.boss) {
-      p.isBoss = true; p.r = 58; p.maxHp = p.hp = Math.round(8000 + 7000 * hunters);
+      p.isBoss = true; p.r = 58; p.maxHp = p.hp = Math.round((8000 + 7000 * hunters) * PVP_HP);
       p.dmgMul *= 1.8; p.spd *= 0.9; p.ultMul *= 2; G.potLeft = 0;
     }
     for (const pl of m.players) {
@@ -6744,9 +6759,11 @@ function onGearClick(e) {
   UI.renderGear();
 }
 function openUpgrade(kind, k) {
+  let useProt = true;
   const draw = (res, cls) => {
     const P = Store.P, tbl = kind === 'w' ? WEAPONS : ARMORS, lv = (kind === 'w' ? P.wpn : P.arm)[k], it = tbl[k], max = lv >= UPG_MAX;
     const rate = max ? 0 : UPG_RATE[lv], cost = max ? 0 : upgCost(lv), drop = !max && upgDrops(lv);
+    const pNeed = protNeed(lv), pOk = (P.prot || 0) >= pNeed;
     const eff = kind === 'w' ? `공격력 +${Math.round(W_UP * 100)}%` : `체력 +${Math.round(A_UP * 100)}%`;
     UI.modal(`
       <p class="eyebrow">장비 강화 · 보유 <i class="coin"></i> <b class="num">${fmt(P.coins)}</b></p>
@@ -6761,15 +6778,18 @@ function openUpgrade(kind, k) {
         <div><span>성공하면</span><b>${eff}</b></div>
         <div><span>실패하면</span><b class="${drop && rate < 100 ? 'down' : ''}">${rate >= 100 ? '실패 없음' : drop ? `+${numRo(lv - 1)} 떨어짐` : '레벨 그대로'}</b></div>
       </div>`}
+      ${drop && rate < 100 ? `<label class="protck${pOk ? '' : ' off'}"><input type="checkbox" id="upProt"${useProt && pOk ? ' checked' : ''}${pOk ? '' : ' disabled'}><span class="pi">${ICON.prot}</span><span>강화 보호권 <b class="num">${pNeed}</b>장 쓰기 <small>실패해도 안 떨어짐 · 쓰면 성공해도 사라져요 · 보유 <b class="num">${P.prot || 0}</b>장${pOk ? '' : ' (모자라요 · 뽑기에서 나와요)'}</small></span></label>` : ''}
       <div class="forge" id="forge"><i></i></div>
       <p class="upg-res ${cls || ''}" id="upRes" aria-live="polite">${res || ''}</p>
       <div class="mbtns">${max ? '' : `<button class="btn big upgo" type="button" id="upGo" data-focus><span>강화하기</span><small><i class="coin"></i> <b class="num">${fmt(cost)}</b></small></button>`}<button class="btn ghost" type="button" id="upClose">닫기</button></div>`, true);
     $('#upClose').addEventListener('click', () => { sfx('click'); UI.closeModal(); UI.renderGear(); UI.updateCoins(); });
+    const pc = $('#upProt'); if (pc) pc.addEventListener('change', () => { useProt = pc.checked; sfx('click'); });
     const go = $('#upGo');
     if (go) go.addEventListener('click', () => {
       const P2 = Store.P;
       if (P2.coins < cost) { $('#upRes').textContent = `코인이 ${fmt(cost - P2.coins)} 부족해요`; $('#upRes').className = 'upg-res bad'; sfx('fail'); return; }
       P2.coins -= cost; UI.updateCoins();
+      const prot = drop && rate < 100 && useProt && pOk; if (prot) P2.prot -= pNeed;   // 피파식: 쓰면 결과와 상관없이 사라짐
       go.disabled = true; $('#upClose').disabled = true;
       $('#forge').classList.add('go'); $('#upRes').textContent = '두근두근...'; $('#upRes').className = 'upg-res';
       sfx('reload');
@@ -6778,6 +6798,7 @@ function openUpgrade(kind, k) {
         const ok = Math.random() * 100 < rate;
         let txt, c;
         if (ok) { map[k] = lv + 1; txt = `강화 성공! +${lv + 1}`; c = 'good'; sfx('up'); }
+        else if (prot) { txt = `강화 실패! 보호권이 지켜줬어요 (남은 보호권 ${P2.prot}장)`; c = 'bad'; sfx('fail'); }
         else if (drop) { map[k] = Math.max(0, lv - 1); txt = `강화 실패... +${numRo(map[k])} 떨어졌어요`; c = 'bad'; sfx('fail'); }
         else { txt = '강화 실패! 레벨은 그대로예요'; c = 'bad'; sfx('fail'); }
         Store.save('priv');
@@ -7052,8 +7073,8 @@ Object.assign(UI, {
     return `
       <div class="gacha card">
         <div class="gmach" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-        <p class="sub center">칭호, 테두리, 특별 스킨, 좋은 총알 색·꼬리, 코인, 포션이 나와요 · 모은 것 <b class="num">${own}/${total}</b></p>
-        <div class="grates">${GACHA_RATE.map(([r, w]) => `<span style="--rc:${RAR[r].col}">${RAR[r].n} ${w}%</span>`).join('')}</div>
+        <p class="sub center">칭호, 테두리, 특별 스킨, 좋은 총알 색·꼬리, 강화 보호권, 코인, 포션이 나와요 · 모은 것 <b class="num">${own}/${total}</b></p>
+        <div class="grates">${GACHA_RATE.map(([r, w]) => `<span style="--rc:${RAR[r].col}">${RAR[r].n} ${w}%</span>`).join('')}<span style="--rc:#59d0ff">강화 보호권 ${PROT_RATE * 100}%</span></div>
         <div class="gultra">${ballHTML(ULTRA_CH, 'm')}<span><b>🕷️ 울트라 캐릭터 ${esc(CHARS[ULTRA_CH].name)}</b><small>${P.chars.includes(ULTRA_CH) ? '✓ 가지고 있음!' : `0.01% · 전체에서 딱 ${ULTRA_MAX}명만 · 남은 자리 <b class="num">${Store.ultraLeft()}</b>`}</small></span></div>
         <div class="gspecial"><p class="gsh">✨ 특별 스킨 <small>뽑기에서만 나와요 · 안 가진 것부터!</small></p><div class="gsk">${sp}</div>
           <p class="gsk2">⭐ 스타파워: 가진 캐릭터의 숙련도가 Lv${STAR_LV} 이상이면 에픽에서 나와요 · 지금 나올 수 있는 것 <b class="num">${starPool(P).length}</b>개</p>
@@ -7143,6 +7164,7 @@ function gachaVis(g, small) {
   if (g.type === 'frame') return `<span class="gv">${avatarHTML(P.pic, P.ch, sz, g.k, Store.mySkin())}</span>`;
   if (g.type === 'title') return `<span class="gv gttl">${titleHTML(g.k)}</span>`;
   if (g.type === 'coins') return `<span class="gv gcoin"><i class="coin"></i></span>`;
+  if (g.type === 'prot') return `<span class="gv gprot">${ICON.prot}</span>`;
   return `<span class="gv gpot">${ICON.bottle(POTIONS[g.k].color)}</span>`;
 }
 
