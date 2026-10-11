@@ -593,6 +593,14 @@ textarea{-webkit-user-select:text;user-select:text}
 .gwish.r-u{--sc:#ff3b3b}
 .gultra{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;border:3px solid var(--ink);background:linear-gradient(135deg,rgba(226,58,58,.45),rgba(43,79,214,.45))}
 .gultra>span{display:grid;gap:2px;text-align:left}.gultra b{font-family:var(--f-disp);font-weight:400}.gultra small{font-size:.76rem;color:#ffe0e0}
+.masbox{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:rgba(16,18,43,.35)}
+.masbox b{font-family:var(--f-disp);font-weight:400;white-space:nowrap}.masbox b i{font-style:normal;font-size:.72rem;color:var(--ink);padding:1px 6px;border-radius:7px;border:2px solid var(--ink);margin-left:4px}
+.mbar{height:10px;border-radius:6px;background:rgba(16,18,43,.6);border:2px solid var(--ink);overflow:hidden}.mbar em{display:block;height:100%;background:var(--mint)}
+.masbox small{font-size:.78rem;color:var(--muted)}
+.starbox{display:grid;gap:2px;padding:8px 10px;border-radius:12px;border:2px dashed rgba(255,255,255,.35);text-align:left}.starbox.on{border:2px solid var(--ink);background:linear-gradient(135deg,rgba(255,210,63,.35),rgba(160,124,255,.3))}
+.starbox b{font-family:var(--f-disp);font-weight:400;color:var(--yolk)}.starbox span{font-size:.88rem}.starbox small{font-size:.76rem;color:var(--muted)}
+.chtile{position:relative}.mlv{position:absolute;top:6px;left:6px;font-family:var(--f-num);font-size:.72rem;padding:0 5px;border-radius:6px;background:var(--mint);color:var(--ink);border:2px solid var(--ink)}
+.spst{position:absolute;top:4px;right:6px;font-size:1rem}.gstar2{position:relative}
 .tag.ultra{background:linear-gradient(90deg,#e23a3a,#2b4fd6);color:#fff;white-space:normal}
 .gspecial{display:grid;gap:8px;padding:10px 8px;border-radius:14px;border:2px solid var(--ink);background:rgba(255,95,176,.16)}
 .gsh{margin:0;text-align:center;font-family:var(--f-disp);color:#ffb3dd;text-shadow:var(--ol)}
@@ -1011,6 +1019,50 @@ function ringOf(ch, sk) { return photoOk(sk, ch) ? PHOTO_SKINS[sk].ring : (CHARS
 function ultC(def, k) { return skinOf(ULT_SKINS, k) ? ULT_SKINS[k].c : def; }
 function ultC2(def, k) { return skinOf(ULT_SKINS, k) ? ULT_SKINS[k].c2 : def; }
 
+/* ================= 캐릭터 숙련도 · 스타파워 =================
+   숙련도: 그 캐릭터로 판을 할수록 점수가 쌓여 Lv1~10. 레벨이 오르면 코인
+   스타파워: 캐릭터마다 1개. 뽑기(에픽)에서만 나오고, 가진 캐릭터 + 숙련도 Lv5 이상일 때만 나옴. 가지면 자동으로 켜짐 */
+const STAR = {
+  base:      { n: '모범생',       d: '최대 체력 +15%' },
+  seojin:    { n: '번개발',       d: '이동속도 +10%' },
+  jongyun:   { n: '분노의 근육',  d: '체력이 절반 아래면 공격력 +25%' },
+  minjun:    { n: '연사 모드',    d: '연사 속도 +15%' },
+  jaewon:    { n: '단단한 웃음',  d: '받는 피해 -12%' },
+  woojin:    { n: '물음표 회복',  d: '궁을 쓰면 체력 25% 회복' },
+  seowon:    { n: '안경 닦기',    d: '궁극기 충전 속도 +25%' },
+  seungho:   { n: '철벽',         d: '궁을 쓰면 3초 동안 방패' },
+  geonyeong: { n: '응급처치',     d: '3초 동안 안 맞으면 1초마다 체력 3% 회복' },
+  doheon:    { n: '스파이크 서브', d: '공격력 +12%' },
+  hyunwoo:   { n: '민지 강화',    d: '민지 체력 · 공격력 +40%' },
+  seongbin:  { n: '거미 감각',    d: '받는 피해 -10% · 이동속도 +6%' },
+};
+const MAS_LV = [0, 40, 100, 180, 280, 400, 550, 730, 950, 1200];   // Lv1~10 이 되는 점수
+const STAR_LV = 5;   // 이 레벨부터 뽑기에서 스타파워가 나옴
+function masLv(pts) { let l = 1; for (let i = 0; i < MAS_LV.length; i++) if ((pts || 0) >= MAS_LV[i]) l = i + 1; return l; }
+function masInfo(pts) {
+  pts = pts || 0; const lv = masLv(pts), lo = MAS_LV[lv - 1], hi = MAS_LV[lv];
+  return { lv, pts, max: !hi, next: hi || lo, f: hi ? clamp((pts - lo) / (hi - lo), 0, 1) : 1 };
+}
+const MAS_BADGE = lv => (lv >= 10 ? ['골드', '#ffd23f'] : lv >= 6 ? ['실버', '#d6dbe8'] : lv >= 3 ? ['브론즈', '#d08b4e'] : ['', '']);
+/* 한 판 끝나고 받는 숙련도 점수 */
+function masGain(r) {
+  if (r.pvp) return r.why === '중간에 나갔어요' ? 0 : r.res === 'win' ? 25 : r.res === 'draw' ? 15 : 10;
+  if ((r.time || 0) < 15) return 0;
+  return Math.round(clamp(8 + (r.kills || 0) * 0.6 + (r.clear ? 25 : 0), 0, 60));
+}
+/* 뽑기에서 나올 수 있는 스타파워 (가진 캐릭터 · 숙련도 Lv5 이상 · 아직 없음) */
+function starPool(P) { return Object.keys(STAR).filter(ch => P.chars.includes(ch) && masLv((P.mas || {})[ch]) >= STAR_LV && !(P.sp || []).includes(ch)); }
+/* 게임 시작할 때 스타파워 적용 (능력치) — 나머지는 쓰는 곳에서 p.star 로 확인 */
+function applyStar(p, ch) {
+  p.star = ch; p.dmgTaken = 1;
+  if (ch === 'base') { p.maxHp = Math.round(p.maxHp * 1.15); p.hp = p.maxHp; }
+  else if (ch === 'seojin') p.spd *= 1.10;
+  else if (ch === 'minjun') p.rateMul *= 1.15;
+  else if (ch === 'jaewon') p.dmgTaken = 0.88;
+  else if (ch === 'seowon') p.ultMul *= 1.25;
+  else if (ch === 'doheon') p.dmgMul *= 1.12;
+  else if (ch === 'seongbin') { p.dmgTaken = 0.9; p.spd *= 1.06; }
+}
 /* ================= 칭호 · 테두리 · 뽑기 · 티어 · 출석 · 주간 ================= */
 const RAR = {
   c: { n: '일반', col: '#c3cbf5' },
@@ -1088,9 +1140,10 @@ function gachaPool(rar) {
 }
 /* have = 이미 가진 특별 스킨 → 특별 스킨은 안 가진 것부터 나옴 */
 /* ultraOk: 울트라가 아직 나올 수 있는지 (5명 다 찼거나 이미 가졌으면 전설로 바뀜) */
-function gachaRoll(minRar, have, ultraOk) {
+function gachaRoll(minRar, have, ultraOk, stars) {
   let rar = wpick(GACHA_RATE);
   if (rar === 'u' && !ultraOk) rar = 'l';
+  if (rar === 'e' && stars && stars.length && Math.random() < 0.5) return { rar, type: 'star', k: stars[Math.floor(Math.random() * stars.length)] };   // 스타파워
   if (minRar === 'r' && rar === 'c') rar = 'r';
   let pool = gachaPool(rar);
   if (rar === 's' && Array.isArray(have)) { const left = pool.filter(g => !have.includes(g.k)); if (left.length) pool = left; }
@@ -1098,6 +1151,7 @@ function gachaRoll(minRar, have, ultraOk) {
 }
 function gachaName(g) {
   if (g.type === 'char') return `${CHARS[g.k].name} (캐릭터)`;
+  if (g.type === 'star') return `스타파워 「${STAR[g.k].n}」`;
   if (g.type === 'skin') return skinCat(g.k) === 'p' ? `${PHOTO_SKINS[g.k].n} 스킨` : skinDef(g.k).n;
   if (g.type === 'title') return `칭호 「${TITLES[g.k].n}」`;
   if (g.type === 'frame') return FRAMES[g.k].n;
@@ -1126,7 +1180,7 @@ function weekId(t = Date.now()) { const d = kst(t); const wd = (d.getUTCDay() + 
 const prevWeekId = () => weekId(Date.now() - 7 * 864e5);
 
 /* 출석: 7일 주기, 7일째는 뽑기권도 줌 */
-const ATT_REWARD = [100, 150, 200, 250, 300, 400, 700];
+const ATT_REWARD = [500, 700, 900, 1200, 1500, 2000, 4000];   // 예전 100~700
 
 /* 호맘 보스전 (타임어택 · 협동): 스토리 호맘보다 체력 3배 */
 const HOMOM_HP = 3;
@@ -1177,7 +1231,7 @@ function newProfile(nick) {
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
     att: { d: '', s: 0, t: 0 }, tix: 0, titles: [], frames: [], cr: 1,
-    skins: [], sk: { b: '', t: '', u: '', c: {} },
+    skins: [], sk: { b: '', t: '', u: '', c: {} }, sp: [], mas: {},
   };
 }
 function lvMap(src, table, must) {
@@ -1219,6 +1273,9 @@ function normProfile(pub, priv) {
     const sk = priv.sk && typeof priv.sk === 'object' ? priv.sk : {}, own = k => P.skins.includes(k);
     P.sk = { b: own(skinOf(BULLET_SKINS, sk.b)) ? sk.b : '', t: own(skinOf(TRAIL_SKINS, sk.t)) ? sk.t : '', u: own(skinOf(ULT_SKINS, sk.u)) ? sk.u : '', c: {} };
     if (sk.c && typeof sk.c === 'object') for (const ch of Object.keys(CHARS)) if (photoOk(sk.c[ch], ch) && own(sk.c[ch])) P.sk.c[ch] = sk.c[ch];
+    /* 스타파워 · 숙련도 */
+    P.sp = [...new Set((Array.isArray(priv.sp) ? priv.sp : []).filter(k => STAR[k] && P.chars.includes(k)))];
+    P.mas = {}; if (priv.mas && typeof priv.mas === 'object') for (const k of Object.keys(CHARS)) { const v = num(priv.mas[k]); if (v > 0) P.mas[k] = Math.min(v, 99999); }
   }
   if (P.title && !P.titles.includes(P.title)) P.title = '';
   if (P.frame && !P.frames.includes(P.frame)) P.frame = '';
@@ -1589,7 +1646,7 @@ const Store = {
   },
   privData() {
     const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, att: { ...P.att }, tix: P.tix || 0, titles: P.titles.slice(), frames: P.frames.slice(), cr: P.cr || 0,
-      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, v: 2 };
+      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, sp: (P.sp || []).slice(), mas: { ...(P.mas || {}) }, v: 2 };
     if (this.web) o.sess = this.sess;
     return o;
   },
@@ -1631,8 +1688,17 @@ const Store = {
     if (P.wk !== w) { if (P.wk && P.ws > 0) { P.lwk = P.wk; P.lws = P.ws; } P.wk = w; P.ws = 0; }
   },
   /* 대전 결과 (1대1 / 3대3 / 5대1) */
+  /* 숙련도 쌓기 → 레벨 오르면 코인 (r.mas 에 결과) */
+  addMas(r) {
+    const P = this.P, ch = P.ch, gain = masGain(r); if (!gain) return;
+    P.mas = P.mas || {}; const lv0 = masLv(P.mas[ch]); P.mas[ch] = (P.mas[ch] || 0) + gain; const lv = masLv(P.mas[ch]);
+    let coins = 0; for (let l = lv0 + 1; l <= lv; l++) coins += l * 100;
+    P.coins += coins;
+    r.mas = { ch, gain, lv, up: lv > lv0, coins, star: lv >= STAR_LV && lv0 < STAR_LV && !(P.sp || []).includes(ch) && !!STAR[ch] };
+  },
   applyPvp(r) {
     const P = this.P;
+    this.addMas(r);
     P.coins += r.coins;
     if (r.kind === 'team') { if (r.res === 'win') P.tw++; else if (r.res === 'lose') P.tl++; else P.td++; }
     else if (r.kind === 'boss') { const me = r.boss ? 'bw' : 'hw2', lo = r.boss ? 'bl' : 'hl2'; if (r.res === 'win') P[me]++; else P[lo]++; }
@@ -1647,6 +1713,7 @@ const Store = {
   },
   applyResult(r) {
     const P = this.P;
+    this.addMas(r);
     this.rollWeek();
     P.total += r.score; P.best = Math.max(P.best, r.score); P.games += 1; P.ws += r.score;
     if (r.clear && (!r.mode || r.mode === 'story')) P.clears += 1;
@@ -1701,8 +1768,9 @@ const Store = {
     if (useTix) P.tix--; else P.coins -= cost;
     const res = [];
     for (let i = 0; i < n; i++) {
-      const g = gachaRoll(ten && i === n - 1 && !res.some(x => x.rar !== 'c') ? 'r' : '', P.skins, this.ultraLeft() > 0 && !P.chars.includes(ULTRA_CH));
-      if (g.type === 'char') { if (P.chars.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.chars.push(g.k); }
+      const g = gachaRoll(ten && i === n - 1 && !res.some(x => x.rar !== 'c') ? 'r' : '', P.skins, this.ultraLeft() > 0 && !P.chars.includes(ULTRA_CH), starPool(P));
+      if (g.type === 'star') { P.sp = P.sp || []; if (!P.sp.includes(g.k)) P.sp.push(g.k); }
+      else if (g.type === 'char') { if (P.chars.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.chars.push(g.k); }
       else if (g.type === 'skin') { if (P.skins.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.skins.push(g.k); }
       else if (g.type === 'title') { if (P.titles.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.titles.push(g.k); }
       else if (g.type === 'frame') { if (P.frames.includes(g.k)) { g.dup = DUP_REFUND[g.rar]; P.coins += g.dup; } else P.frames.push(g.k); }
@@ -1887,8 +1955,18 @@ const MAPS = {
       { x: 60, y: 520, w: 34, h: 260, k: 'goal' }, { x: 1706, y: 520, w: 34, h: 260, k: 'goal' },
     ],
   },
+  science: {
+    name: '과학실', desc: '실험대 사이 좁은 길 · 가운데 개수대',
+    obst: [
+      { x: 300, y: 380, w: 300, h: 80, k: 'lab' }, { x: 1200, y: 380, w: 300, h: 80, k: 'lab' },
+      { x: 300, y: 840, w: 300, h: 80, k: 'lab' }, { x: 1200, y: 840, w: 300, h: 80, k: 'lab' },
+      { x: 830, y: 590, w: 140, h: 120, k: 'sink' },
+      { x: 60, y: 560, w: 60, h: 180, k: 'shelf' }, { x: 1680, y: 560, w: 60, h: 180, k: 'shelf' },
+      { x: 700, y: 230, w: 70, h: 70, k: 'flask' }, { x: 1030, y: 1000, w: 70, h: 70, k: 'flask' },
+    ],
+  },
 };
-const MAP_ORDER = ['gym', 'classroom', 'cafeteria', 'field'];
+const MAP_ORDER = ['gym', 'classroom', 'cafeteria', 'field', 'science'];
 const randMap = () => MAP_ORDER[Math.floor(Math.random() * MAP_ORDER.length)];
 const mapKey = k => (MAPS[k] ? k : 'gym');
 
@@ -1924,6 +2002,13 @@ function drawFloor(map) {
     }
     ctx.save(); ctx.globalAlpha = 0.16; ctx.fillStyle = COL.ink; ctx.font = `400 110px ${FONT_DISP}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('급식실', WW / 2, WH / 2 + 250); ctx.restore();
+  } else if (map === 'science') {
+    const ts = 80;
+    for (let x = Math.floor(xa / ts) * ts; x < xb; x += ts) for (let y = Math.floor(ya / ts) * ts; y < yb; y += ts) {
+      ctx.fillStyle = ((x + y) / ts) % 2 ? '#d7dde6' : '#e6ebf2'; ctx.fillRect(x, y, ts, ts);
+    }
+    ctx.save(); ctx.globalAlpha = 0.14; ctx.fillStyle = COL.ink; ctx.font = `400 110px ${FONT_DISP}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('과학실', WW / 2, WH / 2 + 260); ctx.font = `400 46px ${FONT_NUM}`; ctx.fillText('H₂O  ·  NaCl  ·  CO₂', WW / 2, WH / 2 - 250); ctx.restore();
   } else if (map === 'field') {
     ctx.fillStyle = '#d9a66b'; ctx.fillRect(xa, ya, xb - xa, yb - ya);
     ctx.fillStyle = 'rgba(140,90,40,.18)';
@@ -1954,7 +2039,7 @@ function drawFloor(map) {
     ctx.save(); ctx.globalAlpha = 0.2; ctx.fillStyle = COL.ink; ctx.font = `400 120px ${FONT_DISP}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('호준', WW / 2, WH / 2 + 8); ctx.restore();
   }
 }
-const WALL_COL = { gym: '#2f6fd6', classroom: '#8fb3d9', cafeteria: '#6dbf9a', field: '#5fae5a' };
+const WALL_COL = { gym: '#2f6fd6', classroom: '#8fb3d9', cafeteria: '#6dbf9a', field: '#5fae5a', science: '#7a86b8' };
 
 /* ---------- 새 맵 장애물 ---------- */
 function drawObstNew(o) {
@@ -1992,6 +2077,31 @@ function drawObstNew(o) {
     rr(x, y, w, h, 6); ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
     ctx.strokeStyle = 'rgba(16,18,43,.35)'; ctx.lineWidth = 1.5;
     for (let i = 10; i < h; i += 14) { ctx.beginPath(); ctx.moveTo(x + 4, y + i); ctx.lineTo(x + w - 4, y + i); ctx.stroke(); }
+  } else if (o.k === 'lab') {   // 실험대: 검은 상판 + 비커 · 플라스크
+    rr(x, y, w, h, 8); ctx.fillStyle = '#3a3f52'; ctx.fill(); ctx.stroke();
+    rr(x + 8, y + 8, w - 16, h - 16, 5); ctx.fillStyle = '#4a5068'; ctx.fill();
+    const cols = ['#59d0ff', '#7bd389', '#ff8fb1', '#ffd23f'];
+    for (let i = 0; i < 4; i++) {
+      const bx = x + 40 + i * ((w - 80) / 3), by = y + h / 2;
+      ctx.beginPath(); ctx.moveTo(bx - 9, by - 16); ctx.lineTo(bx + 9, by - 16); ctx.lineTo(bx + 13, by + 14); ctx.lineTo(bx - 13, by + 14); ctx.closePath();
+      ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.fill(); ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = cols[i]; ctx.fillRect(bx - 11, by + 2, 22, 10); ctx.lineWidth = 4;
+    }
+  } else if (o.k === 'sink') {   // 개수대
+    rr(x, y, w, h, 12); ctx.fillStyle = '#c9d2de'; ctx.fill(); ctx.stroke();
+    rr(x + 18, y + 22, w - 36, h - 40, 10); ctx.fillStyle = '#8fd0ff'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#9aa3b5'; ctx.fillRect(x + w / 2 - 5, y + 4, 10, 22); ctx.strokeRect(x + w / 2 - 5, y + 4, 10, 22);
+  } else if (o.k === 'shelf') {   // 약품 선반
+    rr(x, y, w, h, 6); ctx.fillStyle = '#9a6b3e'; ctx.fill(); ctx.stroke();
+    ctx.lineWidth = 2.5;
+    for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(x + 4, y + (h * i) / 4); ctx.lineTo(x + w - 4, y + (h * i) / 4); ctx.stroke(); }
+    for (let i = 0; i < 4; i++) { ctx.fillStyle = ['#ff4f6d', '#59b8ff', '#3fe08e', '#ffd23f'][i]; rr(x + 12, y + (h * i) / 4 + 10, 14, (h / 4) - 16, 4); ctx.fill(); ctx.stroke(); rr(x + 34, y + (h * i) / 4 + 14, 14, (h / 4) - 20, 4); ctx.fill(); ctx.stroke(); }
+  } else if (o.k === 'flask') {   // 큰 플라스크 상자
+    rr(x, y, w, h, 10); ctx.fillStyle = '#e8eef5'; ctx.fill(); ctx.stroke();
+    const cx = x + w / 2;
+    ctx.beginPath(); ctx.moveTo(cx - 7, y + 10); ctx.lineTo(cx + 7, y + 10); ctx.lineTo(cx + 7, y + 26); ctx.lineTo(cx + 22, y + h - 10); ctx.lineTo(cx - 22, y + h - 10); ctx.lineTo(cx - 7, y + 26); ctx.closePath();
+    ctx.fillStyle = '#b6ff6a'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(cx - 6, y + h - 22, 4, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx + 6, y + h - 30, 3, 0, TAU); ctx.fill();
   } else if (o.k === 'jungle') {
     rr(x, y, w, h, 10); ctx.fillStyle = 'rgba(255,79,109,.25)'; ctx.fill(); ctx.stroke();
     ctx.lineWidth = 7; ctx.strokeStyle = '#ff4f6d';
@@ -2205,7 +2315,7 @@ function loadoutFrom(P) {
   const w = P.eq.w, a = P.eq.a, p = P.eq.p;
   const sk = P.sk || {};
   return { ch: P.ch, w, wl: P.wpn[w] || 0, a, al: P.arm[a] || 0, p, pn: Math.min(POT_PER_GAME, P.pot[p] || 0), nick: P.nick, fr: P.frame || '',
-    sk: Store.mySkin(P.ch), bc: skinOf(BULLET_SKINS, sk.b), tr: skinOf(TRAIL_SKINS, sk.t), uc: skinOf(ULT_SKINS, sk.u) };
+    sk: Store.mySkin(P.ch), bc: skinOf(BULLET_SKINS, sk.b), tr: skinOf(TRAIL_SKINS, sk.t), uc: skinOf(ULT_SKINS, sk.u), sp: (P.sp || []).includes(P.ch) ? 1 : 0 };
 }
 function newGame(lo) {
   const ch = CHARS[lo.ch] || CHARS.base, wp = WEAPONS[lo.w] || WEAPONS.blaster, ar = ARMORS[lo.a] || ARMORS.gym;
@@ -2229,6 +2339,7 @@ function newGame(lo) {
     en: [], pb: [], eb: [], hz: [], drops: [], fx: [], lobs: [], trl: [],
     banner: null, note: null, nextDrop: 24, potLeft: lo.pn, potUsed: 0, id: 1, shake: 0, slow: 0, hint: 9, ultHinted: false, ultDeny: 0,
   };
+  if (lo.sp && STAR[lo.ch]) applyStar(G.p, lo.ch);   // 스타파워
 }
 /* ---------- 진행(페이즈) ---------- */
 function scr() { return G.scr || SCRIPT; }
@@ -2328,6 +2439,7 @@ function updatePlayer(dt) {
   p.noAmmo = Math.max(0, p.noAmmo - dt); p.inv = Math.max(0, (p.inv || 0) - dt); p.fcd -= dt;
   if (p.stun > 0) p.stun = Math.max(0, p.stun - dt);
   if (p.conf > 0) p.conf = Math.max(0, p.conf - dt);
+  if (p.star === 'geonyeong' && G.t - p.lastHit > 3 && p.hp < p.maxHp) { p.regT = (p.regT || 0) + dt; if (p.regT >= 1) { p.regT = 0; p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.03); } }   // 스타파워 응급처치
   const locked = (p.stun || 0) > 0 || pvpLock();
 
   let mx = IN.mv.x, my = IN.mv.y;
@@ -2426,7 +2538,7 @@ function tryAttack(a) {
 function autoAttack() { if (!G) return; const t = autoTarget(G.p.isZ ? 260 : WEAPONS[G.lo.w].range + 80); tryAttack(t ? t.ang : G.p.ang); }
 function fireVolley(a, apm) {
   const p = G.p, wp = WEAPONS[G.lo.w];
-  const mul = p.dmgMul * (p.buf.rage > 0 ? 1.6 : 1) * (p.buf.power > 0 ? 1.5 : 1);
+  const mul = p.dmgMul * (p.buf.rage > 0 ? 1.6 : 1) * (p.buf.power > 0 ? 1.5 : 1) * (p.star === 'jongyun' && p.hp < p.maxHp / 2 ? 1.25 : 1);
   let dmg = wp.dmg * mul, spd = wp.spd, range = wp.range, r = wp.r, pierce = wp.pierce;
   const angs = [];
   if (apm) { dmg = 60 * mul; spd = 1000; range = 620; r = 7; pierce = 0; for (const o of [-0.2, 0, 0.2]) angs.push(a + o + rand(-0.04, 0.04)); }
@@ -2517,6 +2629,8 @@ function fireUlt(a, mag) {
     G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: a, len, w: 84, t: 0, dur: 0.45, c: uc ? ultC('', uc) : '', c2: ultC2('#fff', uc) });
     G.shake = Math.max(G.shake, 8);
   }
+  if (p.star === 'woojin') heal(0.25);   // 스타파워
+  else if (p.star === 'seungho') p.buf.shield = Math.max(p.buf.shield, 3);
   if (G.lo.sk) skinUlt(p, G.lo.sk, null, G.t);
   if (G.pvp || G.coop) PvP.ult(kind, a, ox, oy, ex);
 }
@@ -2580,6 +2694,7 @@ function damagePlayer(d, silent) {
   if (!G.pvp) d *= G.edm || 1;
   if (p.buf.shield > 0) d *= 0.3;
   if (p.isZ === 2) d *= ZB.aRes;   // 알파 좀비는 덜 아픔
+  if (p.dmgTaken) d *= p.dmgTaken;   // 스타파워 (박재원 · 스파이더성빈)
   p.hp -= d; p.lastHit = G.t;
   if (!silent) {
     p.flash = 0.12; G.shake = Math.min(14, G.shake + 3 + d / 60);
@@ -3726,7 +3841,8 @@ function spawnPet(a) {
   const p = G.p, ch = G.lo.ch;
   const o = { x: clamp(p.x + Math.cos(a) * 64, 30, WW - 30), y: clamp(p.y + Math.sin(a) * 64, 30, WH - 30), r: PET.r };
   for (const r of OBST) pushOut(o, r);
-  G.pet = { x: o.x, y: o.y, r: PET.r, hp: PET.hp, maxHp: PET.hp, t: PET.life, cd: 0.4, ang: a, ch, sk: G.lo.sk || '', uc: G.lo.uc || '', kvx: 0, kvy: 0, flash: 0, pet: true, mine: true, sd: 1, sdT: 1 };
+  const pm = p.star === 'hyunwoo' ? 1.4 : 1;   // 스타파워 민지 강화
+  G.pet = { pm, x: o.x, y: o.y, r: PET.r, hp: Math.round(PET.hp * pm), maxHp: Math.round(PET.hp * pm), t: PET.life, cd: 0.4, ang: a, ch, sk: G.lo.sk || '', uc: G.lo.uc || '', kvx: 0, kvy: 0, flash: 0, pet: true, mine: true, sd: 1, sdT: 1 };
   burst(o.x, o.y, 18, [ultC(ringOf(ch, G.lo.sk), G.lo.uc), ultC2('#fff', G.lo.uc)], 260);
   addText(o.x, o.y - 44, '민지 등장!', CHARS[ch].ring, 22, 1.1);
 }
@@ -3752,7 +3868,7 @@ function updatePet(dt) {
     if (q.cd <= 0 && bd < PET.range && los && !pvpLock()) {
       q.cd = PET.cd;
       const sx = q.x + Math.cos(a) * (q.r + 6), sy = q.y + Math.sin(a) * (q.r + 6), life = PET.range / PET.bspd;
-      G.pb.push({ x: sx, y: sy, vx: Math.cos(a) * PET.bspd, vy: Math.sin(a) * PET.bspd, r: 6, dmg: PET.dmg * G.p.dmgMul, life, pierce: 0, hit: [], nc: true, w: G.lo.w, bc: G.lo.bc || '', tr: G.lo.tr || '', tm: 1.6, seed: rand(0, 360) });
+      G.pb.push({ x: sx, y: sy, vx: Math.cos(a) * PET.bspd, vy: Math.sin(a) * PET.bspd, r: 6, dmg: PET.dmg * G.p.dmgMul * (q.pm || 1), life, pierce: 0, hit: [], nc: true, w: G.lo.w, bc: G.lo.bc || '', tr: G.lo.tr || '', tm: 1.6, seed: rand(0, 360) });
       if (G.pvp || G.coop) PvP.shot(sx, sy, [a], PET.bspd, 6, life);
     }
   } else {
@@ -4344,8 +4460,8 @@ const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], 
 const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
 /* 대전 규칙 버전: 1대1 라운드제부터 12. 예전 버전이랑은 같이 못 하게 (빠른 대전 줄도 따로) */
 /* 14: 모든 캐릭터 이동속도 낮춤 → 속도가 다른 예전 버전이랑은 모든 모드에서 같이 못 하게 */
-const MP_VER = 15, MM_PATH = 'mm/wait4';   // 15: 스파이더성빈 · 새 궁
-const modeVer = m => 15;
+const MP_VER = 16, MM_PATH = 'mm/wait5';   // 16: 과학실 맵 · 스타파워
+const modeVer = m => 16;
 const mpOld = R => Object.values((R && R.p) || {}).some(p => !(p && p.v >= modeVer(R && R.m)));
 /* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
 const fnum = (v, d = 0) => (typeof v === 'number' && isFinite(v) ? v : d);
@@ -5371,6 +5487,7 @@ const BUSH_MAP = {
   gym: [[110, 180, 170, 150], [1520, 180, 170, 150], [110, 970, 170, 150], [1520, 970, 170, 150], [600, 500, 190, 120], [1010, 680, 190, 120], [740, 380, 140, 80], [920, 840, 140, 80]],
   classroom: [[90, 120, 170, 160], [1540, 120, 170, 160], [810, 430, 180, 110], [810, 740, 180, 110], [90, 520, 150, 200], [1560, 520, 150, 200], [400, 1010, 220, 80], [1180, 1010, 220, 80]],
   cafeteria: [[340, 450, 260, 100], [1200, 450, 260, 100], [340, 760, 260, 100], [1200, 760, 260, 100], [820, 150, 160, 120], [820, 1030, 160, 120], [60, 140, 150, 130], [1590, 1030, 150, 130]],
+  science: [[120, 160, 170, 140], [1510, 160, 170, 140], [120, 1000, 170, 140], [1510, 1000, 170, 140], [640, 560, 150, 180], [1010, 560, 150, 180], [820, 240, 160, 100], [820, 960, 160, 100]],
   field: [[560, 560, 180, 180], [1060, 560, 180, 180], [820, 230, 160, 140], [820, 930, 160, 140], [170, 150, 170, 130], [1460, 150, 170, 130], [170, 1020, 170, 130], [1460, 1020, 170, 130]],
 };
 const BUSH_SEE = 180;   // 이만큼 가까우면 수풀 속도 보임
@@ -6237,14 +6354,15 @@ const UI = {
         ${sbar('공격', c.dmg, 0.8, 1.15, Math.round(c.dmg * 100) + '%')}
         ${sbar('연사', c.rate, 0.85, 1.2, Math.round(c.rate * 100) + '%')}
         <div class="ultbox"><b>궁극기 · ${esc(c.ultName)}</b><span>${esc(c.ultDesc)}</span></div>
+        ${masHTML(k)}
         <div class="chact">${act}${skinBtn(k)}</div>
       </div>
     </div>
     <div class="chgrid">`;
     for (const key of CH_ORDER) {
-      const o = P.chars.includes(key), s2 = P.ch === key, cc = CHARS[key];
+      const o = P.chars.includes(key), s2 = P.ch === key, cc = CHARS[key], ml = masLv((P.mas || {})[key]);
       h += `<button class="chtile card${key === k ? ' view' : ''}${s2 ? ' sel' : ''}${o ? '' : ' locked'}" type="button" data-cact="view" data-k="${key}" aria-pressed="${key === k}">
-        ${ballHTML(key, 'm', '', Store.mySkin(key))}${o ? '' : `<span class="lockic">${ICON.lock}</span>`}<b>${esc(cc.name)}</b>
+        ${ballHTML(key, 'm', '', Store.mySkin(key))}${o ? '' : `<span class="lockic">${ICON.lock}</span>`}${o && ml > 1 ? `<span class="mlv">Lv${ml}</span>` : ''}${(P.sp || []).includes(key) ? '<span class="spst">⭐</span>' : ''}<b>${esc(cc.name)}</b>
         <small>${s2 ? '사용 중' : o ? esc(cc.role) : cc.ultra ? '울트라 · 뽑기' : `<i class="coin"></i> ${fmt(cc.price)}`}</small></button>`;
     }
     h += '</div>';
@@ -6717,11 +6835,26 @@ function startGame(mode) {
   Social.setWhere('solo');
 }
 function onGameEnd(r) {
-  if (r && r.pvp) { Store.applyPvp(r); Game.stop(); UI.showPvpResult(r); UI.flushTitles(); return; }
+  if (r && r.pvp) { Store.applyPvp(r); Game.stop(); UI.showPvpResult(r); UI.flushTitles(); masToast(r); return; }
   const prevBest = Store.P.best;
   Store.applyResult(r);
   Game.stop();
   UI.showResult(r, r.score > prevBest && r.score > 0);
+  masToast(r);
+}
+/* 숙련도 알림 */
+function masToast(r) {
+  const m = r && r.mas; if (!m) return;
+  const nm = CHARS[m.ch].name;
+  setTimeout(() => { UI.toast(`${nm} 숙련도 +${m.gain}${m.up ? ` · Lv${m.lv} 달성! +${fmt(m.coins)}코인` : ''}`, 'good'); if (m.up) { sfx('up'); UI.updateCoins(); } }, 700);
+  if (m.star) setTimeout(() => UI.toast(`이제 뽑기에서 ${nm}의 스타파워 「${STAR[m.ch].n}」가 나올 수 있어요!`, 'good'), 2200);
+}
+/* 캐릭터 화면: 숙련도 + 스타파워 */
+function masHTML(k) {
+  const P = Store.P, own = P.chars.includes(k), mi = masInfo((P.mas || {})[k]), [bn, bc] = MAS_BADGE(mi.lv), S = STAR[k], has = (P.sp || []).includes(k);
+  const st = has ? '가지고 있어요 · 자동으로 켜져요' : !own ? '캐릭터를 가지면 숙련도를 쌓을 수 있어요' : mi.lv >= STAR_LV ? '뽑기(에픽)에서 나올 수 있어요!' : `숙련도 Lv${STAR_LV}부터 뽑기에서 나와요`;
+  return `<div class="masbox"><b>숙련도 Lv${mi.lv}${bn ? ` <i style="background:${bc}">${bn}</i>` : ''}</b><span class="mbar"><em style="width:${Math.round(mi.f * 100)}%"></em></span><small class="num">${mi.max ? '최고 레벨!' : `${fmt(mi.pts)} / ${fmt(mi.next)}`}</small></div>
+    ${S ? `<div class="starbox${has ? ' on' : ''}"><b>⭐ 스타파워 · ${esc(S.n)}</b><span>${esc(S.d)}</span><small>${st}</small></div>` : ''}`;
 }
 function enterLobby() {
   Store.startSubs(); Promise.resolve(Store.claim()).then(() => Social.start()).catch(e => console.warn(e));
@@ -6893,6 +7026,7 @@ Object.assign(UI, {
         <div class="grates">${GACHA_RATE.map(([r, w]) => `<span style="--rc:${RAR[r].col}">${RAR[r].n} ${w}%</span>`).join('')}</div>
         <div class="gultra">${ballHTML(ULTRA_CH, 'm')}<span><b>🕷️ 울트라 캐릭터 ${esc(CHARS[ULTRA_CH].name)}</b><small>${P.chars.includes(ULTRA_CH) ? '✓ 가지고 있음!' : `0.01% · 전체에서 딱 ${ULTRA_MAX}명만 · 남은 자리 <b class="num">${Store.ultraLeft()}</b>`}</small></span></div>
         <div class="gspecial"><p class="gsh">✨ 특별 스킨 <small>뽑기에서만 나와요 · 안 가진 것부터!</small></p><div class="gsk">${sp}</div>
+          <p class="gsk2">⭐ 스타파워: 가진 캐릭터의 숙련도가 Lv${STAR_LV} 이상이면 에픽에서 나와요 · 지금 나올 수 있는 것 <b class="num">${starPool(P).length}</b>개</p>
           <p class="gsk2">에픽 · 전설 총알 색과 꼬리(얼음 · 네온 · 무지개 총알, 불꽃 · 눈꽃 · 무지개 꼬리)도 뽑기에서만!</p></div>
         <div class="mbtns">
           <button class="btn big" type="button" data-gacha="1">${P.tix > 0 ? `뽑기권 사용 (${P.tix}장)` : `1번 뽑기 <i class="coin"></i> ${fmt(GACHA_COST)}`}</button>
@@ -6927,7 +7061,7 @@ Object.assign(UI, {
   },
   gachaCard(i) {
     const res = this.gRes, g = res[i], last = i === res.length - 1, one = res.length === 1;
-    const isNew = !g.dup && (g.type === 'title' || g.type === 'frame' || g.type === 'skin' || g.type === 'char');
+    const isNew = !g.dup && (g.type === 'title' || g.type === 'frame' || g.type === 'skin' || g.type === 'char' || g.type === 'star');
     const btns = one
       ? `<div class="mbtns"><button class="btn ghost" type="button" data-gclose>닫기</button><button class="btn" type="button" id="gAgain" data-focus>한 번 더</button></div>`
       : `<div class="mbtns"><button class="btn ghost" type="button" id="gSkip">건너뛰기</button><button class="btn" type="button" id="gNext" data-focus>${last ? '한눈에 보기' : '다음 ▶'}</button></div>`;
@@ -6937,6 +7071,7 @@ Object.assign(UI, {
         <div class="gvis">${gachaVis(g)}</div>
         <small class="grar">${RAR[g.rar].n}</small>
         <b class="gnm">${esc(gachaName(g))}</b>
+        ${g.type === 'star' ? `<small class="gfx">${esc(CHARS[g.k].name)} · ${esc(STAR[g.k].d)} (자동으로 켜짐)</small>` : ''}
         ${g.type === 'char' ? `<small class="gfx">궁극기 ${esc(CHARS[g.k].ultName)} · 로비 캐릭터에서 골라요</small>` : ''}
         ${g.type === 'skin' && skinCat(g.k) === 'p' ? `<small class="gfx">${esc(PHOTO_SKINS[g.k].fxn)}</small>` : ''}
         ${g.dup ? `<em>이미 있어서 +${fmt(g.dup)}코인</em>` : isNew ? '<em class="new">NEW!</em>' : ''}
@@ -6959,7 +7094,7 @@ Object.assign(UI, {
     const res = this.gRes, best = gachaBest(res);
     this.modal(`
       <p class="eyebrow">GACHA</p><h2 class="${best === 'l' || best === 's' || best === 'u' ? 'win' : ''}">${best === 'u' ? '울트라 캐릭터 등장!!!' : best === 's' ? '특별 스킨 등장!!' : best === 'l' ? '전설 등장!!' : best === 'e' ? '에픽!' : '뽑기 결과'}</h2>
-      <div class="gres${res.length > 1 ? ' ten' : ''}">${res.map((g, i) => `<div class="gcard r-${g.rar}" style="--d:${i * 0.06}s"><small>${RAR[g.rar].n}</small>${gachaVis(g, true)}<b>${esc(gachaName(g))}</b>${g.dup ? `<em>이미 있어서 +${fmt(g.dup)}코인</em>` : g.type === 'title' || g.type === 'frame' || g.type === 'skin' || g.type === 'char' ? '<em class="new">NEW</em>' : ''}</div>`).join('')}</div>
+      <div class="gres${res.length > 1 ? ' ten' : ''}">${res.map((g, i) => `<div class="gcard r-${g.rar}" style="--d:${i * 0.06}s"><small>${RAR[g.rar].n}</small>${gachaVis(g, true)}<b>${esc(gachaName(g))}</b>${g.dup ? `<em>이미 있어서 +${fmt(g.dup)}코인</em>` : g.type === 'title' || g.type === 'frame' || g.type === 'skin' || g.type === 'char' || g.type === 'star' ? '<em class="new">NEW</em>' : ''}</div>`).join('')}</div>
       <p class="sub">칭호·테두리는 로비 <b>칭호</b>, 스킨은 로비 <b>스킨</b>에서 바꿔 껴요</p>
       <div class="mbtns"><button class="btn ghost" type="button" data-gclose>닫기</button><button class="btn" type="button" id="gAgain" data-focus>한 번 더</button></div>`, true);
     $('#mbox [data-gclose]').addEventListener('click', () => { sfx('click'); this.closeModal(); this.flushTitles(); });
@@ -6971,6 +7106,7 @@ function gachaBest(res) { return res.reduce((m, g) => (RAR_ORDER.indexOf(g.rar) 
 /* 뽑기 카드 그림 (small = 한눈에 보기용 작은 그림) */
 function gachaVis(g, small) {
   const P = Store.P, sz = small ? 'm' : 'xl';
+  if (g.type === 'star') return `<span class="gv gstar2">${ballHTML(g.k, sz, '', Store.mySkin(g.k))}<span class="spst">⭐</span>${small ? '' : `<span class="gsub">${esc(CHARS[g.k].name)} 스타파워</span>`}</span>`;
   if (g.type === 'char') return `<span class="gv">${ballHTML(g.k, sz)}${small ? '' : '<span class="gsub">울트라 캐릭터</span>'}</span>`;
   if (g.type === 'skin' && skinCat(g.k) !== 'p') { const c = skinCat(g.k); return `<span class="gv gskin${skinDef(g.k).c === RAINBOW ? ' rb' : ''}"><img src="${skIcon(c, g.k)}" alt="">${small ? '' : `<span class="gsub">${SKIN_CAT[c]}</span>`}</span>`; }
   if (g.type === 'skin') { const s = PHOTO_SKINS[g.k]; return `<span class="gv">${ballHTML(s.ch, sz, '', g.k)}${small ? '' : `<span class="gsub">${esc(CHARS[s.ch].name)}</span>`}</span>`; }
