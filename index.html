@@ -1453,6 +1453,7 @@ const Store = {
         if (!firebase.apps.length) firebase.initializeApp(cfg);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
+        this.gsiLoad();
         const u = await new Promise((res, rej) => {
           let done = false, un = null;
           const fin = (f, v) => { if (done) return; done = true; clearTimeout(to); if (un) un(); f(v); };
@@ -1487,9 +1488,43 @@ const Store = {
     const g = (u.providerData || []).find(x => x && x.providerId === 'google.com');
     this.gmail = g ? String(g.email || e) : '';
   },
-  /* ---------- 구글 로그인 ---------- */
+  /* ---------- 구글 로그인 ----------
+     firebase-config.js 에 googleClientId 가 있으면 구글 창(accounts.google.com)에서 바로 토큰을 받아 로그인
+     → firebaseapp.com 을 막는 학교 와이파이에서도 됨. 없거나 실패하면 예전 방식(팝업) */
+  gsiLoad() {
+    const id = window.FB_CONFIG && window.FB_CONFIG.googleClientId;
+    if (!id || this._gsi) return;
+    this._gsi = 'loading';
+    const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+    s.onload = () => {
+      try {
+        this._gsiTC = google.accounts.oauth2.initTokenClient({ client_id: String(id), scope: 'openid email profile', prompt: 'select_account',
+          callback: r => { if (this._gsiCb) this._gsiCb(r || {}); }, error_callback: e => { if (this._gsiCb) this._gsiCb({ error: (e && e.type) || 'popup_failed' }); } });
+        this._gsi = 'ready';
+      } catch (e) { console.warn(e); this._gsi = 'fail'; }
+    };
+    s.onerror = () => { this._gsi = 'fail'; };
+    document.head.appendChild(s);
+  },
+  gsiToken() {
+    return new Promise(res => {
+      this._gsiCb = r => { this._gsiCb = null; res(r); };
+      try { this._gsiTC.requestAccessToken(); } catch (e) { this._gsiCb = null; res({ error: 'popup_failed' }); }
+    });
+  },
+  /* 구글 창에서 받은 토큰 → Firebase 자격 (실패하면 { err }) */
+  async gsiCred() {
+    const r = await this.gsiToken();
+    if (r.access_token) return { cred: firebase.auth.GoogleAuthProvider.credential(null, r.access_token) };
+    return { err: r.error === 'popup_closed' || r.error === 'access_denied' ? { ok: false, code: 'auth/popup-closed-by-user', msg: '' } : { ok: false, code: 'gsi', msg: '구글 로그인 창을 열지 못했어요 (팝업 차단을 꺼 주세요)' } };
+  },
   gProv() { const pr = new firebase.auth.GoogleAuthProvider(); try { pr.setCustomParameters({ prompt: 'select_account' }); } catch (e) { /* 무시 */ } return pr; },
   async signInGoogle() {
+    if (this._gsi === 'ready') {
+      const g = await this.gsiCred(); if (g.err) return g.err;
+      try { const c = await this.auth.signInWithCredential(g.cred); this.setUser(c.user); return { ok: true }; }
+      catch (e) { return { ok: false, code: (e && e.code) || '', msg: googleErrMsg(e) }; }
+    }
     try { const c = await this.auth.signInWithPopup(this.gProv()); this.setUser(c.user); return { ok: true }; }
     catch (e) {
       const c = (e && e.code) || '';
@@ -1502,7 +1537,9 @@ const Store = {
   async linkGoogle() {
     const u = this.auth && this.auth.currentUser;
     if (!u) return { ok: false, msg: '로그인 상태가 아니에요' };
-    try { const c = await u.linkWithPopup(this.gProv()); this.setUser(c.user || u); return { ok: true }; }
+    let g = null;
+    if (this._gsi === 'ready') { g = await this.gsiCred(); if (g.err) return g.err; }
+    try { const c = g ? await u.linkWithCredential(g.cred) : await u.linkWithPopup(this.gProv()); this.setUser(c.user || u); return { ok: true }; }
     catch (e) {
       const c = (e && e.code) || '';
       if (c === 'auth/credential-already-in-use' || c === 'auth/email-already-in-use') return { ok: false, msg: '이 구글 계정은 이미 다른 게임 계정에 쓰이고 있어요' };
