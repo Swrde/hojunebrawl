@@ -375,6 +375,8 @@ textarea{-webkit-user-select:text;user-select:text}
 .sbar i{display:block;height:11px;border-radius:999px;background:rgba(16,18,43,.5);border:2px solid var(--ink);overflow:hidden}
 .sbar i b{display:block;height:100%;background:var(--yolk)}
 .sbar em{font-style:normal;text-align:right}
+.sbar.over i b{background:linear-gradient(90deg,#ffd23f,#ff4f6d 55%,#b05cff);box-shadow:0 0 10px rgba(255,79,109,.9)}
+.sbar.over em{color:#ff8fa3}
 .ultbox{display:grid;gap:3px;padding:9px 11px;border-radius:12px;background:rgba(160,124,255,.2);border:2px solid var(--ink);text-align:left}
 .ultbox b{font-family:var(--f-disp);font-weight:400;color:#e2d6ff}
 .ultbox span{font-size:.85rem}
@@ -399,6 +401,8 @@ textarea{-webkit-user-select:text;user-select:text}
 /* 대전: 모드 고르기 · 열린 방 · 대기실 */
 .mtabs{margin-bottom:2px}
 .mtabs .tab{font-size:.95rem;padding:10px 4px}
+.mpban{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:6px 0 4px;text-align:left;border-color:#e23a3a;background:linear-gradient(135deg,rgba(226,58,58,.35),rgba(43,79,214,.3))}
+.mpban p{display:grid;gap:4px;margin:0}.mpban b{font-family:var(--f-disp);font-weight:400;font-size:1.05rem}.mpban span{font-size:.86rem;color:#ffe0e0;word-break:keep-all}
 .mpgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .mpm{display:grid;justify-items:center;align-content:start;gap:2px;padding:10px 6px 9px;border-radius:14px;border:3px solid var(--ink);background:var(--panel-2);box-shadow:0 4px 0 var(--ink);text-align:center;min-width:0}
 .mpm:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
@@ -459,6 +463,56 @@ textarea{-webkit-user-select:text;user-select:text}
 .ctog .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--ink);transition:transform .12s}
 .ctog.on .sw{background:var(--mint)}
 .ctog.on .sw::after{transform:translateX(16px)}
+/* ---------- 맵 만들기 ---------- */
+.mkwrap{display:grid;gap:12px}
+.mklist{display:grid;gap:8px;max-height:min(52vh,460px);overflow:auto;padding:2px 2px 6px}
+.mkrow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:8px;background:var(--panel-2)}
+.mkth{display:block;width:150px;height:108px;border-radius:10px;border:2px solid var(--ink);background:#141c47;object-fit:contain}
+.mki{display:grid;gap:3px;min-width:0;text-align:left}
+.mki b{font-family:var(--f-disp);font-weight:400;font-size:1.05rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mki small{font-size:.78rem;color:var(--muted)}
+.mki em{font-style:normal;color:var(--yolk)}
+.mki .mkpub{color:var(--mint)}
+.mkb{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.mkb .btn{padding:6px 10px;font-size:.85rem}
+@media (max-width:440px){.mkrow{grid-template-columns:104px minmax(0,1fr);gap:8px}.mkth{width:104px;height:75px}.mkb .btn{padding:6px 8px;font-size:.8rem}}
+.mkbig{display:block;width:min(100%,300px);height:auto;margin:0 auto 4px;border-radius:12px;border:3px solid var(--ink);background:#141c47}
+.mknote{color:var(--muted)}
+.mkroom{display:flex;align-items:center;justify-content:center;gap:10px;margin:0}
+.mkroom img{width:100px;height:72px;border-radius:8px;border:2px solid var(--ink);background:#141c47}
+.chip2.mkchip{border-color:var(--mint)}
+.mked{position:absolute;inset:0;z-index:55;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#0d1236;touch-action:none}
+.mk-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;background:var(--panel);border-bottom:3px solid var(--ink)}
+.mk-name{flex:1 1 120px;min-width:90px;max-width:220px;padding:7px 10px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);font-size:.95rem}
+.mk-floor{padding:7px 8px;border-radius:10px;border:2px solid var(--ink);background:var(--panel-2);color:#fff;font-size:.88rem}
+.mk-sp{flex:1}
+.mk-top .btn{padding:7px 12px;font-size:.9rem}
+.mk-main{position:relative;min-height:0;overflow:hidden}
+.mk-main canvas{display:block;touch-action:none;cursor:crosshair}
+.mk-zoom{position:absolute;right:10px;top:10px;display:grid;gap:6px}
+.mk-zoom button{width:40px;height:40px;border-radius:12px;border:3px solid var(--ink);background:var(--panel-2);color:#fff;font-size:1.3rem;line-height:1;box-shadow:0 3px 0 var(--ink)}
+.mk-msg{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);margin:0;padding:7px 14px;border-radius:999px;background:rgba(16,18,43,.9);color:#fff;font-size:.86rem;text-align:center;word-break:keep-all;opacity:0;transition:opacity .25s;pointer-events:none}
+.mk-msg.show{opacity:1}.mk-msg.bad{background:rgba(201,51,80,.94)}
+.mk-side{display:grid;gap:6px;min-width:0;padding:8px 10px 10px;background:var(--panel);border-top:3px solid var(--ink)}
+.mk-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.mk-tools .btn{padding:6px 10px;font-size:.85rem}
+.mk-tools .btn.on{background:var(--mint);color:var(--ink)}
+.mk-cnt{margin-left:auto;font-size:.8rem;color:var(--muted)}
+.mk-pal{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;touch-action:pan-x pan-y}
+.mk-pc{flex:none;display:grid;justify-items:center;gap:2px;width:74px;padding:5px 3px 4px;border-radius:12px;border:3px solid var(--ink);background:var(--panel-2);color:#fff}
+.mk-pc img{display:block;width:64px;height:46px}
+.mk-pc small{font-size:.7rem;white-space:nowrap}
+.mk-pc.bush{background:#2b6b3b}
+.mk-pc.on{background:var(--yolk);color:var(--ink)}
+.mk-hand{display:grid;place-items:center;width:64px;height:46px;font-size:1.7rem}
+@media (orientation:landscape) and (max-height:560px){
+  .mked{grid-template-columns:minmax(0,1fr) 236px;grid-template-rows:auto minmax(0,1fr)}
+  .mk-top{grid-column:1/-1;padding:5px 8px;gap:6px}
+  .mk-side{grid-column:2;grid-row:2;grid-template-rows:auto minmax(0,1fr);overflow:hidden;border-top:0;border-left:3px solid var(--ink)}
+  .mk-pal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:start;overflow-x:hidden;overflow-y:auto}
+  .mk-pc{width:auto}.mk-pc img,.mk-hand{width:56px;height:40px}
+  .mk-cnt{margin-left:0;width:100%}
+}
 .ctled{position:absolute;inset:0;z-index:60;overflow:hidden;touch-action:none;background-color:#141c47;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
 .ce-bar{position:absolute;top:10px;left:12px;right:74px;z-index:1;display:grid;justify-items:center;gap:6px;padding:10px;border-radius:14px;background:var(--panel);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);text-align:center}
 .ce-bar b{font-family:var(--f-disp);font-weight:400;font-size:1.1rem}
@@ -689,6 +743,7 @@ textarea{-webkit-user-select:text;user-select:text}
         <button class="sbtn" id="bChat" type="button"><span>채팅</span><i class="dot" id="chatDot" hidden></i></button>
         <button class="sbtn" id="bPeople" type="button"><span>친구</span><i class="dot n" id="dmDot" hidden></i><i class="ocnt" id="onBadge" hidden></i></button>
         <button class="sbtn" id="bColl" type="button"><span>칭호</span></button>
+        <button class="sbtn" id="bMaker" type="button"><span>맵</span></button>
       </nav>
       <nav class="side r" aria-label="준비">
         <button class="sbtn" id="bChars" type="button"><span>캐릭터</span></button>
@@ -857,8 +912,9 @@ const CHARS = {
   hyunwoo: { name: '김현우', face: 13, role: '소환', hp: 1050, spd: 225, dmg: 0.95, rate: 0.95, ring: '#b7e34a', price: CHAR_PRICE,
              ult: 'pet', ultName: '민지 소환', ultDesc: '민지를 15초 동안 소환! 가까운 적을 쫓아가며 총을 쏘고 적의 공격도 대신 맞아줌', desc: '민지를 불러서 같이 싸우는 소환사', pro: '소환수가 같이 싸워줌', con: '본체 체력 · 공격이 약한 편' },
   /* 울트라: 뽑기에서만 (0.01%) · 딱 5명까지만 나옴 */
-  seongbin: { name: '스파이더성빈', face: 14, role: '울트라', hp: 1500, spd: 250, dmg: 1.18, rate: 1.12, ring: '#e23a3a', price: 0, ultra: 1, ultMul: 1.25,
-             ult: 'swing', ultName: '거미줄 스윙', ultDesc: '조준한 곳까지 거미줄을 타고 휙 날아가요. 지나가는 길의 적은 거미줄에 묶여 2초 동안 꼼짝 못 하고 큰 피해, 내려앉는 곳엔 거미줄 그물이 터져요 (벽도 넘어감) · 궁 게이지가 빨리 참', desc: '0.01% 확률로만 나오는 울트라 캐릭터 · 전교에 딱 5명', pro: '모든 능력치가 좋음 · 이동하면서 묶는 궁', con: '뽑기에서만 나옴' },
+  /* 말도 안 되게 셈 → 대신 멀티플레이어(대전 · 협동)에서는 못 씀 (ui_mp.js · pvp.js) */
+  seongbin: { name: '스파이더성빈', face: 14, role: '울트라', hp: 3000, spd: 290, dmg: 1.8, rate: 1.4, ring: '#e23a3a', price: 0, ultra: 1, ultMul: 3, noMp: 1,
+             ult: 'swing', ultName: '거미줄 스윙', ultDesc: '벽도 넘어 조준한 곳까지 거미줄 타고 슝! 지나가는 길의 적은 3초 꽁꽁 묶이고 엄청난 피해, 내려앉는 곳엔 거대한 거미줄 그물 폭발 + 사방으로 거미줄 폭풍 · 그물 바닥은 5초 동안 적을 묶고 적 총알도 잡아요 · 체력 30% 회복 · 1.5초 무적 · 궁 게이지 3배 빨리 참', desc: '0.01% 확률로만 나오는 울트라 캐릭터 · 전교에 딱 5명 · 말도 안 되게 셈', pro: '모든 능력치 압도적 · 사기 궁', con: '멀티플레이어(대전 · 협동)에서는 못 씀' },
 };
 /* 가격을 2,000으로 맞추기 전에 더 비싸게 산 사람에게 차액을 한 번 돌려줌 */
 const OLD_CHAR_PRICE = { jongyun: 2500, jaewon: 2500, seowon: 3000, seungho: 2600 };
@@ -1255,7 +1311,7 @@ function newProfile(nick) {
     coins: 300, chars: ['base'], wpn: { blaster: 0 }, arm: { gym: 0 },
     pot: { hp: 2, shield: 0, rage: 0, ult: 0 }, eq: { w: 'blaster', a: 'gym', p: 'hp' },
     att: { d: '', s: 0, t: 0 }, tix: 0, titles: [], frames: [], cr: 1,
-    skins: [], sk: { b: '', t: '', u: '', c: {} }, sp: [], mas: {}, prot: 0,
+    skins: [], sk: { b: '', t: '', u: '', c: {} }, sp: [], mas: {}, prot: 0, maps: [], cm: null,
   };
 }
 function lvMap(src, table, must) {
@@ -1273,6 +1329,7 @@ function normProfile(pub, priv) {
     P.wk = str(pub.wk, 10); P.lwk = str(pub.lwk, 10);
     P.ht3n = Array.isArray(pub.ht3n) ? pub.ht3n.slice(0, 3).map(x => str(x, 8)) : [];
     P.title = TITLES[pub.title] ? pub.title : ''; P.frame = FRAMES[pub.frame] ? pub.frame : '';
+    P.cm = pub.cm ? mkClean(pub.cm) : null;   // 올린 맵 (맵 구경하기)
   }
   if (priv) {
     P.coins = num(priv.coins, 300);
@@ -1301,6 +1358,9 @@ function normProfile(pub, priv) {
     /* 스타파워 · 숙련도 */
     P.sp = [...new Set((Array.isArray(priv.sp) ? priv.sp : []).filter(k => STAR[k] && P.chars.includes(k)))];
     P.mas = {}; if (priv.mas && typeof priv.mas === 'object') for (const k of Object.keys(CHARS)) { const v = num(priv.mas[k]); if (v > 0) P.mas[k] = Math.min(v, 99999); }
+    /* 내가 만든 맵 */
+    const ids = new Set(); P.maps = [];
+    for (const m of (Array.isArray(priv.maps) ? priv.maps : []).map(mkClean)) if (m && !ids.has(m.id) && P.maps.length < MK_MAX_MAPS) { ids.add(m.id); P.maps.push(m); }
   }
   if (P.title && !P.titles.includes(P.title)) P.title = '';
   if (P.frame && !P.frames.includes(P.frame)) P.frame = '';
@@ -1316,6 +1376,7 @@ function parsePub(id, v) {
     pr: typeof v.pr === 'number' && isFinite(v.pr) ? Math.round(v.pr) : 1000,
     ht3n: Array.isArray(v.ht3n) ? v.ht3n.slice(0, 3).map(x => str(x, 8)) : [], upd: num(v.upd) };
   o.ps = photoOk(v.ps, o.ch) ? v.ps : '';   // 지금 캐릭터에 낀 특별 스킨
+  o.cm = v.cm ? mkClean(v.cm) : null;   // 올린 맵
   for (const k of PUB_NUMS) o[k] = num(v[k]);
   return o;
 }
@@ -1667,11 +1728,12 @@ const Store = {
     const P = this.P, o = { nick: P.nick, ch: P.ch, pic: P.pic || '', pr: P.pr, wk: P.wk || '', lwk: P.lwk || '', ht3n: (P.ht3n || []).slice(0, 3), title: P.title || '', frame: P.frame || '', ps: this.mySkin(), admin: this.isAdmin === true, upd: Date.now() };
     for (const k of PUB_NUMS) o[k] = P[k] || 0;
     o.ub = P.chars.includes(ULTRA_CH) ? 1 : 0;
+    o.cm = P.cm ? { ...P.cm } : null;   // 올린 맵 (다른 친구들이 구경)
     return o;
   },
   privData() {
     const P = this.P, o = { coins: P.coins, chars: P.chars.slice(), wpn: { ...P.wpn }, arm: { ...P.arm }, pot: { ...P.pot }, eq: { ...P.eq }, att: { ...P.att }, tix: P.tix || 0, titles: P.titles.slice(), frames: P.frames.slice(), cr: P.cr || 0,
-      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, sp: (P.sp || []).slice(), mas: { ...(P.mas || {}) }, prot: P.prot || 0, v: 2 };
+      skins: P.skins.slice(), sk: { b: P.sk.b || '', t: P.sk.t || '', u: P.sk.u || '', c: { ...P.sk.c } }, sp: (P.sp || []).slice(), mas: { ...(P.mas || {}) }, prot: P.prot || 0, maps: (P.maps || []).map(m => ({ ...m })), v: 2 };
     if (this.web) o.sess = this.sess;
     return o;
   },
@@ -1712,7 +1774,7 @@ const Store = {
     const P = this.P, w = weekId();
     if (P.wk !== w) { if (P.wk && P.ws > 0) { P.lwk = P.wk; P.lws = P.ws; } P.wk = w; P.ws = 0; }
   },
-  /* 대전 결과 (1대1 / 3대3 / 5대1) */
+  /* 대전 결과 (1대1 / 3대3 · 5대5 / 5대1 / 쇼다운 / 하이스트 / 좀비) */
   /* 숙련도 쌓기 → 레벨 오르면 코인 (r.mas 에 결과) */
   addMas(r) {
     const P = this.P, ch = P.ch, gain = masGain(r); if (!gain) return;
@@ -1725,7 +1787,7 @@ const Store = {
     const P = this.P;
     this.addMas(r);
     P.coins += r.coins;
-    if (r.kind === 'team') { if (r.res === 'win') P.tw++; else if (r.res === 'lose') P.tl++; else P.td++; }
+    if (KILL_KIND(r.kind)) { if (r.res === 'win') P.tw++; else if (r.res === 'lose') P.tl++; else P.td++; }   // 3대3 · 5대5 팀전 전적은 같이 셈
     else if (r.kind === 'boss') { const me = r.boss ? 'bw' : 'hw2', lo = r.boss ? 'bl' : 'hl2'; if (r.res === 'win') P[me]++; else P[lo]++; }
     else if (r.kind === 'sd') { P.sdg++; if (r.place === 1) P.sdw++; }
     else if (r.kind === 'heist') { if (r.res === 'win') P.hiw++; else if (r.res === 'lose') P.hil++; else P.hid++; }
@@ -1740,6 +1802,11 @@ const Store = {
     const P = this.P;
     this.addMas(r);
     this.rollWeek();
+    if (r.custom) {   // 만든 맵: 코인 · 숙련도만 (랭킹 기록은 안 올라감)
+      r.noRec = true; r.prevBest = Infinity; P.games += 1; P.coins += r.coins;
+      if (r.mode === 'coop' && r.clear) this._coopClear = true;
+      this.checkTitles(); this.save('all'); return;
+    }
     P.total += r.score; P.best = Math.max(P.best, r.score); P.games += 1; P.ws += r.score;
     if (r.clear && (!r.mode || r.mode === 'story')) P.clears += 1;
     P.coins += r.coins;
@@ -1994,7 +2061,8 @@ const MAPS = {
 };
 const MAP_ORDER = ['gym', 'classroom', 'cafeteria', 'field', 'science'];
 const randMap = () => MAP_ORDER[Math.floor(Math.random() * MAP_ORDER.length)];
-const mapKey = k => (MAPS[k] ? k : 'gym');
+const mapKey = k => (MAPS[k] || mkEnsure(k) ? k : 'gym');   // 만든 맵(my: · gal:)은 처음 쓸 때 등록 (maker.js)
+const mapTheme = k => (MAPS[k] && MAPS[k].f) || k;   // 바닥 · 벽 색: 만든 맵은 고른 바닥
 
 /* 막힌 자리면 가까운 빈자리로 옮김 */
 function freeSpot(x, y, r = 34) {
@@ -2128,6 +2196,13 @@ function drawObstNew(o) {
     ctx.beginPath(); ctx.moveTo(cx - 7, y + 10); ctx.lineTo(cx + 7, y + 10); ctx.lineTo(cx + 7, y + 26); ctx.lineTo(cx + 22, y + h - 10); ctx.lineTo(cx - 22, y + h - 10); ctx.lineTo(cx - 7, y + 26); ctx.closePath();
     ctx.fillStyle = '#b6ff6a'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(cx - 6, y + h - 22, 4, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx + 6, y + h - 30, 3, 0, TAU); ctx.fill();
+  } else if (o.k === 'wall') {   // 맵 만들기: 벽돌 벽 (아무 크기)
+    rr(x, y, w, h, 6); ctx.fillStyle = '#b5563a'; ctx.fill(); ctx.stroke();
+    ctx.save(); rr(x + 3, y + 3, w - 6, h - 6, 4); ctx.clip();
+    ctx.fillStyle = 'rgba(16,18,43,.3)';
+    for (let yy = y + 3, row = 0; yy < y + h; yy += 18, row++) { ctx.fillRect(x, yy + 16, w, 2); for (let xx = x + (row % 2 ? -18 : 0); xx < x + w; xx += 36) ctx.fillRect(xx, yy, 2, 18); }
+    ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(x + 4, y + 4, w - 8, 3);
+    ctx.restore();
   } else if (o.k === 'jungle') {
     rr(x, y, w, h, 10); ctx.fillStyle = 'rgba(255,79,109,.25)'; ctx.fill(); ctx.stroke();
     ctx.lineWidth = 7; ctx.strokeStyle = '#ff4f6d';
@@ -2279,9 +2354,12 @@ let cv = null, ctx = null, dpr = 1, VW = 1, VH = 1, SC = 1;
 const cam = { x: 0, y: 0 };
 const L = { u: 1 };
 const IN = { keys: {}, L: { id: null }, R: { id: null }, U: { id: null }, mv: { x: 0, y: 0 }, aim: { ang: 0, mag: 0 }, uAim: { ang: 0, mag: 0 }, mouse: { x: 0, y: 0, used: false, aiming: false }, touch: false, btn: {}, buffer: null, kbUlt: false };
-const ULT_RANGE = { swing: 680, bomb: 560, dash: 480, tele: 520, flash: 540, roll: 830, laser: 1100, spike: 900 };
+const ULT_RANGE = { swing: 900, bomb: 560, dash: 480, tele: 520, flash: 540, roll: 830, laser: 1100, spike: 900 };
 /* 궁 충전: 맞힌 피해(한 발 최대 400) ÷ ULT_CHARGE 만큼 참. 클수록 천천히 참 (예전 1300 → 1800) */
 const ULT_CHARGE = 1800;
+/* 스파이더성빈 궁 (말도 안 되게 셈 · 대신 멀티플레이어에서는 못 씀)
+   lane: 지나가는 길 폭(반지름) · net: 내려앉는 곳 그물 반지름 · storm: 사방으로 날아가는 거미줄 수 · zone: 그물 바닥 남는 시간 */
+const SWING = { lane: 70, laneDmg: 3000, laneStun: 3, net: 260, netDmg: 1500, netStun: 2, storm: 16, stormDmg: 400, stormStun: 0.8, zone: 5, zoneDmg: 250, zoneTick: 0.5, heal: 0.3, inv: 1.5 };
 /* 박건영 '진지 모드': 회복 비율 · 밀쳐내기 반경 · 피해 (예전 45% · 280 · 450) */
 const HEAL_ULT = { heal: 0.3, r: 220, dmg: 300 };
 const COARSE = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } })();
@@ -2345,7 +2423,7 @@ function loadoutFrom(P) {
 }
 function newGame(lo) {
   const ch = CHARS[lo.ch] || CHARS.base, wp = WEAPONS[lo.w] || WEAPONS.blaster, ar = ARMORS[lo.a] || ARMORS.gym;
-  const map = mapKey(lo.map); OBST = MAPS[map].obst; BUSHES = []; SOLIDS = [];
+  const map = mapKey(lo.map); OBST = MAPS[map].obst; BUSHES = MAPS[map].custom ? bushesFor(map) : []; SOLIDS = [];
   const sp0 = freeSpot(WW / 2, WH / 2 + 170);
   const maxHp = Math.round(ch.hp * (1 + ar.hp + A_UP * lo.al));
   const mag = wp.mag + Math.floor(lo.wl / 5);
@@ -2411,7 +2489,7 @@ function beginStep() {
   } else {
     G.ss = { mode: 'boss' };
     const p = G.p;
-    const pos = Math.hypot(p.x - WW / 2, p.y - 430) < 320 ? { x: WW / 2, y: 880 } : { x: WW / 2, y: 430 };
+    const pos0 = Math.hypot(p.x - WW / 2, p.y - 430) < 320 ? { x: WW / 2, y: 880 } : { x: WW / 2, y: 430 }, pos = freeSpot(pos0.x, pos0.y, 100);   // 만든 맵: 막힌 자리면 옆으로
     spawnMark(pos.x, pos.y, 'boss:' + S.boss, 1.1);
   }
 }
@@ -2440,7 +2518,7 @@ function spawnPoint(minD = 430) {
   }
   const cs = [[160, 160], [WW - 160, 160], [160, WH - 160], [WW - 160, WH - 160]];
   cs.sort((a, b) => Math.hypot(b[0] - p.x, b[1] - p.y) - Math.hypot(a[0] - p.x, a[1] - p.y));
-  return { x: cs[0][0], y: cs[0][1] };
+  return freeSpot(cs[0][0], cs[0][1], 55);
 }
 function spawnMark(x, y, kind, dur) { G.hz.push({ k: 'spawn', x, y, kind, t: 0, dur }); }
 function spawnEnemy(type, x, y) {
@@ -2607,16 +2685,23 @@ function fireUlt(a, mag) {
   } else if (kind === 'dash') { p.dashT = 0.42; p.dashAng = a; p.dashHit = []; }
   else if (kind === 'heal') { heal(HEAL_ULT.heal, ultC(COL.mint, uc)); shockwave(p.x, p.y, HEAL_ULT.r, HEAL_ULT.dmg * p.dmgMul, ultC(COL.mint, uc)); }
   else if (kind === 'apm') { p.buf.apm = 3.2; p.apmT = 0; p.ammo = p.mag; p.rl = 0; addText(p.x, p.y - p.r - 44, 'APM 폭주!', COL.violet, 26, 1.1); }
-  else if (kind === 'swing') {   // 스파이더성빈: 거미줄 스윙 (지나가는 길의 적을 묶음)
+  else if (kind === 'swing') {   // 스파이더성빈: 거미줄 스윙 (말도 안 되게 셈 · 수치는 SWING)
     const d = clamp(mag, 0.2, 1) * ULT_RANGE.swing;
     const o = { x: clamp(p.x + Math.cos(a) * d, p.r, WW - p.r), y: clamp(p.y + Math.sin(a) * d, p.r, WH - p.r), r: p.r };
     for (const r of OBST) pushOut(o, r);
     const hit = new Set();
-    for (const e of G.en) if (!e.dead && segDist(e.x, e.y, p.x, p.y, o.x, o.y) < 52 + e.r) { hit.add(e); hitEnemy(e, 1000 * p.dmgMul, false); if (!e.dead) stunE(e, 2.0); }
-    for (const e of G.en) if (!e.dead && !hit.has(e) && Math.hypot(e.x - o.x, e.y - o.y) < 150 + e.r) { hitEnemy(e, 450 * p.dmgMul, false); if (!e.dead) stunE(e, 1.0); }   // 내려앉는 곳 거미줄 그물
-    G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: Math.atan2(o.y - p.y, o.x - p.x), len: Math.hypot(o.x - p.x, o.y - p.y), w: 14, t: 0, dur: 0.4, c: '#ffffff', c2: ultC2('#ffffff', uc) });
+    for (const e of G.en) if (!e.dead && segDist(e.x, e.y, p.x, p.y, o.x, o.y) < SWING.lane + e.r) { hit.add(e); hitEnemy(e, SWING.laneDmg * p.dmgMul, false); if (!e.dead) stunE(e, SWING.laneStun); }
+    for (const e of G.en) if (!e.dead && !hit.has(e) && Math.hypot(e.x - o.x, e.y - o.y) < SWING.net + e.r) { hitEnemy(e, SWING.netDmg * p.dmgMul, false); if (!e.dead) stunE(e, SWING.netStun); }   // 내려앉는 곳 거미줄 그물
+    G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: Math.atan2(o.y - p.y, o.x - p.x), len: Math.hypot(o.x - p.x, o.y - p.y), w: 22, t: 0, dur: 0.45, c: '#ffffff', c2: ultC2('#ffffff', uc) });
+    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = Math.max(p.inv || 0, SWING.inv);
     swingFx(o.x, o.y, uc);
-    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = 0.8;
+    for (let i = 0; i < SWING.storm; i++) {   // 거미줄 폭풍: 사방으로 거미줄이 날아가 맞은 적을 묶음 (4명까지 관통)
+      const b = a + (TAU * i) / SWING.storm;
+      G.pb.push({ x: o.x, y: o.y, vx: Math.cos(b) * 900, vy: Math.sin(b) * 900, r: 13, dmg: SWING.stormDmg * p.dmgMul, life: 700 / 900, pierce: 3, hit: [], nc: true, web: 1, uc, seed: i * 0.7 });
+    }
+    (G.webz || (G.webz = [])).push({ x: o.x, y: o.y, r: SWING.net, t: 0, dur: SWING.zone, tk: SWING.zoneTick, dmg: SWING.zoneDmg * p.dmgMul, uc });
+    heal(SWING.heal, '#ff5f7e');
+    G.shake = Math.max(G.shake, 12); sfx('boom');
   }
   else if (kind === 'tele') {
     const d = clamp(mag, 0.15, 1) * ULT_RANGE.tele;
@@ -2664,9 +2749,39 @@ function fireUlt(a, mag) {
 }
 function swingFx(x, y, uc) {
   const L = G.trl || (G.trl = []);
-  for (let i = 0; i < 10 && L.length < TRAIL_MAX + 20; i++) { const a = (TAU * i) / 10, v = rand(90, 170); L.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, s: 12, c: '#ffffff', sh: 'web', t: 0, dur: 0.7, a: rand(0, TAU), spin: rand(-2, 2), seed: 0 }); }
-  G.fx.push({ k: 'ring', x, y, r0: 20, r1: 150, t: 0, dur: 0.35, c: ultC('#e23a3a', uc), w: 9 });
-  G.fx.push({ k: 'ring', x, y, r0: 10, r1: 110, t: 0, dur: 0.3, c: '#ffffff', w: 4 });
+  for (let i = 0; i < 18 && L.length < TRAIL_MAX + 20; i++) { const a = (TAU * i) / 18, v = rand(150, 280); L.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, s: 14, c: '#ffffff', sh: 'web', t: 0, dur: 0.8, a: rand(0, TAU), spin: rand(-2, 2), seed: 0 }); }
+  G.fx.push({ k: 'ring', x, y, r0: 20, r1: SWING.net, t: 0, dur: 0.4, c: ultC('#e23a3a', uc), w: 12 });
+  G.fx.push({ k: 'ring', x, y, r0: 10, r1: SWING.net * 0.7, t: 0, dur: 0.32, c: '#ffffff', w: 5 });
+}
+/* 성빈 궁: 거미줄 그물 바닥 (안에 들어온 적은 꼼짝 못 하고 계속 피해 · 보스는 피해만 · 적 총알도 잡음) */
+function updateWebz(dt) {
+  const L = G.webz; if (!L || !L.length) return;
+  for (const w of L) {
+    w.t += dt; w.tk -= dt;
+    const tick = w.tk <= 0; if (tick) w.tk += SWING.zoneTick;
+    for (const e of G.en) {
+      if (e.dead || e.pet || e.safe || e.rival || e.mirror || e.hid || Math.hypot(e.x - w.x, e.y - w.y) > w.r + e.r) continue;
+      if (!e.boss) stunE(e, 0.2);
+      if (tick) hitEnemy(e, w.dmg, false);
+    }
+    for (const b of G.eb) if (!b.dead && !b.cos && Math.hypot(b.x - w.x, b.y - w.y) < w.r) { b.dead = true; if (G.fx.length < 220) spark(b.x, b.y, '#ffffff'); }
+  }
+  G.webz = L.filter(w => w.t < w.dur);
+}
+function drawWebz() {
+  const L = G.webz; if (!L || !L.length) return;
+  for (const w of L) {
+    const f = w.t / w.dur, al = f < 0.85 ? 1 : Math.max(0, (1 - f) / 0.15), s = w.r * Math.min(1, 0.35 + w.t * 5), n = 14, a0 = w.t * 0.12;
+    const c = w.uc ? rc(ultC('#e23a3a', w.uc), w.t * 120) : '#e23a3a';
+    ctx.save();
+    ctx.globalAlpha = 0.2 * al; ctx.beginPath(); ctx.arc(w.x, w.y, s, 0, TAU); ctx.fillStyle = c; ctx.fill();
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) { const a = a0 + (TAU * i) / n; ctx.moveTo(w.x, w.y); ctx.lineTo(w.x + Math.cos(a) * s, w.y + Math.sin(a) * s); }
+    for (const k of [0.22, 0.42, 0.62, 0.82, 1]) for (let i = 0; i <= n; i++) { const a = a0 + (TAU * i) / n, px = w.x + Math.cos(a) * s * k, py = w.y + Math.sin(a) * s * k; if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); }
+    ctx.lineJoin = 'round'; ctx.globalAlpha = 0.5 * al; ctx.lineWidth = 6; ctx.strokeStyle = COL.ink; ctx.stroke();
+    ctx.globalAlpha = 0.9 * al; ctx.lineWidth = 2.6; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+    ctx.restore();
+  }
 }
 function autoUlt() {
   if (!ultReady()) { denyUlt(); return; }
@@ -2746,7 +2861,7 @@ function finish(clear) {
   if (clear) { bonus = G.mode === 'homom' || G.mode === 'coop' ? 1000 + Math.round((1000 * G.p.hp) / G.p.maxHp) : 5000 + Math.round((3000 * G.p.hp) / G.p.maxHp); G.score += bonus; sfx('win'); }
   const S = scr()[clamp(G.step, 0, scr().length - 1)];
   G.result = { clear, score: Math.floor(G.score), bonus, kills: G.kills, coins: Math.floor(G.score / SCORE_TO_COIN), where: S.k === 'boss' ? BOSS[S.boss].name : S.name, ph: S.ph, time: G.t, potUsed: G.potUsed, quit: G.quit,
-    mode: G.mode, map: G.map, wave: S.wv || 0, htime: clear && G.bossT1 ? Math.round((G.bossT1 - G.bossT0) * 100) / 100 : 0 };
+    mode: G.mode, map: G.map, custom: !!MAPS[G.map].custom, wave: S.wv || 0, htime: clear && G.bossT1 ? Math.round((G.bossT1 - G.bossT0) * 100) / 100 : 0 };
   G.endT = clear ? 2.6 : 1.8;
   if (G.coop) Coop.onFinish(clear);
 }
@@ -3049,6 +3164,7 @@ function updatePB(dt) {
       if (Math.hypot(e.x - b.x, e.y - b.y) < e.r + b.r) {
         hitEnemy(e, b.dmg, !b.nc); spark(b.x, b.y, '#fff');
         if (b.q && !e.dead) confE(e, 2.5);
+        if (b.web && !e.dead) stunE(e, SWING.stormStun);
         if (b.vb != null) {
           if (!e.dead) stunE(e, 1.0);
           b.hit.push(e.id); G.fx.push({ k: 'ring', x: b.x, y: b.y, r0: 10, r1: 70, t: 0, dur: 0.25, c: ultC('#3d5afe', b.uc), w: 6 }); sfx('boom');
@@ -3200,7 +3316,7 @@ function update(dt) {
   else { if (G.coop) Coop.update(dt); if (!G.over && (!G.coop || G.coop.host)) updateScript(dt); }
   if (G.allies) for (const e of G.allies) mpInterp(e, dt);
   updateEnemies(dt);
-  updatePB(dt); updateLobs(dt); updateEB(dt); updateHZ(dt); updateDrops(dt); updateFX(dt); updateTrails(dt);
+  updatePB(dt); updateLobs(dt); updateWebz(dt); updateEB(dt); updateHZ(dt); updateDrops(dt); updateFX(dt); updateTrails(dt);
   if (G.over && !G.ended) {
     G.endT -= dt;
     if (G.endT <= 0) { G.ended = true; const r = G.result; setTimeout(() => endCb && endCb(r), 0); }
@@ -3240,7 +3356,7 @@ function render() {
   ctx.setTransform(k, 0, 0, k, (-cam.x * SC + ox) * dpr, (-cam.y * SC + oy) * dpr);
   drawArena();
   if (BUSHES.length) drawBushes(false);
-  drawHZUnder(); drawJumpMarks(); drawAimGuide(); drawDrops(); drawShadows();
+  drawHZUnder(); drawWebz(); drawJumpMarks(); drawAimGuide(); drawDrops(); drawShadows();
   if (G.pvp && G.pvp.safe) drawSafes();
   for (const e of G.en) if (!e.hid && !e.safe) drawEnemy(e);
   drawAllies();
@@ -3254,12 +3370,12 @@ function render() {
   drawHUD();
 }
 function drawArena() {
-  ctx.fillStyle = WALL_COL[G.map] || WALL_COL.gym; ctx.fillRect(-60, -60, WW + 120, WH + 120);
+  ctx.fillStyle = WALL_COL[mapTheme(G.map)] || WALL_COL.gym; ctx.fillRect(-60, -60, WW + 120, WH + 120);
   ctx.fillStyle = 'rgba(16,18,43,.28)';
   for (let x = -60; x < WW + 60; x += 130) { ctx.fillRect(x, -60, 4, 60); ctx.fillRect(x, WH, 4, 60); }
   for (let y = -60; y < WH + 60; y += 130) { ctx.fillRect(-60, y, 60, 4); ctx.fillRect(WW, y, 60, 4); }
   ctx.fillStyle = COL.ink; ctx.fillRect(-7, -7, WW + 14, WH + 14);
-  drawFloor(G.map);
+  drawFloor(mapTheme(G.map));
   for (const o of OBST) drawObst(o);
 }
 function drawObst(o) {
@@ -3338,9 +3454,9 @@ function drawUltGuide() {
   if (kind === 'bomb' || kind === 'tele' || kind === 'swing') {
     const R = ULT_RANGE[kind], d = clamp(mag, kind === 'tele' ? 0.15 : kind === 'swing' ? 0.2 : 0.12, 1) * R, tx = p.x + Math.cos(a) * d, ty = p.y + Math.sin(a) * d;
     ctx.setLineDash([4, 10]); ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
-    if (kind === 'swing') { ctx.lineWidth = 92; ctx.strokeStyle = 'rgba(255,210,63,.18)'; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,210,63,.95)'; }
+    if (kind === 'swing') { ctx.lineWidth = SWING.lane * 2; ctx.strokeStyle = 'rgba(255,210,63,.18)'; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,210,63,.95)'; }
     else { ctx.beginPath(); ctx.arc(tx, ty, kind === 'tele' ? 160 : 165, 0, TAU); ctx.fill(); ctx.stroke(); }
-    if (kind === 'swing') { ctx.beginPath(); ctx.arc(tx, ty, 150, 0, TAU); ctx.fill(); ctx.stroke(); }
+    if (kind === 'swing') { ctx.beginPath(); ctx.arc(tx, ty, SWING.net, 0, TAU); ctx.fill(); ctx.stroke(); }
     if (kind === 'tele' || kind === 'swing') { ctx.beginPath(); ctx.arc(tx, ty, p.r, 0, TAU); ctx.setLineDash([6, 6]); ctx.stroke(); ctx.setLineDash([]); }
   } else if (kind === 'dash') lane(ULT_RANGE.dash, (p.r + 8) * 2);
   else if (kind === 'roll') lane(ULT_RANGE.roll, 128);
@@ -3520,6 +3636,10 @@ function drawPB() {
       if (f) ctx.drawImage(f, -(b.r - 4), -(b.r - 4), (b.r - 4) * 2, (b.r - 4) * 2);
     } else if (b.vb != null) {
       drawVolley(b);
+    } else if (b.web) {   // 성빈 궁: 거미줄 폭풍
+      ctx.rotate(G.t * 7 + b.seed);
+      webPath(0, 0, b.r + 6, 6, 0); ctx.lineJoin = 'round'; ctx.lineWidth = 5.5; ctx.strokeStyle = COL.ink; ctx.stroke();
+      ctx.lineWidth = 2.8; ctx.strokeStyle = b.uc ? rc(ultC('#ffffff', b.uc), b.seed * 50) : '#ffffff'; ctx.stroke();
     } else if (b.q) {
       ctx.rotate(Math.sin(G.t * 12 + b.vx) * 0.3);
       ctx.font = `400 28px ${FONT_NUM}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -4502,35 +4622,41 @@ function drawFrame(k, r, t) {
   ctx.restore();
 }
 
-/* ================= 대전: 1대1 · 3대3 팀전 · 5대1 보스전 (+ 호맘 협동 방) =================
+/* ================= 대전: 1대1 · 3대3 팀전 · 5대5 팀전 · 5대1 보스전 (+ 호맘 협동 방) =================
    Firebase Realtime Database로 방을 만들고 위치·공격을 주고받음 (웹사이트 버전 전용)
    - 내 위치/체력은 0.08초마다 보내고, 다른 사람 화면에서는 부드럽게 따라감
    - 맞았는지는 쏜 사람 화면 기준으로 정해서 '맞음' 신호를 보내고, 맞은 사람이 자기 체력을 깎음 */
 const MP = {
   '1v1': { n: '1대1', cap: 2, min: 2, wins: 2, maxR: 5, rtime: 60, resp: 3 },   // 라운드제: 3판 2선, 라운드마다 60초 · 체력 회복
-  team: { n: '3대3 팀전', cap: 6, min: 2, kills: 6, time: 180, resp: 3 },   // 체력 6배라 10킬 → 6킬
+  team: { n: '3대3 팀전', cap: 6, min: 2, kills: 6, time: 180, resp: 3, tcap: 3 },   // 체력 6배라 10킬 → 6킬
+  team5: { n: '5대5 팀전', cap: 10, min: 2, kills: 10, time: 240, resp: 3, tcap: 5 },   // tcap: 한 팀 최대 인원
   boss: { n: '5대1 보스전', cap: 6, min: 2, time: 180, resp: 5, lives: 3 },
   coop: { n: '호맘 협동', cap: 3, min: 2 },
   sd: { n: '쇼다운', cap: 6, min: 2, time: 600 },
   heist: { n: '하이스트', cap: 6, min: 2, time: 150, resp: 4 },
   zombie: { n: '좀비 모드', cap: 6, min: 2, time: 120 },
 };
-const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 },
+const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, team5: { win: 300, draw: 140, lose: 90 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 },
   heist: { win: 260, draw: 120, lose: 80 }, zombie: { win: 260, draw: 100, lose: 80 } };
-const TEAM_KIND = k => k === 'team' || k === 'heist';   // 블루팀 · 레드팀으로 나뉘는 모드
+const TEAM_KIND = k => k === 'team' || k === 'team5' || k === 'heist';   // 블루팀 · 레드팀으로 나뉘는 모드
+const KILL_KIND = k => k === 'team' || k === 'team5';   // 먼저 정해진 킬 수를 채우는 팀이 이기는 모드
+const teamCap = m => (MP[m] && MP[m].tcap) || 3;   // 한 팀 최대 인원
 const PVP_HP = 6;   // 대전 체력 배수 (혼자 하기 기준 6배)
 const BOSS_HP_MUL = 3;   // 5대1 보스 체력 배수 (6배면 3분 안에 못 잡아서 3배)
 const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
 const PVP_REWARD = MP_REWARD['1v1'];
 const TEAM_COL = ['#59b8ff', '#ff4f6d'], TEAM_NAME = ['블루팀', '레드팀'];
 const SPAWN_T = [[[900, 1120], [600, 1100], [1200, 1100]], [[900, 180], [600, 200], [1200, 200]]];
+const SPAWN_T5 = [[[900, 1120], [600, 1100], [1200, 1100], [320, 1070], [1480, 1070]], [[900, 180], [600, 200], [1200, 200], [320, 230], [1480, 230]]];   // 5대5
 const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], [1600, 1120], [1600, 180], [200, 1120]];
 const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
+const ROOM_FIELDS = ['m', 'h', 'map', 'q', 'p', 'go', 'cm'];   // 대기실에서 지켜보는 방 정보 (cm: 만든 맵 데이터)
 /* 대전 규칙 버전: 1대1 라운드제부터 12. 예전 버전이랑은 같이 못 하게 (빠른 대전 줄도 따로) */
 /* 14: 모든 캐릭터 이동속도 낮춤 → 속도가 다른 예전 버전이랑은 모든 모드에서 같이 못 하게 */
-const MP_VER = 19, MM_PATH = 'mm/wait8';   // 19: 대전 체력 6배 · 성빈 · 서진 밸런스
-const modeVer = m => 19;
+const MP_VER = 21, MM_PATH = 'mm/wait10';   // 19: 대전 체력 6배 · 성빈 · 서진 밸런스 / 20: 5대5 팀전 · 스파이더성빈 멀티 금지 / 21: 만든 맵
+const modeVer = m => 21;
 const mpOld = R => Object.values((R && R.p) || {}).some(p => !(p && p.v >= modeVer(R && R.m)));
+const mpBan = R => Object.values((R && R.p) || {}).some(p => p && CHARS[p.ch] && CHARS[p.ch].noMp);   // 스파이더성빈은 멀티 금지
 /* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
 const fnum = (v, d = 0) => (typeof v === 'number' && isFinite(v) ? v : d);
 /* 대전 중 못 움직이는 때: 시작 카운트다운 · 1대1 라운드 사이 */
@@ -4643,7 +4769,7 @@ const Net = {
   async create(mode, onRoom, onGo, rid, quick) {
     if (!quick) this.fresh();
     const me = Store.uid, info = Object.assign(this.info(), { tm: 0 });
-    const pref = lsGet('hb-map'), map = !pref || pref === 'random' || !MAPS[pref] ? randMap() : pref;
+    const pref = lsGet('hb-map'), map = !pref || pref === 'random' || !MAPS[pref] || MAPS[pref].custom ? randMap() : pref;   // 만든 맵은 방에서 다시 고름 (데이터를 같이 보내야 해서)
     let code = rid || null;
     for (let i = 0; !code && i < 8; i++) {
       const c = rid4(); let mine = false;
@@ -4686,7 +4812,7 @@ const Net = {
     let seen = false;   // 방 안에 내가 있는 걸 한 번이라도 봤는지 (막 들어온 직후엔 옛날 값이 먼저 올 수 있음)
     const gone = why => { const f = this.onRoom; this.clear(); this.reset(); if (f) f(null, why); };
     const fire = () => {
-      if (this.started || got.size < 6 || this.rid !== rid) return;
+      if (this.started || got.size < ROOM_FIELDS.length || this.rid !== rid) return;
       const v = fields, me = this.me, inRoom = !!(v.h && v.p && v.p[me]);
       if (!seen) {
         if (!inRoom) { if (Date.now() - t0 > 6000) gone(v.h ? 'kicked' : 'closed'); return; }
@@ -4694,28 +4820,36 @@ const Net = {
       }
       if (!v.h) { gone('closed'); return; }
       if (v.h !== me && v.p && v.p[v.h] && !(v.p[v.h].v >= modeVer(v.m)) && !v.go) { gone('old'); return; }   // 방장이 예전 버전
-      this.room = { m: v.m, h: v.h, map: v.map, q: v.q, p: v.p || {}, go: v.go, rid: this.rid };
+      if (v.map === 'cmr' && v.cm) mkRegister('cmr', v.cm, (v.p && v.p[v.h] && str(v.p[v.h].n, 8)) || '');   // 방장이 고른 만든 맵
+      this.room = { m: v.m, h: v.h, map: v.map, q: v.q, p: v.p || {}, go: v.go, cm: v.cm || null, rid: this.rid };
       if (!this.room.p[me]) { gone('kicked'); return; }
       if (v.go) { this.begin(v.go); return; }
       this.host = v.h === me;
       const n = Object.keys(this.room.p).length;
-      if (this.host && this.room.m === '1v1' && n >= 2 && !mpOld(this.room)) { this.start(); return; }
+      if (this.host && this.room.m === '1v1' && n >= 2 && !mpOld(this.room) && !mpBan(this.room)) { this.start(); return; }
       if (this.onRoom) this.onRoom(this.room);
       if (this.host && !this.room.q) this.ref('lob/' + this.rid + '/k').set(n).catch(() => {});
     };
-    for (const k of ['m', 'h', 'map', 'q', 'p', 'go']) {
+    for (const k of ROOM_FIELDS) {
       this.on(R.child(k), 'value', s => { fields[k] = s.val(); got.add(k); fire(); }, true);
     }
     this.timers.push(setTimeout(() => { if (!seen && this.rid === rid && !this.started) gone(fields.h ? 'kicked' : 'closed'); }, 6500));
   },
   setMine(k, v) { if (this.rid && !this.started) this.ref('rooms/' + this.rid + '/p/' + this.me + '/' + k).set(v).catch(() => {}); },
-  setMap(k) { if (this.rid && this.host) this.ref('rooms/' + this.rid + '/map').set(mapKey(k)).catch(() => {}); },
+  /* 방 맵 바꾸기. 만든 맵이면 맵 데이터(cm)를 먼저 올리고 맵 이름은 'cmr' */
+  setMap(k) {
+    if (!this.rid || !this.host) return;
+    const R = this.ref('rooms/' + this.rid);
+    if ((MAPS[k] && MAPS[k].custom) || (!MAPS[k] && mkEnsure(k))) R.child('cm').set({ ...MAPS[k].pk }).then(() => R.child('map').set('cmr')).catch(() => {});
+    else { R.child('map').set(mapKey(k)).catch(() => {}); R.child('cm').remove().catch(() => {}); }
+  },
   canStart() {
     const R = this.room; if (!R) return { ok: false, why: '' };
     const ids = Object.keys(R.p), cfg = MP[R.m];
     if (ids.length < cfg.min) return { ok: false, why: `${cfg.min}명 이상 모여야 시작할 수 있어요` };
     if (mpOld(R)) return { ok: false, why: '예전 버전으로 들어온 친구가 있어요. 그 친구는 새로고침하고 다시 들어와야 해요' };
-    if (TEAM_KIND(R.m)) { const c = [0, 0]; for (const k of ids) c[R.p[k].tm ? 1 : 0]++; if (!c[0] || !c[1]) return { ok: false, why: '양쪽 팀에 1명 이상 있어야 해요' }; if (c[0] > 3 || c[1] > 3) return { ok: false, why: '한 팀은 3명까지예요' }; }
+    if (mpBan(R)) return { ok: false, why: '스파이더성빈은 멀티플레이어에서 못 써요. 그 친구는 캐릭터를 바꾸고 다시 들어와야 해요' };
+    if (TEAM_KIND(R.m)) { const c = [0, 0], tc = teamCap(R.m); for (const k of ids) c[R.p[k].tm ? 1 : 0]++; if (!c[0] || !c[1]) return { ok: false, why: '양쪽 팀에 1명 이상 있어야 해요' }; if (c[0] > tc || c[1] > tc) return { ok: false, why: `한 팀은 ${tc}명까지예요` }; }
     return { ok: true };
   },
   start() {
@@ -4729,6 +4863,7 @@ const Net = {
     } else if (TEAM_KIND(R.m)) for (const k of ids) teams[k] = R.p[k].tm ? 1 : 0;
     else ids.forEach((k, i) => { teams[k] = R.m === '1v1' || R.m === 'sd' ? i : 0; });   // 1대1 · 쇼다운: 모두 다른 편
     const go = { t: Date.now(), map: mapKey(R.map), teams, boss, seed: Math.floor(Math.random() * 1e9) };
+    if (go.map === 'cmr' && R.cm) go.cm = R.cm;   // 만든 맵: 시작할 때 맵 데이터도 같이
     this.ref('rooms/' + this.rid + '/st').set('play');
     this.ref('rooms/' + this.rid + '/go').set(go);
     this.ref('lob/' + this.rid).remove().catch(() => {});
@@ -4743,6 +4878,7 @@ const Net = {
     this.ref(base + '/x/' + me).onDisconnect().set(true);
     if (this.host) this.ref('lob/' + this.rid).remove().catch(() => {});
     const players = Object.keys(R.p).filter(k => k in go.teams).map(k => Object.assign({ uid: k }, R.p[k], { tm: go.teams[k] }));
+    if (go.map === 'cmr' && go.cm) mkRegister('cmr', go.cm, (R.p[R.h] && str(R.p[R.h].n, 8)) || '');
     const mod = () => (G && G.coop ? Coop : PvP);
     for (const pl of players) if (pl.uid !== me) {
       this.on(this.ref(base + '/s/' + pl.uid), 'value', s => { const v = s.val(); if (v) mod().netState(pl.uid, v); });
@@ -4799,7 +4935,7 @@ const PvP = {
     const myTm = m.players.find(x => x.uid === me).tm;
     const V = G.pvp = {
       kind, me, myTm, role: m.role, host: m.host, pl: {}, score: [0, 0], k: 0, d: 0, kills: 0, deaths: 0,
-      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, send: 0, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
+      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, send: 0, sendIv: m.players.length > 6 ? 0.1 : PVP_SEND, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
       hostUid: m.hostUid || '', round: 1, rw: [0, 0], rdead: {}, rend: 0, rwait: 0, next: 0, rdone: 0, rres: null,
     };
     G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9; G.allies = [];
@@ -4812,7 +4948,7 @@ const PvP = {
       if (kind === 'zombie') return uid === V.boss ? Z_SPAWN[1] : H_SPAWN[Math.max(0, byTm[0].indexOf(uid)) % H_SPAWN.length];
       if (kind === 'boss' && uid === V.boss) return [900, 300];
       const i = Math.max(0, byTm[tm].indexOf(uid));
-      return kind === 'boss' ? [[600, 1100], [900, 1120], [1200, 1100], [450, 950], [1350, 950]][i % 5] : SPAWN_T[tm][i % 3];
+      return kind === 'boss' ? [[600, 1100], [900, 1120], [1200, 1100], [450, 950], [1350, 950]][i % 5] : kind === 'team5' ? SPAWN_T5[tm][i % 5] : SPAWN_T[tm][i % 3];
     };
     const sp = freeSpot(...spawnOf(me, myTm), 34);
     p.x = sp.x; p.y = sp.y; p.ang = myTm ? Math.PI / 2 : -Math.PI / 2;
@@ -4843,6 +4979,7 @@ const PvP = {
     const T = {
       '1v1': ['ROUND 1', `${V.op.n} 등장! · 3판 2선`],
       team: [myTm ? '레드팀!' : '블루팀!', `먼저 ${cfg.kills}킬 하는 팀이 승리`],
+      team5: [myTm ? '레드팀!' : '블루팀!', `5대5! 먼저 ${cfg.kills}킬 하는 팀이 승리`],
       boss: me === V.boss ? ['내가 보스!', `사냥꾼 ${hunters}명을 버텨내세요`] : ['보스를 잡아라!', `보스: ${bossNick}`],
       sd: ['쇼다운!', `${m.players.length}명 중 마지막까지 살아남기`],
       heist: [myTm ? '레드팀!' : '블루팀!', '상대 금고를 먼저 부숴요'],
@@ -4852,6 +4989,7 @@ const PvP = {
   },
   update(dt) {
     const V = G.pvp, p = G.p, cfg = MP[V.kind];
+    if (BUSHES.length && V.cd <= 0 && V.kind !== 'sd' && V.kind !== 'heist' && V.kind !== 'zombie') for (const e of G.en) if (e.rival) { if (e.rvT > 0) e.rvT -= dt; e.hid = bushHidden(e); }   // 만든 맵 수풀 (나머지 모드는 modeTick)
     if (V.cd > 0) {
       V.cd -= dt;
       const n = V.cd > 0 ? Math.ceil(V.cd) : 0;
@@ -4870,7 +5008,7 @@ const PvP = {
     if (!pvpLock()) for (const uid in V.pend) { const e = V.pend[uid]; e.k = 'h'; e.to = uid; if (e.d) e.d = Math.round(e.d); Net.ev(e); }
     V.pend = {};
     V.send -= dt;
-    if (V.send <= 0 && !G.over) { V.send = PVP_SEND; Net.send(mpMyState()); }
+    if (V.send <= 0 && !G.over) { V.send = V.sendIv || PVP_SEND; Net.send(mpMyState()); }   // 사람이 많으면 조금 덜 자주 (데이터 아끼기)
     for (const uid in V.pl) { const P = V.pl[uid]; if (!P.left && !G.over && performance.now() - P.seen > 20000) this.left(uid); }
     V.feed = V.feed.filter(f => (f.t -= dt) > 0);
     if (V.kind === '1v1') { V.k = V.rw[V.myTm]; V.d = V.rw[1 - V.myTm]; } else { V.k = V.score[V.myTm]; V.d = V.score[1 - V.myTm]; }
@@ -5113,7 +5251,7 @@ const PvP = {
     const V = G.pvp, p = G.p;
     let best = PVP_SPAWN[0], bd = -1;
     const foes = Object.values(V.pl).filter(x => x.tm !== V.myTm && !x.left).map(x => x.e);
-    const cands = V.kind === 'team' ? SPAWN_T[V.myTm].concat(PVP_SPAWN) : V.kind === 'heist' ? SPAWN_T[V.myTm] : V.kind === 'zombie' ? Z_SPAWN : PVP_SPAWN;
+    const cands = V.kind === 'team' ? SPAWN_T[V.myTm].concat(PVP_SPAWN) : V.kind === 'team5' ? SPAWN_T5[V.myTm].concat(PVP_SPAWN) : V.kind === 'heist' ? SPAWN_T[V.myTm] : V.kind === 'zombie' ? Z_SPAWN : PVP_SPAWN;
     if (V.kind === 'zombie') zApply(V.zt[V.me] === 2 ? 2 : 1);
     for (const s of cands) { const d = foes.length ? Math.min(...foes.map(e => Math.hypot(s[0] - e.tx, s[1] - e.ty))) : 1; if (d > bd) { bd = d; best = s; } }
     const sp = freeSpot(best[0], best[1], 34);
@@ -5162,7 +5300,7 @@ const PvP = {
       if (bossE) { bar(x, 36 * u, w, 14 * u, (bossE.hp || 0) / (bossE.maxHp || 1), COL.orange); ctx.font = `400 ${Math.round(11 * u)}px ${FONT_NUM}`; outText(fmt(Math.max(0, bossE.hp || 0)), VW / 2, 43 * u, '#fff', 3); }
       const alive = Object.keys(V.lives).filter(k => !V.out[k]).length;
       ctx.font = `400 ${Math.round(13 * u)}px ${FONT_UI}`; outText(`남은 사냥꾼 ${alive}명`, VW / 2, 66 * u, '#fff', 3);
-    } else if (V.kind === 'team') {
+    } else if (KILL_KIND(V.kind)) {
       ctx.font = `400 ${Math.round(30 * u)}px ${FONT_NUM}`;
       outText(String(V.score[0]), VW / 2 - 34 * u, 30 * u, TEAM_COL[0], 5); outText(':', VW / 2, 30 * u, '#fff', 5); outText(String(V.score[1]), VW / 2 + 34 * u, 30 * u, TEAM_COL[1], 5);
       ctx.font = `400 ${Math.round(12 * u)}px ${FONT_UI}`; outText(`${TEAM_NAME[V.myTm]} · ${cfg.kills}킬 먼저`, VW / 2, 56 * u, TEAM_COL[V.myTm], 3);
@@ -5251,7 +5389,7 @@ const r2 = v => Math.round(v * 100) / 100;
 const Coop = {
   setup(m) {
     const me = m.me, p = G.p;
-    if (m.map) { G.map = mapKey(m.map); OBST = MAPS[G.map].obst; }
+    if (m.map) { G.map = mapKey(m.map); OBST = MAPS[G.map].obst; BUSHES = MAPS[G.map].custom ? bushesFor(G.map) : []; }
     const list = m.players.slice().sort((a, b) => (a.j || 0) - (b.j || 0));
     const n = list.length;
     const C = G.coop = {
@@ -5563,7 +5701,7 @@ const BUSH_MAP = {
 const BUSH_SEE = 180;   // 이만큼 가까우면 수풀 속도 보임
 let BUSHES = [];        // 지금 판의 수풀
 let SOLIDS = [];        // 움직임만 막는 동그란 물체 (하이스트 금고)
-const bushesFor = map => (BUSH_MAP[map] || []).map(([x, y, w, h]) => ({ x, y, w, h }));
+const bushesFor = map => (MAPS[map] && MAPS[map].bush ? MAPS[map].bush.map(b => ({ x: b.x, y: b.y, w: b.w, h: b.h })) : (BUSH_MAP[map] || []).map(([x, y, w, h]) => ({ x, y, w, h })));   // 만든 맵은 그 맵 수풀
 function inBush(x, y) { for (const b of BUSHES) if (x > b.x + 8 && x < b.x + b.w - 8 && y > b.y + 8 && y < b.y + b.h - 8) return true; return false; }
 function bushHidden(e) { return BUSHES.length > 0 && !e.ally && inBush(e.x, e.y) && !((e.rvT || 0) > 0) && Math.hypot(e.x - G.p.x, e.y - G.p.y) > BUSH_SEE; }
 const bRnd = (s, i) => { const v = Math.sin(s + i * 12.9898) * 43758.5453; return v - Math.floor(v); };
@@ -5729,7 +5867,7 @@ Object.assign(PvP, {
   modeSetup(m) {
     const V = G.pvp, p = G.p, kind = V.kind;
     V.el = 0; V.pendEnd = null;
-    BUSHES = kind === 'sd' || kind === 'zombie' ? bushesFor(G.map) : [];
+    BUSHES = kind === 'sd' || kind === 'zombie' || MAPS[G.map].custom ? bushesFor(G.map) : [];   // 만든 맵은 모든 모드에서 수풀
     SOLIDS = [];
     if (kind === 'sd') { V.alive = new Set(m.players.map(x => x.uid)); V.cubes = 0; V.place = 0; V.gasAcc = 0; V.gasT = 0.5; }
     else if (kind === 'heist') {
@@ -5841,6 +5979,148 @@ Object.assign(PvP, {
   },
 });
 
+/* ================= 맵 만들기: 조각 · 저장 형식 · 그리기 · 검사 =================
+   저장 형식: { id, n: 이름, f: 바닥(기본 맵 키), o: '조각.x칸.y칸|조각.x칸.y칸...' (한 칸 = 10), t: 저장 시각 }
+   - 조각 크기가 모두 10의 배수라 대칭으로 놓으면 정확히 대칭
+   - 조각 크기는 MK_PIECES 에서 정함. 받은 맵(친구가 올린 맵 · 방으로 온 맵)은 mkClean 으로 다 검사해서 씀
+   - Firestore 는 배열 안 배열을 못 넣어서 조각 목록은 글자 한 줄로 저장
+   - 내 맵: 비공개 저장 P.maps (MK_MAX_MAPS 개까지) · 올린 맵: 공개 기록 P.cm (1개) · 방: rooms/<방>/cm → MAPS.cmr
+   - MAPS 키: 'my:<id>' 내 맵, 'gal:<uid>' 친구가 올린 맵, 'cmr' 지금 방 맵 (모두 처음 쓸 때 등록) */
+const MK_PIECES = {
+  w: { k: 'wall', w: 200, h: 40, n: '벽' },
+  wl: { k: 'wall', w: 400, h: 40, n: '긴 벽' },
+  wv: { k: 'wall', w: 40, h: 200, n: '세로 벽' },
+  wvl: { k: 'wall', w: 40, h: 400, n: '긴 세로 벽' },
+  bx: { k: 'box', w: 170, h: 90, n: '상자' },
+  bxv: { k: 'box', w: 90, h: 170, n: '세로 상자' },
+  mt: { k: 'mat', w: 80, h: 150, n: '매트' },
+  mth: { k: 'mat', w: 150, h: 80, n: '가로 매트' },
+  ct: { k: 'cart', w: 100, h: 100, n: '공 바구니' },
+  dk: { k: 'desk', w: 110, h: 70, n: '책상' },
+  td: { k: 'tdesk', w: 220, h: 70, n: '교탁' },
+  lk: { k: 'locker', w: 220, h: 90, n: '사물함' },
+  tb: { k: 'table', w: 420, h: 80, n: '식탁' },
+  cn: { k: 'counter', w: 240, h: 120, n: '배식대' },
+  pl: { k: 'pillar', w: 70, h: 70, n: '기둥' },
+  tr: { k: 'tree', w: 100, h: 100, n: '나무' },
+  jg: { k: 'jungle', w: 160, h: 170, n: '정글짐' },
+  lb: { k: 'lab', w: 300, h: 80, n: '실험대' },
+  sk: { k: 'sink', w: 140, h: 120, n: '개수대' },
+  sh: { k: 'shelf', w: 60, h: 180, n: '약품 선반' },
+  fl: { k: 'flask', w: 70, h: 70, n: '플라스크' },
+  gl: { k: 'goal', w: 40, h: 260, n: '골대' },
+  bu: { k: 'bush', w: 170, h: 130, n: '수풀' },
+  bul: { k: 'bush', w: 260, h: 110, n: '긴 수풀' },
+  buv: { k: 'bush', w: 120, h: 220, n: '세로 수풀' },
+};
+const MK_ORDER = Object.keys(MK_PIECES);
+const MK_GRID = 10, MK_MAX_O = 40, MK_MAX_B = 12, MK_MAX_MAPS = 6;
+/* 시작 자리 · 금고 (편집기에 표시): [x, y, 색, 이름] */
+const MK_MARKS = [[900, 820, '#ffd23f', '혼자'], [900, 1120, '#59b8ff', '블루'], [600, 1100, '#59b8ff', ''], [1200, 1100, '#59b8ff', ''], [900, 180, '#ff4f6d', '레드'], [600, 200, '#ff4f6d', ''], [1200, 200, '#ff4f6d', ''],
+  [900, 1236, '#59b8ff', '금고'], [900, 64, '#ff4f6d', '금고']];
+const mkIsBush = p => !!MK_PIECES[p] && MK_PIECES[p].k === 'bush';
+const mkId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const mkSnap = v => Math.round(v / MK_GRID) * MK_GRID;
+/* 조각이 맵 안에 들어오게 칸에 맞춤 */
+function mkFit(p, x, y) {
+  const c = MK_PIECES[p];
+  return { x: clamp(mkSnap(x), 0, Math.floor((WW - c.w) / MK_GRID) * MK_GRID), y: clamp(mkSnap(y), 0, Math.floor((WH - c.h) / MK_GRID) * MK_GRID) };
+}
+/* 글자 한 줄 → 조각 목록 [{ p, x, y }] (모르는 조각 · 너무 많은 조각은 버림) */
+function mkItems(s) {
+  const out = []; let no = 0, nb = 0;
+  for (const part of String(s || '').split('|').slice(0, 160)) {
+    const [p, gx, gy] = part.split('.'), c = MK_PIECES[p];
+    if (!c || !Object.prototype.hasOwnProperty.call(MK_PIECES, p)) continue;
+    const X = Number(gx), Y = Number(gy); if (!isFinite(X) || !isFinite(Y)) continue;
+    const b = c.k === 'bush'; if (b ? nb >= MK_MAX_B : no >= MK_MAX_O) continue;
+    out.push(Object.assign({ p }, mkFit(p, X * MK_GRID, Y * MK_GRID))); if (b) nb++; else no++;
+  }
+  return out;
+}
+const mkStr = items => items.map(it => `${it.p}.${Math.round(it.x / MK_GRID)}.${Math.round(it.y / MK_GRID)}`).join('|');
+const mkCount = items => { let o = 0, b = 0; for (const it of items) { if (mkIsBush(it.p)) b++; else o++; } return { o, b }; };
+/* 받은 맵 검사 → 깨끗한 저장 형식 (못 쓰는 값이면 null) */
+function mkClean(raw) {
+  if (!raw || typeof raw !== 'object' || typeof raw.o !== 'string') return null;
+  const id = String(raw.id || '');
+  return { id: /^[a-z0-9]{4,16}$/.test(id) ? id : mkId(), n: clean(str(raw.n, 12)).trim() || '이름 없는 맵', f: MAP_ORDER.includes(raw.f) ? raw.f : 'gym', o: mkStr(mkItems(raw.o)), t: num(raw.t) };
+}
+/* 저장 형식 → 게임 맵 (MAPS 에 넣는 모양) */
+function mkBuild(pk, by) {
+  const obst = [], bush = [];
+  for (const it of mkItems(pk.o)) { const c = MK_PIECES[it.p]; (c.k === 'bush' ? bush : obst).push({ x: it.x, y: it.y, w: c.w, h: c.h, k: c.k }); }
+  return { name: pk.n, desc: by ? `${by}님이 만든 맵` : '내가 만든 맵', obst, bush, f: pk.f, custom: true, by: by || '', pk };
+}
+function mkRegister(key, raw, by) { const pk = mkClean(raw); if (!pk) return null; MAPS[key] = mkBuild(pk, by); return pk; }
+/* 다른 친구들이 올린 맵 (랭킹용 공개 기록에 같이 들어 있음) */
+function mkGallery() {
+  if (!Store.P || Store.mode !== 'online') return [];
+  return Store.rank.filter(r => r.cm && r.id !== Store.uid).sort((a, b) => (b.cm.t || 0) - (a.cm.t || 0));
+}
+/* 'my:<id>' · 'gal:<uid>' 맵은 처음 쓸 때 등록 (mapKey 에서 부름) */
+function mkEnsure(k) {
+  if (typeof k !== 'string') return false;
+  if (k.startsWith('my:') && Store.P) { const m = (Store.P.maps || []).find(x => x.id === k.slice(3)); if (m) { MAPS[k] = mkBuild(m, ''); return true; } }
+  if (k.startsWith('gal:')) { const r = mkGallery().find(x => x.id === k.slice(4)); if (r) { MAPS[k] = mkBuild(r.cm, r.nick); return true; } }
+  return false;
+}
+/* 다른 캔버스에 맵 그리기: 게임 그리기 함수를 그대로 빌려 씀 (잠깐 ctx · 카메라를 바꿨다가 되돌림) */
+function mkWith(c2, fn) {
+  const o = { ctx, VW, VH, SC, cx: cam.x, cy: cam.y, B: BUSHES };
+  ctx = c2; VW = WW; VH = WH; SC = 1; cam.x = 0; cam.y = 0;
+  try { fn(); } finally { ctx = o.ctx; VW = o.VW; VH = o.VH; SC = o.SC; cam.x = o.cx; cam.y = o.cy; BUSHES = o.B; }
+}
+function mkDrawFloor(theme) {
+  ctx.fillStyle = WALL_COL[theme] || WALL_COL.gym; ctx.fillRect(-60, -60, WW + 120, WH + 120);
+  ctx.fillStyle = COL.ink; ctx.fillRect(-7, -7, WW + 14, WH + 14);
+  drawFloor(theme);
+}
+function mkDrawThings(m) { for (const o of m.obst) drawObst(o); BUSHES = m.bush || []; if (BUSHES.length) { drawBushes(false); drawBushes(true); } }
+/* 미리보기 그림 (data URL, 같은 맵은 다시 안 그림) */
+const MK_TH = new Map();
+function mkThumb(pk, w, h) {
+  const key = `${pk.f}|${pk.o}|${w}x${h}`;
+  if (MK_TH.has(key)) return MK_TH.get(key);
+  let url = '';
+  try {
+    const m = mkBuild(pk, ''), d = Math.min(2, window.devicePixelRatio || 1), c = document.createElement('canvas');
+    c.width = Math.round(w * d); c.height = Math.round(h * d);
+    const c2 = c.getContext('2d'), s = Math.min(c.width / (WW + 30), c.height / (WH + 30));
+    c2.setTransform(s, 0, 0, s, (c.width - WW * s) / 2, (c.height - WH * s) / 2);
+    mkWith(c2, () => { mkDrawFloor(m.f); mkDrawThings(m); });
+    url = c.toDataURL('image/png');
+  } catch (e) { console.warn(e); }
+  if (MK_TH.size > 80) MK_TH.clear();
+  MK_TH.set(key, url);
+  return url;
+}
+/* 갇힌 곳 찾기: 30 칸마다 캐릭터(반지름 26)가 설 수 있는 자리 중, '혼자' 시작 자리에서 못 가는 곳 */
+function mkStuck(obst) {
+  const S = 30, cols = Math.floor(WW / S), rows = Math.floor(WH / S), R = 26, free = new Uint8Array(cols * rows);
+  let total = 0;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const x = c * S + S / 2, y = r * S + S / 2;
+    if (x < R || y < R || x > WW - R || y > WH - R) continue;
+    let ok = true;
+    for (const o of obst) { const dx = x - clamp(x, o.x, o.x + o.w), dy = y - clamp(y, o.y, o.y + o.h); if (dx * dx + dy * dy < R * R) { ok = false; break; } }
+    if (ok) { free[r * cols + c] = 1; total++; }
+  }
+  if (!total) return { cells: [], S, frac: 1, none: true };
+  let st = -1, bd = 1e9;
+  for (let i = 0; i < free.length; i++) if (free[i]) { const d = Math.hypot((i % cols) * S + S / 2 - 900, Math.floor(i / cols) * S + S / 2 - 820); if (d < bd) { bd = d; st = i; } }
+  const seen = new Uint8Array(free.length), q = [st]; seen[st] = 1;
+  for (let h = 0; h < q.length; h++) {
+    const i = q[h], c = i % cols, r = Math.floor(i / cols);
+    for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nc = c + dc, nr = r + dr; if (nc < 0 || nr < 0 || nc >= cols || nr >= rows) continue;
+      const j = nr * cols + nc; if (free[j] && !seen[j]) { seen[j] = 1; q.push(j); }
+    }
+  }
+  const cells = [];
+  for (let i = 0; i < free.length; i++) if (free[i] && !seen[i]) cells.push([(i % cols) * S, Math.floor(i / cols) * S]);
+  return { cells, S, frac: cells.length / total };
+}
 /* ================= 친구 목록 · 접속 표시 · DM =================
    웹사이트 버전 + Realtime Database 가 있을 때만 (클로드 안 버전은 목록만 보여줌)
    st/<uid>                    : 접속 상태 {on, t, n, g}   나만 씀, 로그인한 사람은 다 읽음
@@ -6407,7 +6687,7 @@ const UI = {
     const P = Store.P; if (!P) return;
     const k = CHARS[this.chView] ? this.chView : P.ch; this.chView = k;
     const c = CHARS[k], own = P.chars.includes(k), sel = P.ch === k;
-    const sbar = (label, v, lo, hi, txt) => `<div class="sbar"><span>${label}</span><i><b style="width:${Math.round(clamp((v - lo) / (hi - lo), 0.08, 1) * 100)}%"></b></i><em class="num">${txt}</em></div>`;
+    const sbar = (label, v, lo, hi, txt) => `<div class="sbar${v > hi ? ' over' : ''}"><span>${label}</span><i><b style="width:${Math.round(clamp((v - lo) / (hi - lo), 0.08, 1) * 100)}%"></b></i><em class="num">${txt}</em></div>`;   // over: 보통 최고치보다 훨씬 셈 (울트라)
     const armed = this.armed === 'c:' + k;
     const act = sel ? '<span class="tag on">지금 사용 중</span>'
       : own ? `<button class="btn" type="button" data-cact="pick" data-k="${k}">이 캐릭터로 하기</button>`
@@ -6902,12 +7182,13 @@ function onCharsClick(e) {
     sfx('coin'); UI.toast(`${c.name} 영입! 바로 선택했어요`, 'good'); UI.updateCoins(); UI.renderChars();
   }
 }
-function startGame(mode) {
+/* map: 맵 만들기에서 '해보기' 할 때 그 맵 (다시 하기도 같은 맵) */
+function startGame(mode, map) {
   if (typeof mode !== 'string') mode = lastMode;
-  lastMode = mode;
+  lastMode = mode; lastMap = typeof map === 'string' && mapKey(map) === map ? map : null;
   SFX.init(); sfx('click');
   UI.show('game');
-  Game.start(Object.assign(loadoutFrom(Store.P), { mode, map: chosenMap() }), onGameEnd);
+  Game.start(Object.assign(loadoutFrom(Store.P), { mode, map: lastMap || chosenMap() }), onGameEnd);
   Social.setWhere('solo');
 }
 function onGameEnd(r) {
@@ -6915,7 +7196,7 @@ function onGameEnd(r) {
   const prevBest = Store.P.best;
   Store.applyResult(r);
   Game.stop();
-  UI.showResult(r, r.score > prevBest && r.score > 0);
+  UI.showResult(r, !r.noRec && r.score > prevBest && r.score > 0);
   masToast(r);
 }
 /* 숙련도 알림 */
@@ -6955,23 +7236,25 @@ const MODE_INFO = {
   endless: { n: '무한 모드', d: '웨이브가 끝없이! 갈수록 적이 세지고 5웨이브마다 보스', ic: '♾️' },
   homom: { n: '호맘 타임어택', d: '체력 3배 호맘이랑 바로 붙어서 얼마나 빨리 잡는지 시간 재기', ic: '⏱️' },
 };
-let lastMode = 'story';
+let lastMode = 'story', lastMap = null;
 /* 게임 시작 창 위쪽 탭: 혼자 하기 / 대전 · 협동 (마지막에 본 탭 기억) */
 function playTabs(on) { return `<div class="tabs t2 mtabs" role="tablist"><button class="tab" type="button" role="tab" data-mtab="solo" aria-selected="${on === 'solo'}">🎮 혼자 하기</button><button class="tab" type="button" role="tab" data-mtab="mp" aria-selected="${on === 'mp'}">⚔️ 대전 · 협동</button></div>`; }
 function bindPlayTabs() { $('#mbox .mtabs').addEventListener('click', e => { const b = e.target.closest('[data-mtab]'); if (!b || b.getAttribute('aria-selected') === 'true') return; sfx('click'); lsSet('hb-mtab', b.dataset.mtab); if (b.dataset.mtab === 'mp') UI.showPvp(); else UI.showModes(); }); }
 function openPlay() { if (lsGet('hb-mtab') === 'mp') UI.showPvp(); else UI.showModes(); }
-function chosenMap() { const m = lsGet('hb-map') || 'random'; return m === 'random' || !MAPS[m] ? randMap() : m; }
+function chosenMap() { const m = lsGet('hb-map') || 'random'; return m === 'random' || mapKey(m) !== m ? randMap() : m; }
 
 Object.assign(UI, {
   /* ---------- 게임 시작: 모드 + 맵 고르기 ---------- */
   showModes() {
-    const P = Store.P, sel = lsGet('hb-map') || 'random';
+    const P = Store.P, sel0 = lsGet('hb-map') || 'random', sel = sel0 === 'random' || mapKey(sel0) === sel0 ? sel0 : 'random';
+    const mine = (P.maps || []).map(m => ['my:' + m.id, '🗺️ ' + m.n]);
     const best = { story: `클리어 ${fmt(P.clears)}회`, endless: P.ew ? `내 최고 WAVE ${P.ew}` : '아직 기록 없음', homom: P.hs3 ? `내 기록 ${clockTxt(P.hs3 / 100)}` : '아직 기록 없음' };
     this.modal(`
       ${playTabs('solo')}
       <div class="modes">${Object.entries(MODE_INFO).map(([k, m]) => `<button class="mode" type="button" data-m="${k}"><span class="mi" aria-hidden="true">${m.ic}</span><span><b>${m.n}</b><small>${m.d}</small><em>${best[k]}</em></span></button>`).join('')}</div>
-      <section class="pf"><h3>맵</h3><div class="chips" id="mapChips">${[['random', '랜덤'], ...MAP_ORDER.map(k => [k, MAPS[k].name])].map(([k, n]) => `<button class="chip2${sel === k ? ' on' : ''}" type="button" data-map="${k}">${n}</button>`).join('')}</div>
-        <p class="msg" id="mapDesc">${sel === 'random' ? '시작할 때마다 맵이 바뀌어요' : esc(MAPS[sel].desc)}</p></section>
+      <section class="pf"><h3>맵</h3><div class="chips" id="mapChips">${[['random', '랜덤'], ...MAP_ORDER.map(k => [k, MAPS[k].name]), ...mine].map(([k, n]) => `<button class="chip2${sel === k ? ' on' : ''}${k.startsWith('my:') ? ' mkchip' : ''}" type="button" data-map="${esc(k)}">${esc(n)}</button>`).join('')}</div>
+        <p class="msg" id="mapDesc">${sel === 'random' ? '시작할 때마다 맵이 바뀌어요' : esc(MAPS[sel].desc) + (MAPS[sel].custom ? ' · 랭킹 기록은 안 올라가요' : '')}</p>
+        <div class="pf-btns"><button class="btn small blue" type="button" id="mkOpen">🗺️ 맵 만들기 · 구경하기</button></div></section>
       <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button></div>`, true);
     $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
     bindPlayTabs();
@@ -6980,8 +7263,10 @@ Object.assign(UI, {
       const b = e.target.closest('[data-map]'); if (!b) return;
       lsSet('hb-map', b.dataset.map); sfx('click');
       $$('#mapChips .chip2').forEach(x => x.classList.toggle('on', x === b));
-      $('#mapDesc').textContent = b.dataset.map === 'random' ? '시작할 때마다 맵이 바뀌어요' : MAPS[b.dataset.map].desc;
+      const k = b.dataset.map, M = k !== 'random' && mapKey(k) === k ? MAPS[k] : null;
+      $('#mapDesc').textContent = M ? M.desc + (M.custom ? ' · 랭킹 기록은 안 올라가요' : '') : '시작할 때마다 맵이 바뀌어요';
     });
+    $('#mkOpen').addEventListener('click', () => { sfx('click'); this.showMaker('mine'); });
   },
 
   /* ---------- 결과 ---------- */
@@ -7005,6 +7290,7 @@ Object.assign(UI, {
       eyebrow = r.clear ? 'ALL CLEAR' : r.quit ? '중간에 나감' : 'GAME OVER'; title = r.clear ? '클리어!' : '게임 오버'; cls = r.clear ? 'win' : 'lose';
       sub = r.clear ? `보스 ${SCRIPT.filter(x => x.k === 'boss').length}명을 전부 쓰러뜨렸어요` : `PHASE ${r.ph} · ${esc(r.where)}에서 끝났어요`;
     }
+    if (r.noRec) sub += `<br><small class="mknote">🗺️ ${esc((MAPS[r.map] || {}).name || '만든 맵')} · 만든 맵 기록은 랭킹에 안 올라가요</small>`;
     this.modal(`
       <p class="eyebrow">${eyebrow}</p>
       <h2 class="${cls}">${title}</h2>${mid}
@@ -7016,11 +7302,11 @@ Object.assign(UI, {
         <div class="big"><span>점수</span><b class="num">${fmt(r.score)}</b></div>
       </div>
       <div class="earn"><i class="coin"></i><b class="num">+${fmt(r.coins)}</b><span>코인 획득</span></div>
-      <p class="sub">누적 점수 <b class="num">${fmt(P.total)}</b> · 이번 주 <b class="num">${fmt(P.ws)}</b>${newBest && mode === 'story' ? ' · <b class="best">최고 점수!</b>' : ''}</p>
+      ${r.noRec ? '' : `<p class="sub">누적 점수 <b class="num">${fmt(P.total)}</b> · 이번 주 <b class="num">${fmt(P.ws)}</b>${newBest && mode === 'story' ? ' · <b class="best">최고 점수!</b>' : ''}</p>`}
       <div class="mbtns"><button class="btn big" type="button" id="rAgain" data-focus>${mode === 'coop' ? '다시 대전' : '다시 하기'}</button><button class="btn ghost big" type="button" id="rLobby">로비로</button></div>
       <button class="btn small ghost copyres" type="button" id="rCopy">결과 복사해서 단톡방에 자랑하기</button>
       <textarea class="copybox" id="rCopyText" rows="3" readonly hidden aria-label="복사할 결과"></textarea>`, false);
-    $('#rAgain').addEventListener('click', () => { if (mode === 'coop') { sfx('click'); this.show('lobby'); this.showPvp(); return; } this.closeModal(); startGame(lastMode); });
+    $('#rAgain').addEventListener('click', () => { if (mode === 'coop') { sfx('click'); this.show('lobby'); this.showPvp(); return; } this.closeModal(); startGame(lastMode, lastMap); });
     $('#rLobby').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('lobby'); });
     const txt = resultText(r), cb = $('#rCopy');
     cb.addEventListener('click', () => {
@@ -7208,12 +7494,17 @@ function resultText(r) {
 const MP_INFO = {
   '1v1': { ic: '⚔️', n: '1대1', d: '3판 2선 라운드제 · 라운드마다 체력 회복' },
   team: { ic: '🛡️', n: '3대3 팀전', d: '6킬 먼저 하는 팀이 승리 · 2~6명' },
+  team5: { ic: '🏟️', n: '5대5 팀전', d: '10킬 먼저 하는 팀이 승리 · 2~10명' },
   boss: { ic: '👑', n: '5대1 보스전', d: '한 명이 거대 보스, 나머지가 사냥 · 2~6명' },
   coop: { ic: '🤝', n: '호맘 협동', d: '더 세진 호맘을 같이 잡기 · 2~3명' },
   sd: { ic: '☠️', n: '쇼다운', d: '혼자 끝까지 살아남기 · 독가스가 좁혀 와요 · 2~6명' },
   heist: { ic: '💰', n: '하이스트', d: '상대 금고를 먼저 부수면 승리 · 2~6명' },
   zombie: { ic: '🧟', n: '좀비 모드', d: '알파 좀비를 피해 2분 버티기 · 2~6명' },
 };
+/* 스파이더성빈(noMp)은 너무 세서 멀티플레이어(대전 · 협동)에서는 못 씀 */
+const mpBanned = () => !!(Store.P && CHARS[Store.P.ch] && CHARS[Store.P.ch].noMp);
+const MP_BAN_MSG = '스파이더성빈은 너무 세서 멀티플레이어(대전 · 협동)에서는 못 써요. 다른 캐릭터로 바꾸고 와요!';
+function mpBanStop() { if (!mpBanned()) return false; UI.toast(MP_BAN_MSG, 'bad'); sfx('fail'); return true; }
 let mpOpenUn = null;
 function mpStopOpen() { if (mpOpenUn) { try { mpOpenUn(); } catch (e) { /* 무시 */ } mpOpenUn = null; } }
 const JOIN_ERR = { none: '그런 방이 없어요. 코드를 다시 확인해 주세요', full: '방이 꽉 찼어요', started: '이미 게임을 시작한 방이에요', busy: '잠깐 뒤에 다시 해 주세요' };
@@ -7226,6 +7517,16 @@ Object.assign(UI, {
     if (why) {
       this.modal(`${playTabs('mp')}<h2 class="sm">대전 · 협동</h2><p class="sub">${esc(why)}</p><div class="mbtns"><button class="btn" type="button" data-close data-focus>닫기</button></div>`, true);
       $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+      bindPlayTabs();
+      return;
+    }
+    if (mpBanned()) {
+      const ch = Store.P.ch;
+      this.modal(`${playTabs('mp')}<h2 class="sm">대전 · 협동</h2>
+        <div class="mpban card">${ballHTML(ch, 'm', '', Store.mySkin(ch))}<p><b>🚫 ${esc(CHARS[ch].name)}은 멀티플레이어 금지</b><span>${esc(MP_BAN_MSG)}</span></p></div>
+        <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button><button class="btn" type="button" id="vBanCh" data-focus>캐릭터 바꾸기</button></div>`, true);
+      $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+      $('#vBanCh').addEventListener('click', () => { sfx('click'); this.closeModal(); this.show('chars'); });
       bindPlayTabs();
       return;
     }
@@ -7291,15 +7592,18 @@ Object.assign(UI, {
     let plist;
     if (TEAM_KIND(R.m)) {
       const t = [ids.filter(k => !R.p[k].tm), ids.filter(k => R.p[k].tm)];
-      plist = `<div class="tcols">${[0, 1].map(i => `<div class="tcol t${i}"><h4>${TEAM_NAME[i]} <span class="num">${t[i].length}/3</span></h4><ul class="rpl">${t[i].map(row).join('') || '<li class="emp">비어 있어요</li>'}</ul></div>`).join('')}</div>`;
+      plist = `<div class="tcols">${[0, 1].map(i => `<div class="tcol t${i}"><h4>${TEAM_NAME[i]} <span class="num">${t[i].length}/${teamCap(R.m)}</span></h4><ul class="rpl">${t[i].map(row).join('') || '<li class="emp">비어 있어요</li>'}</ul></div>`).join('')}</div>`;
     } else plist = `<ul class="rpl">${ids.map(row).join('')}</ul>`;
-    const note = { '1v1': mpOld(R) ? '예전 버전으로 들어온 친구가 있어요. 새로고침하고 다시 들어와야 시작할 수 있어요' : '친구가 들어오면 바로 시작해요', team: '팀은 자유롭게 바꿀 수 있어요 (한 팀 최대 3명)', boss: '보스 지원한 사람 중에서 1명이 랜덤으로 보스가 돼요 (아무도 없으면 전체에서 랜덤)', coop: '3명이서 깨야 호맘 협동 랭킹에 기록돼요 · 쓰러지면 20초 뒤 부활, 다 같이 쓰러지면 실패',
+    const note = { '1v1': mpOld(R) ? '예전 버전으로 들어온 친구가 있어요. 새로고침하고 다시 들어와야 시작할 수 있어요' : mpBan(R) ? '스파이더성빈으로 들어온 친구가 있어요. 캐릭터를 바꾸고 다시 들어와야 시작해요' : '친구가 들어오면 바로 시작해요', team: '팀은 자유롭게 바꿀 수 있어요 (한 팀 최대 3명)', boss: '보스 지원한 사람 중에서 1명이 랜덤으로 보스가 돼요 (아무도 없으면 전체에서 랜덤)', coop: '3명이서 깨야 호맘 협동 랭킹에 기록돼요 · 쓰러지면 20초 뒤 부활, 다 같이 쓰러지면 실패',
       sd: '모두 혼자 싸워요 · 독가스가 점점 좁혀 오니 가운데로! · 쓰러지면 끝, 등수대로 코인 · 수풀에 숨을 수 있어요',
       heist: '팀은 자유롭게 바꿀 수 있어요 (한 팀 최대 3명) · 상대 금고를 먼저 부수거나, 시간 끝에 금고가 더 많이 남은 팀이 승리',
+      team5: `팀은 자유롭게 바꿀 수 있어요 (한 팀 최대 5명) · ${MP.team5.kills}킬 먼저 하는 팀이 승리 · ${MP.team5.time / 60}분`,
       zombie: '알파 좀비 지원한 사람 중에서 1명이 랜덤으로 알파 좀비가 돼요 · 좀비한테 쓰러지면 좀비로 변신 · 2분 버티면 사람 승리' }[R.m];
+    const cmap = R.map === 'cmr' && MAPS.cmr ? MAPS.cmr : null;   // 방장이 고른 만든 맵
+    const cmRow = cmap ? `<p class="mkroom"><img src="${mkThumb(cmap.pk, 100, 72)}" alt=""><span class="sub">🗺️ <b>${esc(cmap.name)}</b><br><small>${esc(cmap.by || '방장')}님이 만든 맵</small></span></p>` : '';
     const mapRow = host && R.m !== '1v1'
-      ? `<section class="pf"><h3>맵</h3><div class="chips" id="rMaps">${MAP_ORDER.map(k => `<button class="chip2${R.map === k ? ' on' : ''}" type="button" data-rmap="${k}">${MAPS[k].name}</button>`).join('')}<button class="chip2" type="button" data-rmap="random">랜덤</button></div></section>`
-      : `<p class="sub">맵: <b>${esc((MAPS[R.map] || MAPS.gym).name)}</b></p>`;
+      ? `<section class="pf"><h3>맵</h3><div class="chips" id="rMaps">${MAP_ORDER.map(k => `<button class="chip2${R.map === k ? ' on' : ''}" type="button" data-rmap="${k}">${MAPS[k].name}</button>`).join('')}<button class="chip2" type="button" data-rmap="random">랜덤</button>${(Store.P.maps || []).map(m => `<button class="chip2 mkchip${cmap && R.cm && R.cm.id === m.id ? ' on' : ''}" type="button" data-rmap="my:${m.id}">🗺️ ${esc(m.n)}</button>`).join('')}</div>${cmRow}${(Store.P.maps || []).length ? '' : '<p class="sub small">로비의 <b>맵</b>에서 만든 맵도 여기서 고를 수 있어요</p>'}</section>`
+      : cmap ? cmRow : `<p class="sub">맵: <b>${esc((MAPS[R.map] || MAPS.gym).name)}</b></p>`;
     this.modal(`
       <p class="eyebrow">${info.ic} ${esc(info.n)} · 대기실</p>
       <h2 class="sm">방 코드</h2><p class="vcode">${esc(R.rid)}</p>
@@ -7320,7 +7624,7 @@ Object.assign(UI, {
     const tb = $('#rTeam');
     if (tb) tb.addEventListener('click', () => {
       const to = mine.tm ? 0 : 1, n = ids.filter(k => (R.p[k].tm ? 1 : 0) === to).length;
-      if (n >= 3) { this.toast(`${TEAM_NAME[to]}은 꽉 찼어요`, 'bad'); sfx('fail'); return; }
+      if (n >= teamCap(R.m)) { this.toast(`${TEAM_NAME[to]}은 꽉 찼어요`, 'bad'); sfx('fail'); return; }
       sfx('click'); tb.disabled = true; Net.setMine('tm', to);
     });
     const vb = $('#rVb'); if (vb) vb.addEventListener('click', () => { sfx('click'); vb.disabled = true; Net.setMine('vb', !mine.vb); });
@@ -7367,11 +7671,11 @@ Object.assign(UI, {
       title = r.boss ? (r.res === 'win' ? '보스 승리!' : '보스 패배') : r.res === 'win' ? '보스 처치!' : '사냥 실패';
       mid = `<p class="sub">${r.boss ? '내가 보스였어요' : '사냥꾼'} · 처치 <b class="num">${r.kills}</b> · 쓰러짐 <b class="num">${r.deaths}</b>${r.why ? `<br>${esc(r.why)}` : ''}</p>`;
       rec = `<div class="wide"><span>5대1 전적</span><b class="num">보스 ${fmt(P.bw)}승 ${fmt(P.bl)}패 · 사냥꾼 ${fmt(P.hw2)}승 ${fmt(P.hl2)}패</b></div>`;
-    } else if (kind === 'team') {
+    } else if (KILL_KIND(kind)) {
       const s0 = r.myTm ? r.d : r.k, s1 = r.myTm ? r.k : r.d;
       mid = `<div class="tscore"><b class="num" style="color:${TEAM_COL[0]}">${s0}</b><span>:</span><b class="num" style="color:${TEAM_COL[1]}">${s1}</b></div>
         <p class="sub">나는 <b style="color:${TEAM_COL[r.myTm]}">${TEAM_NAME[r.myTm]}</b> · 처치 <b class="num">${r.kills}</b> · 쓰러짐 <b class="num">${r.deaths}</b>${r.why ? ` · ${esc(r.why)}` : ''}</p>`;
-      rec = `<div class="wide"><span>3대3 전적</span><b class="num">${fmt(P.tw)}승 ${fmt(P.tl)}패${P.td ? ` ${fmt(P.td)}무` : ''}</b></div>`;
+      rec = `<div class="wide"><span>팀전 전적 (3대3 · 5대5)</span><b class="num">${fmt(P.tw)}승 ${fmt(P.tl)}패${P.td ? ` ${fmt(P.td)}무` : ''}</b></div>`;
     } else if (kind === 'sd') {
       const pl = r.place || 1;
       title = pl === 1 ? '1등!' : `${pl}등`;
@@ -7411,11 +7715,17 @@ Object.assign(UI, {
 }
 
 /* ---------- 버튼 동작 ---------- */
+/* 멀티플레이어 장비: 혹시 금지 캐릭터(스파이더성빈)면 기본 호준으로 */
+function mpLoadout() {
+  const lo = loadoutFrom(Store.P);
+  if (CHARS[lo.ch] && CHARS[lo.ch].noMp) Object.assign(lo, { ch: 'base', sk: Store.mySkin('base'), sp: (Store.P.sp || []).includes('base') ? 1 : 0 });
+  return lo;
+}
 function pvpGo(m) {
   clearInterval(UI.vT); mpStopOpen(); UI.closeModal();
   UI.show('game');
-  if (m.kind === 'coop') Game.startCoop(loadoutFrom(Store.P), m, onGameEnd);
-  else Game.startPvp(loadoutFrom(Store.P), m, onGameEnd);
+  if (m.kind === 'coop') Game.startCoop(mpLoadout(), m, onGameEnd);
+  else Game.startPvp(mpLoadout(), m, onGameEnd);
   Social.setWhere('mp');
 }
 function onRoom(room, why) {
@@ -7426,7 +7736,7 @@ function onRoom(room, why) {
   UI.showRoom(room);
 }
 async function pvpQuick() {
-  SFX.init(); sfx('click');
+  SFX.init(); if (mpBanStop()) return; sfx('click');
   UI.pvpWait('상대 찾는 중...', '1대1 빠른 대전을 누른 사람이랑 바로 붙어요');
   for (let i = 0; i < 3; i++) {
     try { await Net.quick(pvpGo); return; }
@@ -7436,7 +7746,7 @@ async function pvpQuick() {
 }
 async function pvpMake(mode) {
   if (!MP[mode]) return;
-  SFX.init(); sfx('click');
+  SFX.init(); if (mpBanStop()) return; sfx('click');
   UI.pvpWait('방 만드는 중...', '잠깐만요');
   try { await Net.create(mode, onRoom, pvpGo); }
   catch (e) { console.warn(e); Net.clear(); Net.reset(); UI.showPvp('방을 만들지 못했어요. 다시 해 주세요'); }
@@ -7444,6 +7754,7 @@ async function pvpMake(mode) {
 async function pvpJoinCode(code) {
   const why = Net.why();
   if (why) { UI.toast(why, 'bad'); sfx('fail'); return; }
+  if (mpBanStop()) return;
   try { await Net.join(String(code), onRoom, pvpGo); }
   catch (e) {
     Net.clear(); Net.reset();
@@ -7571,7 +7882,7 @@ Object.assign(UI, {
         <div class="wide"><span>1대1</span><b class="num">${tierHTML(r.pr)} ${fmt(r.pr)}점 · ${fmt(r.pw)}승 ${fmt(r.pl)}패</b></div>
         <div><span>무한 최고</span><b class="num">${r.ew ? 'WAVE ' + r.ew : '-'}</b></div>
         <div><span>호맘 기록</span><b class="num">${r.hs3 ? clockTxt(r.hs3 / 100) : '-'}</b></div>
-        <div><span>3대3</span><b class="num">${fmt(r.tw)}승 ${fmt(r.tl)}패</b></div>
+        <div><span>팀전</span><b class="num">${fmt(r.tw)}승 ${fmt(r.tl)}패</b></div>
         <div><span>5대1</span><b class="num">보스 ${fmt(r.bw)}승 · 사냥 ${fmt(r.hw2)}승</b></div>
         <div><span>쇼다운</span><b class="num">1등 ${fmt(r.sdw)}번</b></div>
         <div><span>하이스트</span><b class="num">${fmt(r.hiw)}승 ${fmt(r.hil)}패</b></div>
@@ -8111,11 +8422,381 @@ function ctlEditor(done) {
   });
   const first = el.querySelector('[data-ce="ok"]'); if (first) first.focus({ preventScroll: true });
 }
+/* ================= 맵 만들기 화면: 내 맵 · 맵 구경하기 · 편집기 =================
+   로비 왼쪽 '맵' 버튼, 혼자 하기 창의 '맵 만들기' 버튼에서 열림. 데이터 · 그리기는 maker.js */
+const MK_ICON = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 8l8-3 8 3 8-3v19l-8 3-8-3-8 3z" fill="#7bd389" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 5v19M20 8v19" stroke="${INK}" stroke-width="2.2"/><circle cx="16" cy="14" r="2.6" fill="#ff4f6d" stroke="${INK}" stroke-width="1.6"/></svg>`;
+/* 조각 아이콘 (편집기 조각 목록) */
+const MK_PIC = {};
+function mkPieceIcon(p) {
+  if (MK_PIC[p]) return MK_PIC[p];
+  let url = '';
+  try {
+    const c = MK_PIECES[p], d = Math.min(2, window.devicePixelRatio || 1), W = 64, H = 46, cv2 = document.createElement('canvas');
+    cv2.width = W * d; cv2.height = H * d;
+    const c2 = cv2.getContext('2d'), s = Math.min((W - 8) / (c.w + 14), (H - 8) / (c.h + 14)) * d;
+    c2.setTransform(s, 0, 0, s, (cv2.width - c.w * s) / 2, (cv2.height - c.h * s) / 2);
+    mkWith(c2, () => { if (c.k === 'bush') { BUSHES = [{ x: 0, y: 0, w: c.w, h: c.h }]; drawBushes(false); drawBushes(true); } else drawObst({ x: 0, y: 0, w: c.w, h: c.h, k: c.k }); });
+    url = cv2.toDataURL('image/png');
+  } catch (e) { console.warn(e); }
+  MK_PIC[p] = url;
+  return url;
+}
+
+Object.assign(UI, {
+  makerTab: 'mine',
+  initMaker() {
+    const b = $('#bMaker'); if (!b) return;
+    b.insertAdjacentHTML('afterbegin', MK_ICON);
+    b.addEventListener('click', () => { SFX.init(); sfx('click'); this.showMaker(); });
+  },
+  /* ---------- 내 맵 / 맵 구경하기 ---------- */
+  showMaker(tab) {
+    const P = Store.P; if (!P) return;
+    if (tab) this.makerTab = tab;
+    const T = this.makerTab === 'gal' ? 'gal' : 'mine', online = Store.mode === 'online';
+    const row = (pk, sub, btns) => { const c = mkCount(mkItems(pk.o)); return `<div class="mkrow card"><img class="mkth" src="${mkThumb(pk, 150, 108)}" alt="" width="150" height="108"><div class="mki"><b>${esc(pk.n)}</b><small>${sub}${MAPS[pk.f].name} 바닥 · 물건 ${c.o} · 수풀 ${c.b}</small><div class="mkb">${btns}</div></div></div>`; };
+    let body;
+    if (T === 'mine') {
+      const list = P.maps || [];
+      body = `<p class="sub small">벽 · 상자 · 나무 · 수풀을 놓아서 나만의 맵을 만들어요 <b class="num">${list.length}/${MK_MAX_MAPS}</b></p>
+        <div class="mklist">${list.map(m => { const pub = !!(P.cm && P.cm.id === m.id); return row(m, pub ? '<em class="mkpub">올린 맵</em> · ' : '',
+          `<button class="btn small" type="button" data-mka="play" data-id="${m.id}">해보기</button><button class="btn small blue" type="button" data-mka="edit" data-id="${m.id}">고치기</button>${online ? `<button class="btn small ghost" type="button" data-mka="${pub ? 'unpub' : 'pub'}" data-id="${m.id}">${pub ? '내리기' : '올리기'}</button>` : ''}<button class="btn small ghost" type="button" data-mka="del" data-id="${m.id}">지우기</button>`); }).join('') || '<p class="msg">아직 만든 맵이 없어요. 새 맵을 만들어 보세요!</p>'}</div>
+        <p class="sub small">${online ? '올리기: 맵 1개를 올리면 친구들이 맵 구경하기에서 해볼 수 있어요 · ' : ''}방장이 되면 대기실에서 내 맵을 고를 수 있어요</p>
+        <div class="mbtns"><button class="btn ghost" type="button" data-close>닫기</button><button class="btn" type="button" data-mka="new" data-focus${list.length >= MK_MAX_MAPS ? ' disabled' : ''}>＋ 새 맵 만들기</button></div>`;
+    } else {
+      const gal = mkGallery();
+      body = (online ? `<div class="mklist">${gal.slice(0, 40).map(r => row(r.cm, `<em>${esc(r.nick)}</em> · `,
+        `<button class="btn small" type="button" data-mka="gplay" data-id="${esc(r.id)}">해보기</button><button class="btn small blue" type="button" data-mka="copy" data-id="${esc(r.id)}">내 맵으로 가져오기</button>`)).join('') || '<p class="msg">아직 올라온 맵이 없어요. 내 맵을 만들어서 처음으로 올려 보세요!</p>'}</div>`
+        : '<p class="msg">서버에 연결돼 있어야 친구들 맵을 볼 수 있어요</p>') + '<div class="mbtns"><button class="btn ghost" type="button" data-close data-focus>닫기</button></div>';
+    }
+    this.modal(`<div class="mkwrap"><p class="eyebrow">MAP MAKER</p><h2 class="sm">🗺️ 맵 만들기</h2>
+      <div class="tabs t2" role="tablist"><button class="tab" type="button" role="tab" data-mkt="mine" aria-selected="${T === 'mine'}">내 맵</button><button class="tab" type="button" role="tab" data-mkt="gal" aria-selected="${T === 'gal'}">맵 구경하기</button></div>
+      ${body}</div>`, true);
+    $('#mbox [data-close]').addEventListener('click', () => this.closeModal());
+    $('#mbox .tabs').addEventListener('click', e => { const b = e.target.closest('[data-mkt]'); if (b && b.dataset.mkt !== T) { sfx('click'); this.showMaker(b.dataset.mkt); } });
+    $('#mbox .mkwrap').addEventListener('click', e => { const b = e.target.closest('[data-mka]'); if (b && !b.disabled) this.makerAct(b, b.dataset.mka, b.dataset.id || ''); });
+  },
+  makerAct(b, act, id) {
+    const P = Store.P, m = (P.maps || []).find(x => x.id === id);
+    if (act === 'new') { sfx('click'); if ((P.maps || []).length >= MK_MAX_MAPS) { this.toast(`맵은 ${MK_MAX_MAPS}개까지 만들 수 있어요`, 'bad'); return; } this.closeModal(); mkEditor(null); return; }
+    if (act === 'edit' && m) { sfx('click'); this.closeModal(); mkEditor(m); return; }
+    if (act === 'play' && m) { sfx('click'); MAPS['my:' + m.id] = mkBuild(m, ''); this.showMkPlay('my:' + m.id, () => this.showMaker('mine')); return; }
+    if (act === 'pub' && m) {
+      P.cm = Object.assign({}, m, { t: Date.now() }); Store.save('pub'); sfx('coin');
+      this.toast('올렸어요! 친구들이 맵 구경하기에서 볼 수 있어요', 'good'); this.showMaker('mine'); return;
+    }
+    if (act === 'unpub') { P.cm = null; Store.save('pub'); sfx('click'); this.toast('맵을 내렸어요', 'good'); this.showMaker('mine'); return; }
+    if (act === 'del' && m) {
+      if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '정말 지울까?'; b.classList.add('armed'); sfx('click'); setTimeout(() => { if (b.isConnected) { b.dataset.armed = ''; b.textContent = '지우기'; b.classList.remove('armed'); } }, 3000); return; }
+      P.maps = P.maps.filter(x => x.id !== id); delete MAPS['my:' + id];
+      const pub = !!(P.cm && P.cm.id === id); if (pub) P.cm = null;
+      if (lsGet('hb-map') === 'my:' + id) lsSet('hb-map', 'random');
+      Store.save(pub ? 'all' : 'priv'); sfx('click'); this.toast('맵을 지웠어요', 'good'); this.showMaker('mine'); return;
+    }
+    const r = mkGallery().find(x => x.id === id);
+    if (act === 'gplay' && r) { sfx('click'); MAPS['gal:' + r.id] = mkBuild(r.cm, r.nick); this.showMkPlay('gal:' + r.id, () => this.showMaker('gal')); return; }
+    if (act === 'copy' && r) {
+      if ((P.maps || []).length >= MK_MAX_MAPS) { this.toast(`내 맵이 꽉 찼어요 (${MK_MAX_MAPS}개). 하나 지우고 가져와요`, 'bad'); sfx('fail'); return; }
+      const pk = mkClean(Object.assign({}, r.cm, { id: mkId(), t: Date.now() }));
+      P.maps.push(pk); Store.save('priv'); sfx('coin');
+      this.toast(`「${pk.n}」을 내 맵으로 가져왔어요. 고쳐 쓰거나 방에서 고를 수 있어요`, 'good'); this.showMaker('mine');
+    }
+  },
+  /* 만든 맵 해보기: 모드 고르기 */
+  showMkPlay(key, back) {
+    const M = MAPS[key]; if (!M) return;
+    this.modal(`<p class="eyebrow">🗺️ ${esc(M.name)}${M.by ? ` · ${esc(M.by)}` : ''}</p><h2 class="sm">어떤 모드로 해볼까?</h2>
+      <img class="mkbig" src="${mkThumb(M.pk, 300, 216)}" alt="" width="300" height="216">
+      <div class="modes">${Object.entries(MODE_INFO).map(([k, m]) => `<button class="mode" type="button" data-m="${k}"><span class="mi" aria-hidden="true">${m.ic}</span><span><b>${m.n}</b><small>${m.d}</small></span></button>`).join('')}</div>
+      <p class="sub small">만든 맵 기록은 랭킹에 안 올라가요 (코인 · 숙련도는 받아요)</p>
+      <div class="mbtns"><button class="btn ghost" type="button" id="mkpBack" data-focus>뒤로</button></div>`, true);
+    $('#mkpBack').addEventListener('click', () => { sfx('click'); if (back) back(); else this.closeModal(); });
+    $('#mbox .modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (b) { this.closeModal(); startGame(b.dataset.m, key); } });
+  },
+});
+
+/* ---------- 편집기 (화면 전체) ---------- */
+function mkEditor(src) {
+  const P = Store.P, app = $('#app');
+  let seq = 0;
+  const E = {
+    id: src ? src.id : mkId(), n: src ? src.n : `내 맵 ${(P.maps || []).length + 1}`, f: src ? src.f : 'gym',
+    items: [], sel: null, tool: '', sym: true, undo: [], dirty: false, z: 1, vx: WW / 2, vy: WH / 2, ghost: null, stuck: null, msgT: 0,
+  };
+  const C = p => MK_PIECES[p];
+  const mirrorOf = it => mkFit(it.p, WW - it.x - C(it.p).w, WH - it.y - C(it.p).h);
+  const selfMirror = it => { const m = mirrorOf(it), c = C(it.p); return Math.abs(m.x - it.x) < c.w * 0.6 && Math.abs(m.y - it.y) < c.h * 0.6; };
+  const byUid = u => E.items.find(x => x.u === u) || null;
+  const twinOf = it => (it && it.tw ? byUid(it.tw) : null);
+  /* 불러온 맵: 대칭 자리에 같은 조각이 있으면 짝으로 묶음 */
+  function relink() {
+    for (const it of E.items) it.tw = 0;
+    for (const it of E.items) {
+      if (it.tw || selfMirror(it)) continue;
+      const m = mirrorOf(it), o = E.items.find(x => x !== it && !x.tw && x.p === it.p && Math.abs(x.x - m.x) <= MK_GRID && Math.abs(x.y - m.y) <= MK_GRID);
+      if (o) { it.tw = o.u; o.tw = it.u; }
+    }
+  }
+  E.items = src ? mkItems(src.o).map(it => Object.assign(it, { u: ++seq, tw: 0 })) : [];
+  relink();
+  const snap = () => JSON.stringify({ f: E.f, items: E.items });
+  function pushUndo() { E.undo.push(snap()); if (E.undo.length > 40) E.undo.shift(); }
+  function changed() { E.dirty = true; E.stuck = null; updBar(); draw(); }
+
+  const el = document.createElement('div');
+  el.className = 'mked'; el.id = 'mkEd'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', '맵 만들기');
+  el.innerHTML = `
+    <div class="mk-top">
+      <button class="btn small ghost" type="button" data-mk="exit">나가기</button>
+      <input class="mk-name" id="mkName" maxlength="12" autocomplete="off" aria-label="맵 이름" value="${esc(E.n)}">
+      <select class="mk-floor" id="mkFloor" aria-label="바닥">${MAP_ORDER.map(k => `<option value="${k}"${k === E.f ? ' selected' : ''}>${MAPS[k].name} 바닥</option>`).join('')}</select>
+      <span class="mk-sp"></span>
+      <button class="btn small blue" type="button" data-mk="test">해보기</button>
+      <button class="btn small" type="button" data-mk="save">저장</button>
+    </div>
+    <div class="mk-main" id="mkMain">
+      <canvas id="mkCv" aria-label="맵 판 · 조각을 고르고 눌러서 놓아요"></canvas>
+      <div class="mk-zoom"><button type="button" data-mk="zin" aria-label="크게 보기">＋</button><button type="button" data-mk="zout" aria-label="작게 보기">－</button></div>
+      <p class="mk-msg" id="mkMsg" role="status"></p>
+    </div>
+    <div class="mk-side">
+      <div class="mk-tools">
+        <button class="btn small ghost" type="button" data-mk="undo">↶ 되돌리기</button>
+        <button class="btn small ghost on" type="button" data-mk="sym" aria-pressed="true">⇋ 대칭</button>
+        <button class="btn small ghost" type="button" data-mk="del" disabled>🗑 지우기</button>
+        <button class="btn small ghost" type="button" data-mk="clear">다 지우기</button>
+        <span class="mk-cnt num" id="mkCnt"></span>
+      </div>
+      <div class="mk-pal" id="mkPal" role="group" aria-label="조각">
+        <button class="mk-pc on" type="button" data-pc="" aria-pressed="true"><span class="mk-hand" aria-hidden="true">✋</span><small>고르기</small></button>
+        ${MK_ORDER.map(p => `<button class="mk-pc${mkIsBush(p) ? ' bush' : ''}" type="button" data-pc="${p}" aria-pressed="false"><img alt="" src="${mkPieceIcon(p)}"><small>${MK_PIECES[p].n}</small></button>`).join('')}
+      </div>
+    </div>`;
+  app.append(el);
+  const cv2 = el.querySelector('#mkCv'), c2 = cv2.getContext('2d'), main = el.querySelector('#mkMain');
+  let cw = 1, ch = 1, dpr2 = 1, s0 = 1, floor = null, floorF = '', rot = false;
+  const scale = () => s0 * E.z;
+  /* 세로로 긴 화면(휴대폰 세로)에서는 맵을 옆으로 눕혀서 크게 보여줌: 맵 x → 화면 아래쪽, 맵 y → 화면 왼쪽 */
+  const scr = (dx, dy) => (rot ? { x: -dy, y: dx } : { x: dx, y: dy });   // 맵 거리 → 화면 거리
+  const unscr = (sx, sy) => (rot ? { x: sy, y: -sx } : { x: sx, y: sy });   // 화면 거리 → 맵 거리
+  function clampView() {
+    const s = scale(), hw = (rot ? ch : cw) / 2 / s, hh = (rot ? cw : ch) / 2 / s;
+    E.vx = WW <= hw * 2 ? WW / 2 : clamp(E.vx, hw - 40, WW - hw + 40);
+    E.vy = WH <= hh * 2 ? WH / 2 : clamp(E.vy, hh - 40, WH - hh + 40);
+  }
+  function resize() {
+    const r = main.getBoundingClientRect(); cw = Math.max(1, r.width); ch = Math.max(1, r.height); dpr2 = Math.min(2, window.devicePixelRatio || 1);
+    cv2.width = Math.round(cw * dpr2); cv2.height = Math.round(ch * dpr2); cv2.style.width = cw + 'px'; cv2.style.height = ch + 'px';
+    const sN = Math.min(cw / (WW + 60), ch / (WH + 60)), sR = Math.min(cw / (WH + 60), ch / (WW + 60));
+    rot = sR > sN * 1.15; s0 = rot ? sR : sN; el.classList.toggle('rot', rot); clampView(); draw();
+  }
+  /* 바닥은 한 번 그려 두고 씀 (바닥을 바꿀 때만 다시) */
+  function floorImg() {
+    if (floor && floorF === E.f) return floor;
+    floor = floor || document.createElement('canvas'); floor.width = WW + 120; floor.height = WH + 120; floorF = E.f;
+    const f2 = floor.getContext('2d'); f2.setTransform(1, 0, 0, 1, 60, 60);
+    mkWith(f2, () => mkDrawFloor(E.f));
+    return floor;
+  }
+  const toMap = (cx, cy) => { const r = cv2.getBoundingClientRect(), s = scale(), d = unscr((cx - r.left - cw / 2) / s, (cy - r.top - ch / 2) / s); return { x: E.vx + d.x, y: E.vy + d.y }; };
+  /* 화면의 (cx, cy) 아래에 맵 점 (mx, my) 가 오게 보기 위치 맞춤 */
+  const pinTo = (mx, my, cx, cy) => { const r = cv2.getBoundingClientRect(), s = scale(), d = unscr((cx - r.left - cw / 2) / s, (cy - r.top - ch / 2) / s); E.vx = mx - d.x; E.vy = my - d.y; clampView(); };
+  let rq = 0;
+  function draw() { if (!rq) rq = requestAnimationFrame(() => { rq = 0; paint(); }); }
+  function paint() {
+    if (!el.isConnected) return;
+    const s = scale(), k = s * dpr2;
+    c2.setTransform(1, 0, 0, 1, 0, 0); c2.fillStyle = '#141c47'; c2.fillRect(0, 0, cv2.width, cv2.height);
+    if (rot) c2.setTransform(0, k, -k, 0, (cw / 2 + E.vy * s) * dpr2, (ch / 2 - E.vx * s) * dpr2);
+    else c2.setTransform(k, 0, 0, k, (cw / 2 - E.vx * s) * dpr2, (ch / 2 - E.vy * s) * dpr2);
+    c2.drawImage(floorImg(), -60, -60);
+    c2.strokeStyle = 'rgba(16,18,43,.16)'; c2.lineWidth = 2 / s;
+    c2.beginPath(); for (let x = 100; x < WW; x += 100) { c2.moveTo(x, 0); c2.lineTo(x, WH); } for (let y = 100; y < WH; y += 100) { c2.moveTo(0, y); c2.lineTo(WW, y); } c2.stroke();
+    c2.strokeStyle = 'rgba(255,255,255,.35)'; c2.setLineDash([14, 12]); c2.beginPath(); c2.moveTo(WW / 2, 0); c2.lineTo(WW / 2, WH); c2.moveTo(0, WH / 2); c2.lineTo(WW, WH / 2); c2.stroke(); c2.setLineDash([]);
+    const m = { obst: [], bush: [] };
+    for (const it of E.items) { const c = C(it.p); (c.k === 'bush' ? m.bush : m.obst).push({ x: it.x, y: it.y, w: c.w, h: c.h, k: c.k }); }
+    mkWith(c2, () => {
+      for (const o of m.obst) drawObst(o);
+      BUSHES = m.bush; if (BUSHES.length) { drawBushes(false); drawBushes(true); }
+      /* 시작 자리 · 금고 */
+      const fs = Math.max(26, 12 / s), dr = Math.max(20, 6 / s);   // 작게 보여도 글씨는 읽히게
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 ${fs}px ${FONT_DISP}`;
+      for (const [x, y, c, t] of MK_MARKS) {
+        ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(x, y, dr, 0, TAU); ctx.fillStyle = c; ctx.fill(); ctx.lineWidth = Math.max(4, 1.5 / s); ctx.strokeStyle = COL.ink; ctx.stroke();
+        if (t) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(-Math.PI / 2); outText(t, 0, -dr - fs * 0.75, '#fff', Math.max(5, 2.5 / s)); ctx.restore(); }
+      }
+      ctx.globalAlpha = 1;
+      if (E.stuck) { ctx.fillStyle = 'rgba(255,40,70,.45)'; for (const [x, y] of E.stuck.cells) ctx.fillRect(x, y, E.stuck.S, E.stuck.S); }
+      const box = (it, a, w) => { const c = C(it.p); ctx.save(); ctx.globalAlpha = a; ctx.setLineDash([16, 10]); ctx.lineWidth = w / s; ctx.strokeStyle = '#ffd23f'; rr(it.x - 8, it.y - 8, c.w + 16, c.h + 16, 12); ctx.stroke(); ctx.restore(); };
+      if (E.sel) { box(E.sel, 1, 3.5); const t = E.sym ? twinOf(E.sel) : null; if (t) box(t, 0.55, 2.5); }
+      if (E.ghost && E.tool) {
+        const c = C(E.tool), g = E.ghost, full = !canAdd(E.tool, 1);
+        ctx.save(); ctx.globalAlpha = 0.55;
+        if (c.k === 'bush') { BUSHES = [{ x: g.x, y: g.y, w: c.w, h: c.h }]; drawBushes(false); } else drawObst({ x: g.x, y: g.y, w: c.w, h: c.h, k: c.k });
+        if (full) { ctx.globalAlpha = 0.4; ctx.fillStyle = '#ff2846'; ctx.fillRect(g.x, g.y, c.w, c.h); }
+        ctx.restore();
+      }
+    });
+  }
+  /* 조각 수 제한 */
+  function canAdd(p, n) { const c = mkCount(E.items); return mkIsBush(p) ? c.b + n <= MK_MAX_B : c.o + n <= MK_MAX_O; }
+  function msg(t, bad) { const m = el.querySelector('#mkMsg'); m.textContent = t; m.className = 'mk-msg show' + (bad ? ' bad' : ''); clearTimeout(E.msgT); E.msgT = setTimeout(() => { if (m.isConnected) m.className = 'mk-msg'; }, 2600); }
+  function updBar() {
+    const c = mkCount(E.items);
+    el.querySelector('#mkCnt').textContent = `물건 ${c.o}/${MK_MAX_O} · 수풀 ${c.b}/${MK_MAX_B}`;
+    el.querySelector('[data-mk="del"]').disabled = !E.sel;
+    el.querySelector('[data-mk="undo"]').disabled = !E.undo.length;
+  }
+  function setTool(p) {
+    E.tool = p; if (p) E.sel = null;
+    el.querySelectorAll('.mk-pc').forEach(b => { const on = b.dataset.pc === p; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+    if (p) msg(`${MK_PIECES[p].n}: 판을 누르면 놓여요${E.sym ? ' (대칭으로 하나 더)' : ''}`);
+    updBar(); draw();
+  }
+  function place(mx, my) {
+    const c = C(E.tool), pos = mkFit(E.tool, mx - c.w / 2, my - c.h / 2), it = { p: E.tool, x: pos.x, y: pos.y, u: ++seq, tw: 0 };
+    const twin = E.sym && !selfMirror(it);
+    if (!canAdd(E.tool, twin ? 2 : 1)) { msg(mkIsBush(E.tool) ? `수풀은 ${MK_MAX_B}개까지예요` : `물건은 ${MK_MAX_O}개까지예요`, true); sfx('fail'); return; }
+    pushUndo();
+    E.items.push(it);
+    if (twin) { const m = mirrorOf(it), t = { p: it.p, x: m.x, y: m.y, u: ++seq, tw: it.u }; it.tw = t.u; E.items.push(t); }
+    sfx('click'); changed();
+  }
+  function del() {
+    if (!E.sel) return;
+    pushUndo();
+    const t = E.sym ? twinOf(E.sel) : null;
+    E.items = E.items.filter(x => x !== E.sel && x !== t);
+    for (const x of E.items) if (x.tw === E.sel.u) x.tw = 0;
+    E.sel = null; sfx('click'); changed();
+  }
+  function hit(mx, my) {
+    for (let i = E.items.length - 1; i >= 0; i--) { const it = E.items[i], c = C(it.p); if (mkIsBush(it.p) && mx >= it.x && mx <= it.x + c.w && my >= it.y && my <= it.y + c.h) return it; }
+    for (let i = E.items.length - 1; i >= 0; i--) { const it = E.items[i], c = C(it.p); if (!mkIsBush(it.p) && mx >= it.x - 6 && mx <= it.x + c.w + 6 && my >= it.y - 6 && my <= it.y + c.h + 6) return it; }
+    return null;
+  }
+  function moveTo(it, x, y) {
+    const pos = mkFit(it.p, x, y); it.x = pos.x; it.y = pos.y;
+    const t = E.sym ? twinOf(it) : null; if (t) { const m = mirrorOf(it); t.x = m.x; t.y = m.y; }
+  }
+  /* ----- 누르기 · 끌기 · 두 손가락 확대 ----- */
+  const pts = new Map(); let act = null;
+  cv2.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    try { cv2.setPointerCapture(e.pointerId); } catch (x) { /* 일부 브라우저 */ }
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 2) {   // 두 손가락: 확대 · 이동
+      if (act && act.k === 'drag' && act.moved) { E.undo.push(act.before); changed(); }   // 옮기던 건 거기 둠
+      const [a, b] = [...pts.values()], mid = toMap((a.x + b.x) / 2, (a.y + b.y) / 2);
+      act = { k: 'pinch', d0: Math.hypot(a.x - b.x, a.y - b.y) || 1, z0: E.z, mx: mid.x, my: mid.y };
+      return;
+    }
+    if (pts.size > 2) return;
+    const mp = toMap(e.clientX, e.clientY), it = hit(mp.x, mp.y);
+    if (it) { E.sel = it; act = { k: 'drag', it, ox: mp.x - it.x, oy: mp.y - it.y, sx: e.clientX, sy: e.clientY, moved: false, before: snap() }; updBar(); draw(); }
+    else act = { k: 'tap', sx: e.clientX, sy: e.clientY, vx: E.vx, vy: E.vy, moved: false };
+  });
+  cv2.addEventListener('pointermove', e => {
+    if (pts.has(e.pointerId)) pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (!act) {   // 마우스: 놓을 자리 미리 보기
+      if (E.tool && e.pointerType === 'mouse') { const mp = toMap(e.clientX, e.clientY), c = C(E.tool); E.ghost = mkFit(E.tool, mp.x - c.w / 2, mp.y - c.h / 2); draw(); }
+      return;
+    }
+    if (act.k === 'pinch') {
+      if (pts.size < 2) return;
+      const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+      E.z = clamp(act.z0 * d / act.d0, 1, 4);
+      pinTo(act.mx, act.my, (a.x + b.x) / 2, (a.y + b.y) / 2); draw(); return;
+    }
+    const dx = e.clientX - act.sx, dy = e.clientY - act.sy;
+    if (!act.moved && Math.hypot(dx, dy) < 7) return;
+    act.moved = true;
+    if (act.k === 'drag') { const mp = toMap(e.clientX, e.clientY); moveTo(act.it, mp.x - act.ox, mp.y - act.oy); draw(); }
+    else { const s = scale(), m = unscr(dx / s, dy / s); E.vx = act.vx - m.x; E.vy = act.vy - m.y; clampView(); draw(); }
+  });
+  const up = e => {
+    pts.delete(e.pointerId);
+    if (!act) return;
+    if (act.k === 'pinch') { if (!pts.size) act = null; return; }
+    if (act.k === 'drag') { if (act.moved) { E.undo.push(act.before); if (E.undo.length > 40) E.undo.shift(); changed(); } }
+    else if (!act.moved && e.type === 'pointerup') { const mp = toMap(e.clientX, e.clientY); if (E.tool) place(mp.x, mp.y); else { E.sel = null; updBar(); draw(); } }
+    act = null;
+  };
+  cv2.addEventListener('pointerup', up); cv2.addEventListener('pointercancel', up);
+  cv2.addEventListener('pointerleave', () => { if (E.ghost) { E.ghost = null; draw(); } });
+  cv2.addEventListener('wheel', e => {
+    e.preventDefault();
+    const mp = toMap(e.clientX, e.clientY);
+    E.z = clamp(E.z * (e.deltaY < 0 ? 1.15 : 1 / 1.15), 1, 4);
+    pinTo(mp.x, mp.y, e.clientX, e.clientY); draw();
+  }, { passive: false });
+  /* ----- 버튼 ----- */
+  el.querySelector('#mkPal').addEventListener('click', e => { const b = e.target.closest('.mk-pc'); if (b) { sfx('click'); setTool(b.dataset.pc); } });
+  el.querySelector('#mkFloor').addEventListener('change', e => { pushUndo(); E.f = MAP_ORDER.includes(e.target.value) ? e.target.value : 'gym'; sfx('click'); changed(); });
+  el.querySelector('#mkName').addEventListener('input', () => { E.dirty = true; });
+  function save() {
+    const P2 = Store.P, i = (P2.maps || []).findIndex(x => x.id === E.id);
+    if (i < 0 && P2.maps.length >= MK_MAX_MAPS) { msg(`맵은 ${MK_MAX_MAPS}개까지예요`, true); sfx('fail'); return null; }
+    const pk = mkClean({ id: E.id, n: el.querySelector('#mkName').value, f: E.f, o: mkStr(E.items), t: Date.now() });
+    el.querySelector('#mkName').value = pk.n;
+    if (i >= 0) P2.maps[i] = pk; else P2.maps.push(pk);
+    MAPS['my:' + pk.id] = mkBuild(pk, '');
+    const pub = !!(P2.cm && P2.cm.id === pk.id); if (pub) P2.cm = Object.assign({}, pk);
+    Store.save(pub ? 'all' : 'priv');
+    E.dirty = false;
+    const st = mkStuck(MAPS['my:' + pk.id].obst);
+    if (st.frac > 0.03) { E.stuck = st; msg('저장했어요 · 빨간 곳은 막혀서 못 가는 곳이에요', true); }
+    else { E.stuck = null; msg(pub ? '저장했어요! 올린 맵도 바뀌었어요' : '저장했어요!'); }
+    sfx('coin'); draw();
+    return pk;
+  }
+  function close() { window.removeEventListener('resize', resize); document.removeEventListener('keydown', onKey, true); if (ro) ro.disconnect(); el.remove(); }
+  el.addEventListener('click', e => {
+    const b = e.target.closest('[data-mk]'); if (!b || b.disabled) return;
+    const a = b.dataset.mk;
+    if (a === 'zin' || a === 'zout') { sfx('click'); E.z = clamp(E.z * (a === 'zin' ? 1.5 : 1 / 1.5), 1, 4); clampView(); draw(); return; }
+    if (a === 'undo') { if (!E.undo.length) return; sfx('click'); const o = JSON.parse(E.undo.pop()); E.f = o.f; E.items = o.items; el.querySelector('#mkFloor').value = E.f; E.sel = null; E.dirty = true; E.stuck = null; updBar(); draw(); return; }
+    if (a === 'sym') { E.sym = !E.sym; b.classList.toggle('on', E.sym); b.setAttribute('aria-pressed', String(E.sym)); sfx('click'); if (E.sym) relink(); msg(E.sym ? '대칭 켬: 놓거나 옮기면 반대쪽에도 똑같이' : '대칭 끔: 하나씩 따로 놓아요'); draw(); return; }
+    if (a === 'del') { del(); return; }
+    if (a === 'clear') {
+      if (!E.items.length) return;
+      if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '정말 다 지울까?'; b.classList.add('armed'); sfx('click'); setTimeout(() => { if (b.isConnected) { b.dataset.armed = ''; b.textContent = '다 지우기'; b.classList.remove('armed'); } }, 3000); return; }
+      b.dataset.armed = ''; b.textContent = '다 지우기'; b.classList.remove('armed');
+      pushUndo(); E.items = []; E.sel = null; sfx('click'); changed(); msg('다 지웠어요 (되돌리기로 살릴 수 있어요)'); return;
+    }
+    if (a === 'save') { save(); return; }
+    if (a === 'test') { const pk = save(); if (!pk) return; close(); UI.showMkPlay('my:' + pk.id, () => { UI.closeModal(); mkEditor(pk); }); return; }
+    if (a === 'exit') {
+      if (E.dirty && b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '저장 안 하고 나가기?'; b.classList.add('armed'); sfx('click'); setTimeout(() => { if (b.isConnected) { b.dataset.armed = ''; b.textContent = '나가기'; b.classList.remove('armed'); } }, 3000); return; }
+      sfx('click'); close(); UI.showMaker('mine');
+    }
+  });
+  const onKey = e => {
+    const typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT');
+    if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); if (E.tool) setTool(''); else if (E.sel) { E.sel = null; updBar(); draw(); } return; }
+    if (typing) return;
+    if ((e.key === 'Delete' || e.key === 'Backspace') && E.sel) { e.preventDefault(); del(); return; }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); el.querySelector('[data-mk="undo"]').click(); return; }
+    const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (dir && E.sel) { e.preventDefault(); pushUndo(); moveTo(E.sel, E.sel.x + dir[0] * MK_GRID, E.sel.y + dir[1] * MK_GRID); changed(); }
+  };
+  document.addEventListener('keydown', onKey, true);
+  window.addEventListener('resize', resize);
+  const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => resize()) : null;
+  if (ro) ro.observe(main);
+  resize(); updBar();
+  msg(src ? '조각을 끌어서 옮기고, 아래에서 조각을 골라 판을 눌러 놓아요' : '아래에서 조각을 고르고 판을 눌러 놓아요 · 대칭이 켜져 있으면 반대쪽에도 똑같이 놓여요');
+  /* 테스트용: 맵 점 → 화면 점 */
+  const toScreen = (mx, my) => { const r = cv2.getBoundingClientRect(), s = scale(), d = scr((mx - E.vx) * s, (my - E.vy) * s); return { x: r.left + cw / 2 + d.x, y: r.top + ch / 2 + d.y }; };
+  E.api = { save, place: (p, x, y) => { setTool(p); place(x, y); }, sel: it => { E.sel = it; updBar(); draw(); }, del, toMap, toScreen, scale, rot: () => rot };
+  mkEditor.cur = E;
+  return E;
+}
 /* ================= 시작 ================= */
 async function boot(hot) {
   hot = hot || {};
   prepFaces();
-  Game.init(); UI.init(); UI.initSocial(); UI.initColl(); UI.initSkin();
+  Game.init(); UI.init(); UI.initSocial(); UI.initColl(); UI.initSkin(); UI.initMaker();
   try { if (document.fonts) ['400 20px "Black Han Sans"', '400 20px "Lilita One"', '400 20px "Jua"'].forEach(f => document.fonts.load(f, '호준 브롤 123').catch(() => {})); } catch (e) { /* 글꼴 없어도 진행 */ }
   UI.show('title'); UI.setAuth('loading');
   await Store.init();
@@ -8134,7 +8815,8 @@ try {
 } catch (e) { /* 뷰어 밖 */ }
 if (location.protocol === 'file:') {
   window.__HB = { get G() { return G; }, set G(v) { G = v; }, Store, UI, Game, IN, L, SCRIPT, step(n) { for (let i = 0; i < n && G && !G.ended; i++) update(STEP); }, render() { render(); }, onGameEnd, actPotion, tryAttack, fireUlt, autoUlt, autoTarget, get Net() { return Net; }, get PvP() { return PvP; }, get Coop() { return Coop; }, get Social() { return Social; }, killEnemy, hitEnemy, damagePlayer, hasLos, inObst,
-    get CTL() { return CTL; }, ctlLayout, layout() { layout(); }, get BUSHES() { return BUSHES; }, inBush, gasRect, inGas, zApply, ZB, SD, HEIST, MP, indList, btnAt, ultReady, sdCoins, get cam() { return cam; } };
+    get CTL() { return CTL; }, ctlLayout, layout() { layout(); }, get BUSHES() { return BUSHES; }, inBush, gasRect, inGas, zApply, ZB, SD, HEIST, MP, indList, btnAt, ultReady, sdCoins, get cam() { return cam; }, pvpQuick, pvpMake, pvpJoinCode, mpBanned, SWING, CHARS, teamCap, SPAWN_T5,
+    MAPS, MK_PIECES, mkEditor, mkStuck, mkClean, mkItems, mkStr, mkGallery, mkBuild, get OBST() { return OBST; }, startGame };
 }
 if (window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data ?? {});
 
