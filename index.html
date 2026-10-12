@@ -834,8 +834,8 @@ const CHAR_PRICE = 2000;   // 기본 호준 빼고 전부 같은 가격
 const CHARS = {
   base:    { name: '기본 호준',      face: 0, role: '밸런스', hp: 1200, spd: 225, dmg: 1.00, rate: 1.00, ring: '#59b8ff', price: 0,
              ult: 'bomb', ultName: '교과서 폭탄', ultDesc: '조준한 곳에 폭탄을 던져 넓은 범위에 큰 피해 (벽 너머로도 던져짐)', desc: '뭐든 무난한 기본 호준 · 약점이 없어요', pro: '약점 없음', con: '특기도 없음' },
-  seojin:  { name: '박서진', face: 4, role: '스피드', hp: 1000, spd: 260, dmg: 0.95, rate: 1.05, ring: '#2fd6c3', price: CHAR_PRICE,
-             ult: 'tele', ultName: '순간이동', ultDesc: '조준한 곳으로 순간이동하고 도착한 자리 주변 적에게 피해', desc: '제일 빠른 치고 빠지기 장인', pro: '이동속도 최고', con: '체력이 낮음' },
+  seojin:  { name: '박서진', face: 4, role: '스피드', hp: 1100, spd: 260, dmg: 1.00, rate: 1.05, ring: '#2fd6c3', price: CHAR_PRICE,
+             ult: 'tele', ultName: '순간이동', ultDesc: '조준한 곳으로 순간이동하고 도착한 자리 주변 적에게 큰 피해 (잠깐 무적)', desc: '제일 빠른 치고 빠지기 장인', pro: '이동속도 최고', con: '체력이 낮음' },
   jongyun: { name: '임종윤', face: 5, role: '파워', hp: 1400, spd: 210, dmg: 1.05, rate: 0.88, ring: '#ff7a1c', price: CHAR_PRICE,
              ult: 'slam', ultName: '근육 쇼크웨이브', ultDesc: '땅을 내리쳐 주변 적에게 큰 피해를 주고 1.6초 기절시킴', desc: '튼튼하고 한 방이 센 근육맨', pro: '체력 · 공격력 높음', con: '느리고 연사가 느림' },
   minjun:  { name: '김민준', face: 6, role: '컨트롤', hp: 1150, spd: 230, dmg: 0.95, rate: 1.05, ring: '#ffd23f', price: CHAR_PRICE,
@@ -855,8 +855,8 @@ const CHARS = {
   hyunwoo: { name: '김현우', face: 13, role: '소환', hp: 1050, spd: 225, dmg: 0.95, rate: 0.95, ring: '#b7e34a', price: CHAR_PRICE,
              ult: 'pet', ultName: '민지 소환', ultDesc: '민지를 15초 동안 소환! 가까운 적을 쫓아가며 총을 쏘고 적의 공격도 대신 맞아줌', desc: '민지를 불러서 같이 싸우는 소환사', pro: '소환수가 같이 싸워줌', con: '본체 체력 · 공격이 약한 편' },
   /* 울트라: 뽑기에서만 (0.01%) · 딱 5명까지만 나옴 */
-  seongbin: { name: '스파이더성빈', face: 14, role: '울트라', hp: 1300, spd: 245, dmg: 1.08, rate: 1.05, ring: '#e23a3a', price: 0, ultra: 1,
-             ult: 'swing', ultName: '거미줄 스윙', ultDesc: '조준한 곳까지 거미줄을 타고 휙 날아가요. 지나가는 길에 있는 적은 거미줄에 묶여 1.5초 동안 꼼짝 못 하고 큰 피해 (벽도 넘어감)', desc: '0.01% 확률로만 나오는 울트라 캐릭터 · 전교에 딱 5명', pro: '모든 능력치가 좋음 · 이동하면서 묶는 궁', con: '뽑기에서만 나옴' },
+  seongbin: { name: '스파이더성빈', face: 14, role: '울트라', hp: 1500, spd: 250, dmg: 1.18, rate: 1.12, ring: '#e23a3a', price: 0, ultra: 1, ultMul: 1.25,
+             ult: 'swing', ultName: '거미줄 스윙', ultDesc: '조준한 곳까지 거미줄을 타고 휙 날아가요. 지나가는 길의 적은 거미줄에 묶여 2초 동안 꼼짝 못 하고 큰 피해, 내려앉는 곳엔 거미줄 그물이 터져요 (벽도 넘어감) · 궁 게이지가 빨리 참', desc: '0.01% 확률로만 나오는 울트라 캐릭터 · 전교에 딱 5명', pro: '모든 능력치가 좋음 · 이동하면서 묶는 궁', con: '뽑기에서만 나옴' },
 };
 /* 가격을 2,000으로 맞추기 전에 더 비싸게 산 사람에게 차액을 한 번 돌려줌 */
 const OLD_CHAR_PRICE = { jongyun: 2500, jaewon: 2500, seowon: 3000, seungho: 2600 };
@@ -2275,7 +2275,7 @@ let cv = null, ctx = null, dpr = 1, VW = 1, VH = 1, SC = 1;
 const cam = { x: 0, y: 0 };
 const L = { u: 1 };
 const IN = { keys: {}, L: { id: null }, R: { id: null }, U: { id: null }, mv: { x: 0, y: 0 }, aim: { ang: 0, mag: 0 }, uAim: { ang: 0, mag: 0 }, mouse: { x: 0, y: 0, used: false, aiming: false }, touch: false, btn: {}, buffer: null, kbUlt: false };
-const ULT_RANGE = { swing: 600, bomb: 560, dash: 480, tele: 520, flash: 540, roll: 830, laser: 1100, spike: 900 };
+const ULT_RANGE = { swing: 680, bomb: 560, dash: 480, tele: 520, flash: 540, roll: 830, laser: 1100, spike: 900 };
 /* 궁 충전: 맞힌 피해(한 발 최대 400) ÷ ULT_CHARGE 만큼 참. 클수록 천천히 참 (예전 1300 → 1800) */
 const ULT_CHARGE = 1800;
 /* 박건영 '진지 모드': 회복 비율 · 밀쳐내기 반경 · 피해 (예전 45% · 280 · 450) */
@@ -2353,7 +2353,7 @@ function newGame(lo) {
     score: 0, kills: 0,
     p: {
       x: sp0.x, y: sp0.y, r: 30, hp: maxHp, maxHp, spd: ch.spd * (1 + ar.spd),
-      dmgMul: ch.dmg * (1 + W_UP * lo.wl), rateMul: ch.rate * (1 + 0.015 * lo.wl), ultMul: 1 + ar.ult,
+      dmgMul: ch.dmg * (1 + W_UP * lo.wl), rateMul: ch.rate * (1 + 0.015 * lo.wl), ultMul: (1 + ar.ult) * (ch.ultMul || 1),
       ang: -Math.PI / 2, ammo: mag, mag, rl: 0, rlMax: 1, fcd: 0, ult: 0, burstN: 0, burstT: 0, burstA: 0, apmT: 0, noAmmo: 0, inv: 0,
       buf: { rage: 0, shield: 0, power: 0, speed: 0, apm: 0 },
       dashT: 0, dashAng: 0, dashHit: [], lastHit: -9, flash: 0, recoil: 0, moving: false, potCd: 0, dead: false, kvx: 0, kvy: 0,
@@ -2607,18 +2607,20 @@ function fireUlt(a, mag) {
     const d = clamp(mag, 0.2, 1) * ULT_RANGE.swing;
     const o = { x: clamp(p.x + Math.cos(a) * d, p.r, WW - p.r), y: clamp(p.y + Math.sin(a) * d, p.r, WH - p.r), r: p.r };
     for (const r of OBST) pushOut(o, r);
-    for (const e of G.en) if (!e.dead && segDist(e.x, e.y, p.x, p.y, o.x, o.y) < 46 + e.r) { hitEnemy(e, 700 * p.dmgMul, false); if (!e.dead) stunE(e, 1.5); }
+    const hit = new Set();
+    for (const e of G.en) if (!e.dead && segDist(e.x, e.y, p.x, p.y, o.x, o.y) < 52 + e.r) { hit.add(e); hitEnemy(e, 1000 * p.dmgMul, false); if (!e.dead) stunE(e, 2.0); }
+    for (const e of G.en) if (!e.dead && !hit.has(e) && Math.hypot(e.x - o.x, e.y - o.y) < 150 + e.r) { hitEnemy(e, 450 * p.dmgMul, false); if (!e.dead) stunE(e, 1.0); }   // 내려앉는 곳 거미줄 그물
     G.fx.push({ k: 'beam', x: p.x, y: p.y, ang: Math.atan2(o.y - p.y, o.x - p.x), len: Math.hypot(o.x - p.x, o.y - p.y), w: 14, t: 0, dur: 0.4, c: '#ffffff', c2: ultC2('#ffffff', uc) });
     swingFx(o.x, o.y, uc);
-    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = 0.5;
+    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = 0.8;
   }
   else if (kind === 'tele') {
     const d = clamp(mag, 0.15, 1) * ULT_RANGE.tele;
     const o = { x: clamp(p.x + Math.cos(a) * d, p.r, WW - p.r), y: clamp(p.y + Math.sin(a) * d, p.r, WH - p.r), r: p.r };
     for (const r of OBST) pushOut(o, r);
     burst(p.x, p.y, 16, [ultC(ring, uc), ultC2('#fff', uc)], 280);
-    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = 0.6;
-    areaHit(p.x, p.y, 160, 600 * p.dmgMul, 0, 800);
+    p.x = o.x; p.y = o.y; p.kvx = p.kvy = 0; p.inv = 0.8;   // 박서진: 무적 0.6 → 0.8초
+    areaHit(p.x, p.y, 160, 720 * p.dmgMul, 0, 800);   // 박서진 궁 600 → 720
     G.fx.push({ k: 'ring', x: p.x, y: p.y, r0: 20, r1: 160, t: 0, dur: 0.35, c: ultC(ring, uc), w: 10 });
     burst(p.x, p.y, 16, [ultC(ring, uc), ultC2('#fff', uc)], 320);
   } else if (kind === 'slam') {
@@ -2659,7 +2661,8 @@ function fireUlt(a, mag) {
 function swingFx(x, y, uc) {
   const L = G.trl || (G.trl = []);
   for (let i = 0; i < 10 && L.length < TRAIL_MAX + 20; i++) { const a = (TAU * i) / 10, v = rand(90, 170); L.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, s: 12, c: '#ffffff', sh: 'web', t: 0, dur: 0.7, a: rand(0, TAU), spin: rand(-2, 2), seed: 0 }); }
-  G.fx.push({ k: 'ring', x, y, r0: 20, r1: 120, t: 0, dur: 0.3, c: ultC('#e23a3a', uc), w: 8 });
+  G.fx.push({ k: 'ring', x, y, r0: 20, r1: 150, t: 0, dur: 0.35, c: ultC('#e23a3a', uc), w: 9 });
+  G.fx.push({ k: 'ring', x, y, r0: 10, r1: 110, t: 0, dur: 0.3, c: '#ffffff', w: 4 });
 }
 function autoUlt() {
   if (!ultReady()) { denyUlt(); return; }
@@ -3333,6 +3336,7 @@ function drawUltGuide() {
     ctx.setLineDash([4, 10]); ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
     if (kind === 'swing') { ctx.lineWidth = 92; ctx.strokeStyle = 'rgba(255,210,63,.18)'; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,210,63,.95)'; }
     else { ctx.beginPath(); ctx.arc(tx, ty, kind === 'tele' ? 160 : 165, 0, TAU); ctx.fill(); ctx.stroke(); }
+    if (kind === 'swing') { ctx.beginPath(); ctx.arc(tx, ty, 150, 0, TAU); ctx.fill(); ctx.stroke(); }
     if (kind === 'tele' || kind === 'swing') { ctx.beginPath(); ctx.arc(tx, ty, p.r, 0, TAU); ctx.setLineDash([6, 6]); ctx.stroke(); ctx.setLineDash([]); }
   } else if (kind === 'dash') lane(ULT_RANGE.dash, (p.r + 8) * 2);
   else if (kind === 'roll') lane(ULT_RANGE.roll, 128);
@@ -4484,7 +4488,7 @@ function drawFrame(k, r, t) {
    - 맞았는지는 쏜 사람 화면 기준으로 정해서 '맞음' 신호를 보내고, 맞은 사람이 자기 체력을 깎음 */
 const MP = {
   '1v1': { n: '1대1', cap: 2, min: 2, wins: 2, maxR: 5, rtime: 60, resp: 3 },   // 라운드제: 3판 2선, 라운드마다 60초 · 체력 회복
-  team: { n: '3대3 팀전', cap: 6, min: 2, kills: 10, time: 180, resp: 3 },
+  team: { n: '3대3 팀전', cap: 6, min: 2, kills: 6, time: 180, resp: 3 },   // 체력 6배라 10킬 → 6킬
   boss: { n: '5대1 보스전', cap: 6, min: 2, time: 180, resp: 5, lives: 3 },
   coop: { n: '호맘 협동', cap: 3, min: 2 },
   sd: { n: '쇼다운', cap: 6, min: 2, time: 600 },
@@ -4494,7 +4498,8 @@ const MP = {
 const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 },
   heist: { win: 260, draw: 120, lose: 80 }, zombie: { win: 260, draw: 100, lose: 80 } };
 const TEAM_KIND = k => k === 'team' || k === 'heist';   // 블루팀 · 레드팀으로 나뉘는 모드
-const PVP_HP = 2;   // 대전 체력 배수
+const PVP_HP = 6;   // 대전 체력 배수 (혼자 하기 기준 6배)
+const BOSS_HP_MUL = 3;   // 5대1 보스 체력 배수 (6배면 3분 안에 못 잡아서 3배)
 const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
 const PVP_REWARD = MP_REWARD['1v1'];
 const TEAM_COL = ['#59b8ff', '#ff4f6d'], TEAM_NAME = ['블루팀', '레드팀'];
@@ -4503,8 +4508,8 @@ const PVP_SPAWN = [[900, 980], [900, 320], [330, 650], [1470, 650], [200, 180], 
 const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
 /* 대전 규칙 버전: 1대1 라운드제부터 12. 예전 버전이랑은 같이 못 하게 (빠른 대전 줄도 따로) */
 /* 14: 모든 캐릭터 이동속도 낮춤 → 속도가 다른 예전 버전이랑은 모든 모드에서 같이 못 하게 */
-const MP_VER = 18, MM_PATH = 'mm/wait7';   // 18: 대전 체력 2배
-const modeVer = m => 18;
+const MP_VER = 19, MM_PATH = 'mm/wait8';   // 19: 대전 체력 6배 · 성빈 · 서진 밸런스
+const modeVer = m => 19;
 const mpOld = R => Object.values((R && R.p) || {}).some(p => !(p && p.v >= modeVer(R && R.m)));
 /* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
 const fnum = (v, d = 0) => (typeof v === 'number' && isFinite(v) ? v : d);
@@ -4796,7 +4801,7 @@ const PvP = {
     /* 대전은 체력 2배 (보스 · 좀비도 이 체력 기준) */
     p.maxHp = Math.round(p.maxHp * PVP_HP); p.hp = p.maxHp;
     if (kind === 'boss' && me === V.boss) {
-      p.isBoss = true; p.r = 58; p.maxHp = p.hp = Math.round((8000 + 7000 * hunters) * PVP_HP);
+      p.isBoss = true; p.r = 58; p.maxHp = p.hp = Math.round((8000 + 7000 * hunters) * BOSS_HP_MUL);
       p.dmgMul *= 1.8; p.spd *= 0.9; p.ultMul *= 2; G.potLeft = 0;
     }
     for (const pl of m.players) {
@@ -5656,7 +5661,7 @@ function zBite(a) {
     if (!hasLos(p.x, p.y, e.x, e.y)) continue;   // 벽 너머는 못 깨묾
     if (d < bd) { bd = d; best = e; }
   }
-  if (best) hitEnemy(best, alpha ? ZB.biteA : ZB.biteZ, alpha);
+  if (best) hitEnemy(best, (alpha ? ZB.biteA : ZB.biteZ) * PVP_HP, alpha);   // 체력이 늘어난 만큼 깨물기도 세게 (감염 속도는 그대로)
   clawFx(p.x + Math.cos(a) * (p.r + 18), p.y + Math.sin(a) * (p.r + 18), a, alpha);
   sfx('hit');
   if (G.pvp) Net.ev({ k: 'zb', x: Math.round(p.x), y: Math.round(p.y), a: Math.round(a * 100) / 100, al: alpha ? 1 : 0 });
@@ -5727,7 +5732,7 @@ Object.assign(PvP, {
     if (V.kind === 'sd') {
       const g = gasRect(V.el);
       if (!p.dead && inGas(g, p.x, p.y)) {
-        V.gasAcc += (SD.dps0 + (SD.dps1 - SD.dps0) * g.f) * dt; V.gasT -= dt;
+        V.gasAcc += (SD.dps0 + (SD.dps1 - SD.dps0) * g.f) * PVP_HP * dt; V.gasT -= dt;   // 체력 배수만큼 독가스도
         if (V.gasT <= 0) { V.gasT = 0.5; const d = V.gasAcc; V.gasAcc = 0; V.lastHit = ''; damagePlayer(d); }
       } else { V.gasAcc = 0; V.gasT = Math.min(V.gasT, 0.5); }
     } else if (V.kind === 'heist') {
@@ -7182,7 +7187,7 @@ function resultText(r) {
 /* ================= 대전 화면: 모드 고르기 · 대기실 · 결과 ================= */
 const MP_INFO = {
   '1v1': { ic: '⚔️', n: '1대1', d: '3판 2선 라운드제 · 라운드마다 체력 회복' },
-  team: { ic: '🛡️', n: '3대3 팀전', d: '10킬 먼저 하는 팀이 승리 · 2~6명' },
+  team: { ic: '🛡️', n: '3대3 팀전', d: '6킬 먼저 하는 팀이 승리 · 2~6명' },
   boss: { ic: '👑', n: '5대1 보스전', d: '한 명이 거대 보스, 나머지가 사냥 · 2~6명' },
   coop: { ic: '🤝', n: '호맘 협동', d: '더 세진 호맘을 같이 잡기 · 2~3명' },
   sd: { ic: '☠️', n: '쇼다운', d: '혼자 끝까지 살아남기 · 독가스가 좁혀 와요 · 2~6명' },
