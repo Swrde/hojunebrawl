@@ -3963,9 +3963,11 @@ function drawOverheads() {
   for (const e of G.en) {
     if (e.spawnT > 0 || e.hid || e.safe) continue;
     const cr = e.isBoss ? 24 : 0;   // 5대1 보스는 왕관 위로
-    if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18 - cr, w, 7, e.hp / e.maxHp, COL.rose); }
-    if (e.rival && !e.pet) { ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25 - cr, G.pvp && TEAM_KIND(G.pvp.kind) && e.tm === 0 ? '#bfe6ff' : '#ffc2cc', 4); }
-    const sy = e.y - e.r - (e.boss ? 44 : 32);
+    if (e.rival && !e.pet) {   // 다른 사람: 큰 체력 바 (숫자 · 잔상 · 회복 표시)
+      drawHpBar(e, cr);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 36 - cr, G.pvp && TEAM_KIND(G.pvp.kind) && e.tm === 0 ? '#bfe6ff' : '#ffc2cc', 4);
+    } else if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18 - cr, w, 7, e.hp / e.maxHp, COL.rose); }
+    const sy = e.y - e.r - (e.boss ? 44 : e.rival && !e.pet ? 60 : 32);
     if ((e.stun || 0) > 0) {
       for (let i = 0; i < 3; i++) {
         const an = G.t * 6 + (i * TAU) / 3;
@@ -4757,7 +4759,7 @@ function mpInterp(e, dt) {
 /* 내 상태 (0.08초마다 보냄) */
 function mpMyState() {
   const p = G.p;
-  return { ts: Math.round(performance.now()), x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a, fr: G.lo.fr || '', r: p.r, z: p.isZ || 0, pt: G.pet ? [Math.round(G.pet.x), Math.round(G.pet.y), Math.max(0, Math.round(G.pet.hp)), G.pet.maxHp, Math.round(G.pet.ang * 100) / 100] : 0 };
+  return { ts: Math.round(performance.now()), dr: G.pvp ? G.pvp.dr : 0, x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a, fr: G.lo.fr || '', r: p.r, z: p.isZ || 0, pt: G.pet ? [Math.round(G.pet.x), Math.round(G.pet.y), Math.max(0, Math.round(G.pet.hp)), G.pet.maxHp, Math.round(G.pet.ang * 100) / 100] : 0 };
 }
 /* 받은 상태를 그 사람 캐릭터에 적용. list = 그 캐릭터가 들어 있는 배열 (적 G.en / 우리 편 G.allies) */
 function mpState(P, v, list) {
@@ -4778,7 +4780,19 @@ function mpState(P, v, list) {
 function mpStateRest(P, v, list) {
   const e = P.e;
   if (typeof v.a === 'number' && isFinite(v.a)) e.ang = v.a;
-  e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
+  e.maxHp = Math.max(1, num(v.mh, e.maxHp));
+  /* 체력: 받은 값(rhp) + 내가 때렸는데 아직 상대 화면에 반영 안 된 피해(unc)를 빼서 바로 줄어 보이게
+     상대가 보내는 dr(나한테 받은 피해 합계)로 '반영됨'을 확인 · 1.5초 넘게 확인 안 되면 버림 */
+  const rhp = num(v.hp, e.rhp != null ? e.rhp : e.hp), V = G.pvp;
+  if (e.rhp != null && rhp > e.rhp + 1 && !v.d && !e.gone) { e.healT = 0.9; if (G.fx.length < 260) G.fx.push({ k: 'txt', x: e.x, y: e.y - e.r - 48, text: '+' + fmt(rhp - e.rhp), c: COL.mint, s: 24, t: 0, dur: 1, vy: -55 }); }   // 회복!
+  e.rhp = rhp;
+  let unc = 0;
+  if (V && V.sent && V.sent[e.uid]) {
+    const conf = (v.dr && typeof v.dr === 'object' && num(v.dr[String(V.me).slice(0, 8)])) || 0;
+    unc = V.sent[e.uid] - conf;
+    if (unc <= 0 || performance.now() - (V.sentT[e.uid] || 0) > 1500) { V.sent[e.uid] = conf; unc = 0; }
+  }
+  e.hp = unc > 0 ? Math.max(1, rhp - unc) : rhp;
   if (WEAPONS[v.w]) e.w = v.w;
   if (ARMORS[v.ar]) e.ar = v.ar;
   e.fr = FRAMES[v.fr] ? v.fr : '';
@@ -5062,7 +5076,7 @@ const PvP = {
     const myTm = m.players.find(x => x.uid === me).tm;
     const V = G.pvp = {
       kind, me, myTm, role: m.role, host: m.host, pl: {}, score: [0, 0], k: 0, d: 0, kills: 0, deaths: 0,
-      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, send: 0, sendIv: m.players.length > 6 ? 0.08 : PVP_SEND, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
+      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, dr: {}, sent: {}, sentT: {}, send: 0, sendIv: m.players.length > 6 ? 0.08 : PVP_SEND, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
       hostUid: m.hostUid || '', round: 1, rw: [0, 0], rdead: {}, rend: 0, rwait: 0, next: 0, rdone: 0, rres: null,
     };
     G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9; G.allies = [];
@@ -5156,7 +5170,9 @@ const PvP = {
     if (v.k === 's') this.cosShot(v);
     else if (v.k === 'u') this.cosUlt(v);
     else if (v.k === 'h') {
-      if (v.to !== V.me || G.over || pvpLock()) return;
+      if (v.to !== V.me) return;
+      if (v.d > 0) { const k = String(v.u || '').slice(0, 8); V.dr[k] = (V.dr[k] || 0) + Math.round(Math.min(v.d, 9000)); }   // 받은 피해 합계 (때린 사람 화면 체력 맞추기용)
+      if (G.over || pvpLock()) return;
       if (v.pd > 0) hurtPet(Math.min(v.pd, 9000));
       if (p.dead) return;
       if (v.d > 0 || v.st > 0 || v.cf > 0 || v.kp > 0) V.lastHit = v.u;
@@ -5290,7 +5306,7 @@ const PvP = {
     p.ammo = p.mag; p.rl = 0; p.fcd = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.burstT = 0; p.dashT = 0;
     for (const k in p.buf) p.buf[k] = 0;
     const e = V.rival;
-    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.buf = []; e.hp = e.maxHp; e.stun = 0; e.conf = 0; }
+    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.buf = []; e.hp = e.maxHp; e.rhp = null; e.hpG = null; e.stun = 0; e.conf = 0; }
     banner(`ROUND ${V.round}`, `${V.rw[V.myTm]} : ${V.rw[1 - V.myTm]} · 체력 회복!`, COL.yolk, 1.4);
     sfx('pick');
     Net.send(mpMyState());
@@ -5305,10 +5321,12 @@ const PvP = {
   },
   pendOf(e) { const V = G.pvp, k = e.uid; return V.pend[k] || (V.pend[k] = { d: 0 }); },
   hitRival(e, dmg, charge) {
-    if (G.over || e.gone || e.inv || e.ally || pvpLock()) return;
+    const V0 = G.pvp;
+    if (!V0 || G.over || e.gone || e.inv || e.ally || pvpLock()) return;
     dmg = Math.round(dmg);
     if (e.pet) { const P = this.pendOf(e); P.pd = (P.pd || 0) + dmg; e.flash = 0.09; if (G.fx.length < 260) G.fx.push({ k: 'txt', dn: 1, x: e.x, y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: 17, t: 0, dur: 0.6, vy: -70 }); sfx('hit'); return; }
     this.pendOf(e).d += dmg;
+    V0.sent[e.uid] = (V0.sent[e.uid] || 0) + dmg; V0.sentT[e.uid] = performance.now();   // 상대 체력 바로 줄여 보이기
     e.hp = Math.max(1, e.hp - dmg); e.flash = 0.09; e.rvT = Math.max(e.rvT || 0, 0.6);
     if (G.fx.length < 260) G.fx.push({ k: 'txt', dn: 1, x: e.x + rand(-12, 12), y: e.y - e.r - 6, text: String(dmg), c: '#fff', s: 21, t: 0, dur: 0.7, vy: -70 });
     if (charge) G.p.ult = Math.min(1, G.p.ult + (Math.min(dmg, 400) / ULT_CHARGE) * G.p.ultMul);
@@ -5499,10 +5517,34 @@ function drawAllies() {
 function drawAllyHeads() {
   for (const e of G.allies || []) {
     if (e.gone) continue;
-    const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18, w, 7, e.hp / e.maxHp, COL.mint);
-    if (e.pet) continue;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 25, '#bfe6ff', 4);
+    if (e.pet) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18, w, 7, e.hp / e.maxHp, COL.mint); continue; }
+    drawHpBar(e, 0);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 36, '#bfe6ff', 4);
   }
+}
+/* 다른 사람 체력 바: 숫자 · 남은 양 색(초록 → 노랑 → 빨강) · 맞으면 하얀 잔상이 천천히 줄고 · 회복하면 초록으로 번쩍 + 둘레 링 */
+function drawHpBar(e, cr) {
+  const w = Math.max(80, e.r * 2.7), h = 14, x = e.x - w / 2, y = e.y - e.r - 28 - cr, mh = e.maxHp || 1, f = clamp(e.hp / mh, 0, 1);
+  const now = G.t, dt = clamp(now - (e.hpGt == null ? now : e.hpGt), 0, 0.1); e.hpGt = now;
+  if (e.hpLast != null && e.hp < e.hpLast - 0.5) e.hpDrop = now;
+  e.hpLast = e.hp;
+  if (e.hpG == null || e.hp > e.hpG) e.hpG = e.hp;
+  else if (now - (e.hpDrop || 0) > 0.35) e.hpG = Math.max(e.hp, e.hpG - mh * 0.9 * dt);
+  if (e.healT > 0) e.healT = Math.max(0, e.healT - dt);
+  const col = f > 0.6 ? '#3fe08e' : f > 0.3 ? '#ffd23f' : '#ff4f6d', low = f <= 0.25 && Math.floor(now * 6) % 2 === 0;
+  if (e.healT > 0) {   // 회복: 캐릭터 둘레 초록 링
+    const k = e.healT / 0.9;
+    ctx.save(); ctx.globalAlpha = k * 0.85; ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 8 + (1 - k) * 22, 0, TAU); ctx.lineWidth = 5; ctx.strokeStyle = COL.mint; ctx.stroke(); ctx.restore();
+  }
+  rr(x - 3, y - 3, w + 6, h + 6, (h + 6) / 2); ctx.fillStyle = low ? '#ff4f6d' : e.ally ? '#59b8ff' : COL.ink; ctx.fill();
+  rr(x, y, w, h, h / 2); ctx.fillStyle = 'rgba(16,18,43,.85)'; ctx.fill();
+  const fg = clamp(e.hpG / mh, 0, 1);
+  if (fg > f) { rr(x, y, Math.max(h, w * fg), h, h / 2); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fill(); }
+  if (f > 0) { rr(x, y, Math.max(h, w * f), h, h / 2); ctx.fillStyle = col; ctx.fill(); }
+  if (e.healT > 0) { ctx.save(); ctx.globalAlpha = (e.healT / 0.9) * 0.7; rr(x, y, w, h, h / 2); ctx.fillStyle = '#b6ffd6'; ctx.fill(); ctx.restore(); }
+  ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(x + h / 2, y + 2, Math.max(0, w * f - h), 3);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 11px ${FONT_NUM}`;
+  outText(fmt(Math.max(0, Math.ceil(e.hp))), e.x, y + h / 2 + 0.5, '#fff', 3);
 }
 
 /* ================= 호맘 협동 (2~3명) =================
