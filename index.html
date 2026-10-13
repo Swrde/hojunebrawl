@@ -4720,21 +4720,36 @@ function rtdbOk() {
 /* 방 정보에 들어 있는 그 사람 스킨 (특별 스킨 · 총알 색 · 꼬리 · 궁 색) */
 function mpSkins(pl, ch) { return { sk: photoOk(pl.sk, ch) ? pl.sk : '', bs: skinOf(BULLET_SKINS, pl.bs), ts: skinOf(TRAIL_SKINS, pl.ts), us: skinOf(ULT_SKINS, pl.us) }; }
 function mpPl(uid) { return (G && G.pvp && G.pvp.pl[uid]) || (G && G.coop && G.coop.pl[uid]) || null; }
-/* 받은 위치로 부드럽게 따라감 (너무 멀면 순간이동)
-   핑 줄이기: 마지막으로 받은 속도로 '지금쯤 여기 있겠지' 하고 조금 앞을 예측해서 따라감 (최대 0.15초 앞) */
-const MP_LEAD = 0.06;   // 보내는 사이 + 네트워크 지연을 대충 메우는 시간
+/* 다른 사람 움직임: 핑이 들쭉날쭉해도 부드럽게 (지터 버퍼)
+   - 받은 위치를 '보낸 사람 시계' 시각과 함께 모아 두고, 조금 전(지연 + 흔들림만큼) 시점을 두 위치 사이로 이어서 그림
+   - 핑이 튀면 기다리는 시간이 저절로 늘고, 안정되면 줄어듦 (50~200ms)
+   - 새 위치가 늦게 오면 마지막 속도로 최대 0.1초만 앞을 예측 */
+function mpTarget(e) {
+  const B = e.buf; if (!B || !B.length) return null;
+  const delay = clamp((e.jit || 0) * 2 + 50, 50, 200), rt = performance.now() - (e.offMin || 0) - delay;
+  let x, y;
+  if (rt <= B[0].t) { x = B[0].x; y = B[0].y; }
+  else {
+    let i = B.length - 1;
+    while (i > 0 && B[i].t > rt) i--;
+    const a = B[i], b = B[i + 1];
+    if (b) { const f = (rt - a.t) / Math.max(1, b.t - a.t); x = a.x + (b.x - a.x) * f; y = a.y + (b.y - a.y) * f; }
+    else {   // 아직 안 온 시점: 마지막 두 위치의 속도로 조금만 예측
+      const p = B[B.length - 2], ahead = Math.min(100, rt - a.t);
+      if (p && a.t > p.t) { x = a.x + ((a.x - p.x) / (a.t - p.t)) * ahead; y = a.y + ((a.y - p.y) / (a.t - p.t)) * ahead; } else { x = a.x; y = a.y; }
+      const o = { x: clamp(x, e.r || 30, WW - (e.r || 30)), y: clamp(y, e.r || 30, WH - (e.r || 30)), r: e.r || 30 };
+      for (const r of OBST) pushOut(o, r);
+      x = o.x; y = o.y;
+    }
+  }
+  return { x, y };
+}
 function mpInterp(e, dt) {
   e.flash = Math.max(0, (e.flash || 0) - dt);
-  let gx = e.tx, gy = e.ty;
-  if (e.pvx || e.pvy) {
-    const age = Math.min(0.15, (performance.now() - (e.pt || 0)) / 1000 + MP_LEAD);
-    const o = { x: clamp(e.tx + e.pvx * age, e.r, WW - e.r), y: clamp(e.ty + e.pvy * age, e.r, WH - e.r), r: e.r || 30 };
-    for (const r of OBST) pushOut(o, r);
-    gx = o.x; gy = o.y;
-  }
+  const g = mpTarget(e), gx = g ? g.x : e.tx, gy = g ? g.y : e.ty;
   const dx = gx - e.x, dy = gy - e.y;
   if (Math.hypot(dx, dy) > 260) { e.x = gx; e.y = gy; e.mv = false; return; }
-  const k = 1 - Math.pow(0.0004, dt);
+  const k = g ? 1 - Math.pow(1e-9, dt) : 1 - Math.pow(0.0004, dt);   // 버퍼가 있으면 거의 그대로 따라감
   e.x += dx * k; e.y += dy * k;
   e.mv = Math.hypot(dx * k, dy * k) > 45 * dt;
   if (e.sk && !e.pet && !e.gone && !e.hid) skinWalk(e, e.sk, dt, e.mv);
@@ -4742,17 +4757,26 @@ function mpInterp(e, dt) {
 /* 내 상태 (0.08초마다 보냄) */
 function mpMyState() {
   const p = G.p;
-  return { x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a, fr: G.lo.fr || '', r: p.r, z: p.isZ || 0, pt: G.pet ? [Math.round(G.pet.x), Math.round(G.pet.y), Math.max(0, Math.round(G.pet.hp)), G.pet.maxHp, Math.round(G.pet.ang * 100) / 100] : 0 };
+  return { ts: Math.round(performance.now()), x: Math.round(p.x), y: Math.round(p.y), a: Math.round(p.ang * 100) / 100, hp: Math.max(0, Math.round(p.hp)), mh: p.maxHp, d: p.dead ? 1 : 0, s: p.buf.shield > 0 ? 1 : 0, i: (p.inv || 0) > 0 ? 1 : 0, st: (p.stun || 0) > 0 ? 1 : 0, cf: (p.conf || 0) > 0 ? 1 : 0, w: G.lo.w, ar: G.lo.a, fr: G.lo.fr || '', r: p.r, z: p.isZ || 0, pt: G.pet ? [Math.round(G.pet.x), Math.round(G.pet.y), Math.max(0, Math.round(G.pet.hp)), G.pet.maxHp, Math.round(G.pet.ang * 100) / 100] : 0 };
 }
 /* 받은 상태를 그 사람 캐릭터에 적용. list = 그 캐릭터가 들어 있는 배열 (적 G.en / 우리 편 G.allies) */
 function mpState(P, v, list) {
   const e = P.e, now = performance.now(); P.seen = now;
-  const nx = num(v.x, e.tx), ny = num(v.y, e.ty), gap = (now - (e.pt || 0)) / 1000;
-  /* 받은 위치 두 개로 속도 계산 (순간이동 · 오래 끊긴 뒤면 0) */
-  if (e.pt && gap > 0.02 && gap < 0.5) { const vx = (nx - e.tx) / gap, vy = (ny - e.ty) / gap; if (Math.hypot(vx, vy) < 700) { e.pvx = vx * 0.6 + (e.pvx || 0) * 0.4; e.pvy = vy * 0.6 + (e.pvy || 0) * 0.4; } else e.pvx = e.pvy = 0; }
-  else e.pvx = e.pvy = 0;
-  if (nx === e.tx && ny === e.ty) e.pvx = e.pvy = 0;   // 멈췄으면 예측도 멈춤
-  e.pt = now; e.tx = nx; e.ty = ny;
+  const nx = num(v.x, e.tx), ny = num(v.y, e.ty), ts = typeof v.ts === 'number' && isFinite(v.ts) ? v.ts : now;
+  /* 지터 버퍼: 보낸 시각 ts(보낸 사람 시계) 기준으로 쌓음. offMin = 가장 빨리 온 것 기준 시계 차이, jit = 평소보다 늦게 오는 정도 */
+  const off = now - ts;
+  e.offMin = e.offMin == null ? off : Math.min(off, e.offMin + 0.4);
+  e.jit = (e.jit || 0) * 0.9 + Math.min(300, off - e.offMin) * 0.1;
+  const B = e.buf || (e.buf = []), last = B[B.length - 1];
+  if (last && (ts <= last.t || Math.hypot(nx - last.x, ny - last.y) > 260)) { if (ts <= last.t - 1000 || Math.hypot(nx - last.x, ny - last.y) > 260) B.length = 0; else if (ts <= last.t) return mpStateRest(P, v, list); }
+  B.push({ t: ts, x: nx, y: ny });
+  while (B.length > 2 && B[1].t < ts - 1000) B.shift();
+  if (B.length > 40) B.shift();
+  e.tx = nx; e.ty = ny;
+  mpStateRest(P, v, list);
+}
+function mpStateRest(P, v, list) {
+  const e = P.e;
   if (typeof v.a === 'number' && isFinite(v.a)) e.ang = v.a;
   e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
   if (WEAPONS[v.w]) e.w = v.w;
@@ -4822,7 +4846,7 @@ const Net = {
   wsPing() { if (this.wsSend({ k: 'p', t: performance.now() })) setTimeout(() => { if (this.wsOk) this.wsPing(); }, 2000); },
   wsGot(o) {
     if (!o || typeof o !== 'object') return;
-    if (o.k === 'p') { const r = performance.now() - fnum(o.t, 0); if (r >= 0 && r < 10000) this.ping = this.ping ? Math.round(this.ping * 0.6 + r * 0.4) : Math.round(r); return; }
+    if (o.k === 'p') { const r = performance.now() - fnum(o.t, 0); if (r >= 0 && r < 10000) this.ping = this.ping ? Math.round(this.ping * 0.75 + r * 0.25) : Math.round(r); return; }
     if (!this.started || !o.v || typeof o.v !== 'object') return;
     if (o.k === 's') { if (o.u && o.u !== this.me) this.mod().netState(o.u, o.v); }
     else if (o.k === 'e') this.gotEv(o.v);
@@ -5266,7 +5290,7 @@ const PvP = {
     p.ammo = p.mag; p.rl = 0; p.fcd = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.burstT = 0; p.dashT = 0;
     for (const k in p.buf) p.buf[k] = 0;
     const e = V.rival;
-    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.pvx = e.pvy = 0; e.pt = 0; e.hp = e.maxHp; e.stun = 0; e.conf = 0; }
+    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.buf = []; e.hp = e.maxHp; e.stun = 0; e.conf = 0; }
     banner(`ROUND ${V.round}`, `${V.rw[V.myTm]} : ${V.rw[1 - V.myTm]} · 체력 회복!`, COL.yolk, 1.4);
     sfx('pick');
     Net.send(mpMyState());
