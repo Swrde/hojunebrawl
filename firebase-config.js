@@ -10,5 +10,5 @@ window.FB_CONFIG = {
   databaseURL: "https://hojunebrawl-default-rtdb.asia-southeast1.firebasedatabase.app",
   measurementId: "G-JX2YGV1ZG1",
   googleClientId: '782981937656-if47fogsoparavls65u6topssb8h1go1.apps.googleusercontent.com',
-  mpServer: 'https://hojun-brawl-mp.swrde.workers.dev'
+  mpServer: 'https://hojunebrawl.sbesbe0315.workers.dev',
 };
