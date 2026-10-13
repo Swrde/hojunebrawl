@@ -2897,7 +2897,7 @@ function finish(clear) {
   let bonus = 0;
   if (clear) { bonus = G.mode === 'homom' || G.mode === 'coop' ? 1000 + Math.round((1000 * G.p.hp) / G.p.maxHp) : 5000 + Math.round((3000 * G.p.hp) / G.p.maxHp); G.score += bonus; sfx('win'); }
   const S = scr()[clamp(G.step, 0, scr().length - 1)];
-  G.result = { clear, score: Math.floor(G.score), bonus, kills: G.kills, coins: Math.floor(G.score / SCORE_TO_COIN), where: S.k === 'boss' ? BOSS[S.boss].name : S.name, ph: S.ph, time: G.t, potUsed: G.potUsed, quit: G.quit,
+  G.result = { clear, score: Math.floor(G.score), bonus, kills: G.kills, coins: Math.floor((G.score / SCORE_TO_COIN) * (G.coop ? 2.5 : 1)), where: S.k === 'boss' ? BOSS[S.boss].name : S.name, ph: S.ph, time: G.t, potUsed: G.potUsed, quit: G.quit,
     mode: G.mode, map: G.map, custom: !!MAPS[G.map].custom, wave: S.wv || 0, htime: clear && G.bossT1 ? Math.round((G.bossT1 - G.bossT0) * 100) / 100 : 0 };
   G.endT = clear ? 2.6 : 1.8;
   if (G.coop) Coop.onFinish(clear);
@@ -4673,14 +4673,15 @@ const MP = {
   heist: { n: '하이스트', cap: 6, min: 2, time: 150, resp: 4 },
   zombie: { n: '좀비 모드', cap: 6, min: 2, time: 120 },
 };
-const MP_REWARD = { '1v1': { win: 200, draw: 100, lose: 60 }, team: { win: 250, draw: 120, lose: 80 }, team5: { win: 300, draw: 140, lose: 90 }, bossB: { win: 400, draw: 150, lose: 120 }, bossH: { win: 250, draw: 100, lose: 80 },
-  heist: { win: 260, draw: 120, lose: 80 }, zombie: { win: 260, draw: 100, lose: 80 } };
+/* 멀티 보상 (2.5배로 올림) */
+const MP_REWARD = { '1v1': { win: 500, draw: 250, lose: 150 }, team: { win: 620, draw: 300, lose: 200 }, team5: { win: 750, draw: 350, lose: 230 }, bossB: { win: 1000, draw: 380, lose: 300 }, bossH: { win: 620, draw: 250, lose: 200 },
+  heist: { win: 650, draw: 300, lose: 200 }, zombie: { win: 650, draw: 250, lose: 200 } };
 const TEAM_KIND = k => k === 'team' || k === 'team5' || k === 'heist';   // 블루팀 · 레드팀으로 나뉘는 모드
 const KILL_KIND = k => k === 'team' || k === 'team5';   // 먼저 정해진 킬 수를 채우는 팀이 이기는 모드
 const teamCap = m => (MP[m] && MP[m].tcap) || 3;   // 한 팀 최대 인원
 const PVP_HP = 6;   // 대전 체력 배수 (혼자 하기 기준 6배)
 const BOSS_HP_MUL = 3;   // 5대1 보스 체력 배수 (6배면 3분 안에 못 잡아서 3배)
-const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.08;
+const PVP_KILLS = 3, PVP_TIME = 150, PVP_SEND = 0.05;   // 위치 보내는 간격 (0.08 → 0.05: 더 자주 보내서 덜 끊겨 보이게)
 const PVP_REWARD = MP_REWARD['1v1'];
 const TEAM_COL = ['#59b8ff', '#ff4f6d'], TEAM_NAME = ['블루팀', '레드팀'];
 const SPAWN_T = [[[900, 1120], [600, 1100], [1200, 1100]], [[900, 180], [600, 200], [1200, 200]]];
@@ -4690,8 +4691,16 @@ const rid4 = () => String(1000 + Math.floor(Math.random() * 9000));
 const ROOM_FIELDS = ['m', 'h', 'map', 'q', 'p', 'go', 'cm'];   // 대기실에서 지켜보는 방 정보 (cm: 만든 맵 데이터)
 /* 대전 규칙 버전: 1대1 라운드제부터 12. 예전 버전이랑은 같이 못 하게 (빠른 대전 줄도 따로) */
 /* 14: 모든 캐릭터 이동속도 낮춤 → 속도가 다른 예전 버전이랑은 모든 모드에서 같이 못 하게 */
-const MP_VER = 21, MM_PATH = 'mm/wait10';   // 19: 대전 체력 6배 · 성빈 · 서진 밸런스 / 20: 5대5 팀전 · 스파이더성빈 멀티 금지 / 21: 만든 맵
-const modeVer = m => 21;
+const MP_VER = 22, MM_PATH = 'mm/wait11';   // 19: 대전 체력 6배 · 성빈 · 서진 밸런스 / 20: 5대5 팀전 · 스파이더성빈 멀티 금지 / 21: 만든 맵 / 22: Cloudflare 대전 서버
+const modeVer = m => 22;
+/* ---------- Cloudflare 대전 서버: firebase-config.js 의 mpServer 주소 ----------
+   방 만들기 · 들어가기 · 시작은 지금처럼 Firebase, 게임 중 위치 · 이벤트만 웹소켓으로 (끊기면 Firebase 로 자동) */
+function mpServerUrl() {
+  let u = String((window.FB_CONFIG || {}).mpServer || '').trim().replace(/\/+$/, '');
+  if (/^https:\/\//.test(u)) u = 'wss://' + u.slice(8);
+  return /^wss:\/\/[A-Za-z0-9.-]+(:\d+)?$/.test(u) || /^ws:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(u) ? u : '';
+}
+const EV_CRIT = new Set(['d', 'rw', 'pe', 'q', 'end', 'kl']);   // 꼭 가야 하는 이벤트는 Firebase 로도 같이 (받는 쪽에서 중복 제거)
 const mpOld = R => Object.values((R && R.p) || {}).some(p => !(p && p.v >= modeVer(R && R.m)));
 const mpBan = R => Object.values((R && R.p) || {}).some(p => p && CHARS[p.ch] && CHARS[p.ch].noMp);   // 스파이더성빈은 멀티 금지
 /* 받은 숫자 (음수 · 소수 그대로). num() 은 0 이상 정수로 바꿔 버려서 각도·속도·시간엔 못 씀 */
@@ -4711,11 +4720,20 @@ function rtdbOk() {
 /* 방 정보에 들어 있는 그 사람 스킨 (특별 스킨 · 총알 색 · 꼬리 · 궁 색) */
 function mpSkins(pl, ch) { return { sk: photoOk(pl.sk, ch) ? pl.sk : '', bs: skinOf(BULLET_SKINS, pl.bs), ts: skinOf(TRAIL_SKINS, pl.ts), us: skinOf(ULT_SKINS, pl.us) }; }
 function mpPl(uid) { return (G && G.pvp && G.pvp.pl[uid]) || (G && G.coop && G.coop.pl[uid]) || null; }
-/* 받은 위치로 부드럽게 따라감 (너무 멀면 순간이동) */
+/* 받은 위치로 부드럽게 따라감 (너무 멀면 순간이동)
+   핑 줄이기: 마지막으로 받은 속도로 '지금쯤 여기 있겠지' 하고 조금 앞을 예측해서 따라감 (최대 0.15초 앞) */
+const MP_LEAD = 0.06;   // 보내는 사이 + 네트워크 지연을 대충 메우는 시간
 function mpInterp(e, dt) {
   e.flash = Math.max(0, (e.flash || 0) - dt);
-  const dx = e.tx - e.x, dy = e.ty - e.y;
-  if (Math.hypot(dx, dy) > 260) { e.x = e.tx; e.y = e.ty; e.mv = false; return; }
+  let gx = e.tx, gy = e.ty;
+  if (e.pvx || e.pvy) {
+    const age = Math.min(0.15, (performance.now() - (e.pt || 0)) / 1000 + MP_LEAD);
+    const o = { x: clamp(e.tx + e.pvx * age, e.r, WW - e.r), y: clamp(e.ty + e.pvy * age, e.r, WH - e.r), r: e.r || 30 };
+    for (const r of OBST) pushOut(o, r);
+    gx = o.x; gy = o.y;
+  }
+  const dx = gx - e.x, dy = gy - e.y;
+  if (Math.hypot(dx, dy) > 260) { e.x = gx; e.y = gy; e.mv = false; return; }
   const k = 1 - Math.pow(0.0004, dt);
   e.x += dx * k; e.y += dy * k;
   e.mv = Math.hypot(dx * k, dy * k) > 45 * dt;
@@ -4728,8 +4746,13 @@ function mpMyState() {
 }
 /* 받은 상태를 그 사람 캐릭터에 적용. list = 그 캐릭터가 들어 있는 배열 (적 G.en / 우리 편 G.allies) */
 function mpState(P, v, list) {
-  const e = P.e; P.seen = performance.now();
-  e.tx = num(v.x, e.tx); e.ty = num(v.y, e.ty);
+  const e = P.e, now = performance.now(); P.seen = now;
+  const nx = num(v.x, e.tx), ny = num(v.y, e.ty), gap = (now - (e.pt || 0)) / 1000;
+  /* 받은 위치 두 개로 속도 계산 (순간이동 · 오래 끊긴 뒤면 0) */
+  if (e.pt && gap > 0.02 && gap < 0.5) { const vx = (nx - e.tx) / gap, vy = (ny - e.ty) / gap; if (Math.hypot(vx, vy) < 700) { e.pvx = vx * 0.6 + (e.pvx || 0) * 0.4; e.pvy = vy * 0.6 + (e.pvy || 0) * 0.4; } else e.pvx = e.pvy = 0; }
+  else e.pvx = e.pvy = 0;
+  if (nx === e.tx && ny === e.ty) e.pvx = e.pvy = 0;   // 멈췄으면 예측도 멈춤
+  e.pt = now; e.tx = nx; e.ty = ny;
   if (typeof v.a === 'number' && isFinite(v.a)) e.ang = v.a;
   e.maxHp = Math.max(1, num(v.mh, e.maxHp)); e.hp = num(v.hp, e.hp);
   if (WEAPONS[v.w]) e.w = v.w;
@@ -4763,6 +4786,7 @@ function mpPet(P, pt, list) {
 const Net = {
   db: null, rid: null, me: null, room: null, started: false, mmMine: false, host: false,
   ls: [], lls: [], timers: [], onRoom: null, onGo: null,
+  ws: null, wsOk: false, wsL: {}, evSeen: new Set(), evN: 0, ping: 0, wsRoom: '', wsTries: 0, mod: () => (G && G.coop ? Coop : PvP),
   why() {
     if (!Store.web) return '대전은 웹사이트 버전에서만 할 수 있어요';
     if (Store.mode !== 'online' || !Store.uid || Store.kicked) return '서버에 연결돼 있어야 대전을 할 수 있어요';
@@ -4773,7 +4797,43 @@ const Net = {
   info() { const P = Store.P, s = P.sk || {}; return { n: P.nick, ch: P.ch, pr: P.pr, t: P.title || '', f: P.frame || '', sk: Store.mySkin(), bs: s.b || '', ts: s.t || '', us: s.u || '', v: MP_VER, j: Date.now() }; },
   on(ref, ev, fn, lobby) { ref.on(ev, fn); (lobby ? this.lls : this.ls).push(() => ref.off(ev, fn)); },
   offLobby() { for (const f of this.lls) { try { f(); } catch (e) { /* 무시 */ } } this.lls = []; },
-  clear() { this.offLobby(); for (const f of this.ls) { try { f(); } catch (e) { /* 무시 */ } } this.ls = []; this.timers.forEach(clearInterval); this.timers = []; },
+  clear() { this.offLobby(); for (const f of this.ls) { try { f(); } catch (e) { /* 무시 */ } } this.ls = []; this.timers.forEach(clearInterval); this.timers = []; this.wsClose(); },
+  /* ----- 웹소켓 (Cloudflare) ----- */
+  wsOpen(room) {
+    const url = mpServerUrl(); if (!url || typeof WebSocket !== 'function') return;
+    this.wsClose(); this.wsRoom = room; this.wsTries = 0; this.wsConnect();
+  },
+  wsConnect() {
+    const room = this.wsRoom, rid = this.rid; if (!room) return;
+    let ws;
+    try { ws = new WebSocket(`${mpServerUrl()}/ws?room=${encodeURIComponent(room)}&uid=${encodeURIComponent(this.me)}`); } catch (e) { return; }
+    this.ws = ws;
+    ws.onopen = () => { if (this.ws !== ws) return; this.wsOk = true; this.wsTries = 0; this.wsPing(); };
+    ws.onmessage = m => { if (this.ws !== ws) return; let o; try { o = JSON.parse(m.data); } catch (e) { return; } this.wsGot(o); };
+    ws.onclose = () => {
+      if (this.ws !== ws) return;
+      this.wsOk = false; this.ws = null;
+      if (this.started && this.rid === rid && this.wsRoom === room && this.wsTries++ < 6) setTimeout(() => { if (!this.ws && this.started && this.rid === rid && this.wsRoom === room) this.wsConnect(); }, 800);
+    };
+    ws.onerror = () => { /* onclose 에서 다시 연결 */ };
+  },
+  wsClose() { const w = this.ws; this.ws = null; this.wsOk = false; this.wsRoom = ''; this.ping = 0; this.wsL = {}; this.evSeen = new Set(); if (w) { try { w.close(); } catch (e) { /* 무시 */ } } },
+  wsSend(o) { const w = this.ws; if (!this.wsOk || !w || w.readyState !== 1) return false; try { w.send(JSON.stringify(o)); return true; } catch (e) { return false; } },
+  wsPing() { if (this.wsSend({ k: 'p', t: performance.now() })) setTimeout(() => { if (this.wsOk) this.wsPing(); }, 2000); },
+  wsGot(o) {
+    if (!o || typeof o !== 'object') return;
+    if (o.k === 'p') { const r = performance.now() - fnum(o.t, 0); if (r >= 0 && r < 10000) this.ping = this.ping ? Math.round(this.ping * 0.6 + r * 0.4) : Math.round(r); return; }
+    if (!this.started || !o.v || typeof o.v !== 'object') return;
+    if (o.k === 's') { if (o.u && o.u !== this.me) this.mod().netState(o.u, o.v); }
+    else if (o.k === 'e') this.gotEv(o.v);
+    else if (o.k === 'w' && this.wsL.w) this.wsL.w(o.v);
+  },
+  /* 이벤트 받기 (웹소켓 · Firebase 둘 다 여기로, 같은 건 한 번만) */
+  gotEv(v) {
+    if (!v || v.u === this.me) return;
+    if (v.i) { if (this.evSeen.has(v.i)) return; this.evSeen.add(v.i); if (this.evSeen.size > 3000) this.evSeen = new Set([...this.evSeen].slice(-1500)); }
+    this.mod().netEvent(v);
+  },
   reset() { this.rid = null; this.room = null; this.started = false; this.mmMine = false; this.host = false; this.onRoom = null; this.onGo = null; },
   /* 새 방에 가기 전에 예전 방 정리 */
   fresh() { if (!this.rid) return; if (this.started) this.leave(); else { this.clear(); this.reset(); } },
@@ -4899,7 +4959,7 @@ const Net = {
       for (const k of ids) teams[k] = k === boss ? 1 : 0;
     } else if (TEAM_KIND(R.m)) for (const k of ids) teams[k] = R.p[k].tm ? 1 : 0;
     else ids.forEach((k, i) => { teams[k] = R.m === '1v1' || R.m === 'sd' ? i : 0; });   // 1대1 · 쇼다운: 모두 다른 편
-    const go = { t: Date.now(), map: mapKey(R.map), teams, boss, seed: Math.floor(Math.random() * 1e9) };
+    const go = { t: Date.now(), map: mapKey(R.map), teams, boss, seed: Math.floor(Math.random() * 1e9), cf: mpServerUrl() ? 1 : 0 };   // cf: Cloudflare 대전 서버 씀
     if (go.map === 'cmr' && R.cm) go.cm = R.cm;   // 만든 맵: 시작할 때 맵 데이터도 같이
     this.ref('rooms/' + this.rid + '/st').set('play');
     this.ref('rooms/' + this.rid + '/go').set(go);
@@ -4916,20 +4976,26 @@ const Net = {
     if (this.host) this.ref('lob/' + this.rid).remove().catch(() => {});
     const players = Object.keys(R.p).filter(k => k in go.teams).map(k => Object.assign({ uid: k }, R.p[k], { tm: go.teams[k] }));
     if (go.map === 'cmr' && go.cm) mkRegister('cmr', go.cm, (R.p[R.h] && str(R.p[R.h].n, 8)) || '');
-    const mod = () => (G && G.coop ? Coop : PvP);
+    const mod = this.mod;
     for (const pl of players) if (pl.uid !== me) {
       this.on(this.ref(base + '/s/' + pl.uid), 'value', s => { const v = s.val(); if (v) mod().netState(pl.uid, v); });
       this.on(this.ref(base + '/x/' + pl.uid), 'value', s => { if (s.val()) mod().left(pl.uid); });
     }
-    this.on(this.ref(base + '/e'), 'child_added', s => { const v = s.val(); if (v && v.u !== me) mod().netEvent(v); });
+    this.on(this.ref(base + '/e'), 'child_added', s => this.gotEv(s.val()));
+    if (go.cf && mpServerUrl()) this.wsOpen(`${this.rid}-${go.t}`);   // Cloudflare 대전 서버
     const m = { kind: R.m, me, host: R.h === me, hostUid: R.h, players, boss: go.boss, map: go.map, seed: go.seed, rid: this.rid, role: R.h === me ? 'h' : 'g' };
     m.op = players.find(x => x.uid !== me) || { n: '상대', ch: 'base' };
     if (this.onGo) this.onGo(m);
   },
-  listen(path, fn) { this.on(this.ref('rooms/' + this.rid + '/' + path), 'value', s => fn(s.val())); },
-  send(st) { if (this.rid && this.started) this.ref('rooms/' + this.rid + '/s/' + this.me).set(st).catch(() => {}); },
-  ev(o) { if (this.rid && this.started) { o.u = this.me; this.ref('rooms/' + this.rid + '/e').push(o); } },
-  setW(w) { if (this.rid && this.started) this.ref('rooms/' + this.rid + '/w').set(w).catch(() => {}); },
+  listen(path, fn) { this.wsL[path] = fn; this.on(this.ref('rooms/' + this.rid + '/' + path), 'value', s => fn(s.val())); },
+  send(st) { if (this.rid && this.started && !this.wsSend({ k: 's', v: st })) this.ref('rooms/' + this.rid + '/s/' + this.me).set(st).catch(() => {}); },
+  ev(o) {
+    if (!this.rid || !this.started) return;
+    o.u = this.me; o.i = this.me.slice(0, 8) + '.' + (++this.evN);
+    const sent = this.wsSend({ k: 'e', v: o });
+    if (!sent || EV_CRIT.has(o.k)) this.ref('rooms/' + this.rid + '/e').push(o);
+  },
+  setW(w) { if (this.rid && this.started && !this.wsSend({ k: 'w', v: w })) this.ref('rooms/' + this.rid + '/w').set(w).catch(() => {}); },
   /* 대기실에서 나가기 / 기다리다 취소 */
   async cancel() {
     const rid = this.rid, started = this.started, host = this.host, me = this.me;
@@ -4972,7 +5038,7 @@ const PvP = {
     const myTm = m.players.find(x => x.uid === me).tm;
     const V = G.pvp = {
       kind, me, myTm, role: m.role, host: m.host, pl: {}, score: [0, 0], k: 0, d: 0, kills: 0, deaths: 0,
-      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, send: 0, sendIv: m.players.length > 6 ? 0.1 : PVP_SEND, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
+      cd: 3.4, cdShown: -1, left: kind === '1v1' ? cfg.rtime : cfg.time, send: 0, sendIv: m.players.length > 6 ? 0.08 : PVP_SEND, resp: 0, pend: {}, lastHit: '', boss: m.boss || null, lives: {}, out: {}, feed: [],
       hostUid: m.hostUid || '', round: 1, rw: [0, 0], rdead: {}, rend: 0, rwait: 0, next: 0, rdone: 0, rres: null,
     };
     G.ss = { mode: 'pvp' }; G.step = 0; G.hint = 7; G.nextDrop = 1e9; G.allies = [];
@@ -5200,7 +5266,7 @@ const PvP = {
     p.ammo = p.mag; p.rl = 0; p.fcd = 0; p.kvx = p.kvy = 0; p.burstN = 0; p.burstT = 0; p.dashT = 0;
     for (const k in p.buf) p.buf[k] = 0;
     const e = V.rival;
-    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.hp = e.maxHp; e.stun = 0; e.conf = 0; }
+    if (e) { const s2 = PVP_SPAWN[V.myTm ? 0 : 1]; e.tx = e.x = s2[0]; e.ty = e.y = s2[1]; e.pvx = e.pvy = 0; e.pt = 0; e.hp = e.maxHp; e.stun = 0; e.conf = 0; }
     banner(`ROUND ${V.round}`, `${V.rw[V.myTm]} : ${V.rw[1 - V.myTm]} · 체력 회복!`, COL.yolk, 1.4);
     sfx('pick');
     Net.send(mpMyState());
@@ -5357,6 +5423,8 @@ const PvP = {
     const t = Math.ceil(V.left);
     if (V.kind !== 'sd') { ctx.font = `400 ${Math.round(15 * u)}px ${FONT_NUM}`; outText(mmss(t), VW / 2, (V.kind === 'boss' || (V.kind === 'heist' && VW < 560 * u) ? 86 : 77) * u, t <= 10 && V.cd <= 0 ? COL.rose : '#fff', 3); }
     /* 킬 알림: 오른쪽, 일시정지 버튼 아래 */
+    ctx.textAlign = 'right';
+    if (Net.wsRoom) { ctx.textAlign = 'right'; ctx.font = `400 ${Math.round(11 * u)}px ${FONT_NUM}`; outText(Net.wsOk ? `핑 ${Net.ping || '-'}ms` : '연결 중…', VW - 12 * u, 106 * u, !Net.wsOk ? COL.rose : Net.ping > 150 ? COL.yolk : '#9be27a', 3); }   // 대전 서버 핑
     ctx.textAlign = 'right';
     V.feed.forEach((f, i) => { const s = f.a ? `${f.a} ➜ ${f.b}` : f.b; fitFont(s, Math.round(12 * u), VW * 0.4, FONT_UI); outText(s, VW - 12 * u, (118 + i * 17) * u, TEAM_KIND(V.kind) && f.tb != null ? TEAM_COL[f.tb] : '#fff', 3); });
     ctx.textAlign = 'center';
@@ -5766,10 +5834,10 @@ function drawBushes(top) {
 
 /* ---------- 쇼다운 ---------- */
 const SD = { gas0: 22, gas1: 130, dps0: 260, dps1: 760 };
-/* 등수 코인: 1등은 사람이 많을수록 많이 (2명 200 ~ 6명 320), 꼴찌는 60, 그 사이는 고르게 */
+/* 등수 코인: 1등은 사람이 많을수록 많이 (2명 500 ~ 6명 800), 꼴찌는 150, 그 사이는 고르게 */
 function sdCoins(place, n) {
   n = clamp(Math.round(n) || 2, 2, 6); place = clamp(Math.round(place) || n, 1, n);
-  const top = 200 + 30 * (n - 2), low = 60;
+  const top = 500 + 75 * (n - 2), low = 150;
   return Math.round((top - ((top - low) * (place - 1)) / (n - 1)) / 10) * 10;
 }
 const SD_SPAWN = [[200, 190], [900, 175], [1600, 190], [200, 1110], [900, 1125], [1600, 1110]];
@@ -5828,7 +5896,7 @@ function drawSafes() {
 
 /* ---------- 좀비 ---------- */
 /* 알파 좀비: 체력은 사람 수에 따라 (1명 2배 ~ 5명 3.6배), 받는 피해 75%, 빠르고 큼 · 일반 좀비: 체력 70%, 느림, 깨물기만 */
-const ZB = { infWin: 150, time: 120, aHp0: 1.6, aHpPer: 0.4, aRes: 0.75, aSpd: 1.18, aR: 38, zHp: 0.7, zSpd: 0.9, biteA: 420, biteZ: 220, cdA: 0.5, cdZ: 0.65, reach: 46, respA: 3, respZ: 5, infect: 3, ring: '#5fbf4a' };
+const ZB = { infWin: 380, time: 120, aHp0: 1.6, aHpPer: 0.4, aRes: 0.75, aSpd: 1.18, aR: 38, zHp: 0.7, zSpd: 0.9, biteA: 420, biteZ: 220, cdA: 0.5, cdZ: 0.65, reach: 46, respA: 3, respZ: 5, infect: 3, ring: '#5fbf4a' };
 const Z_SPAWN = [[300, 150], [900, 140], [1500, 150]];
 const H_SPAWN = [[600, 1100], [900, 1125], [1200, 1100], [450, 960], [1350, 960]];
 /* 내 캐릭터를 사람(0) · 좀비(1) · 알파 좀비(2)로 */
