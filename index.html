@@ -904,7 +904,7 @@ const CHARS = {
   jaewon:  { name: '박재원', face: 7, role: '돌격', hp: 1300, spd: 220, dmg: 1.00, rate: 0.96, ring: '#ff8fb1', price: CHAR_PRICE,
              ult: 'roll', ultName: '스마일 볼링', ultDesc: '웃는 얼굴이 볼링공처럼 굴러가며 적을 쓰러뜨리고 적 총알도 지움', desc: '한번 웃으면 다 쓰러짐', pro: '체력 조금 높음 · 총알 막는 궁', con: '조금 느림' },
   woojin:  { name: '정우진', face: 8, role: '혼란', hp: 1100, spd: 235, dmg: 1.00, rate: 1.05, ring: '#7bd389', price: CHAR_PRICE,
-             ult: 'qring', ultName: '물음표 폭풍', ultDesc: '물음표 3겹 폭풍이 사방으로 퍼져 맞은 적을 2.5초 헷갈리게 하고 큰 피해 · 쓰는 순간 최대 체력 50% 회복 + 3초 동안 이동속도 UP', desc: '예측 불가 혼란 유발자', pro: '빠르고 연사 빠름', con: '체력이 조금 낮음' },
+             ult: 'qring', ultName: '물음표 폭풍', ultDesc: '물음표 2겹 폭풍이 사방으로 퍼져 맞은 적을 1.6초 헷갈리게 하고 피해 · 쓰는 순간 최대 체력 30% 회복 + 2초 동안 이동속도 UP', desc: '예측 불가 혼란 유발자', pro: '빠르고 연사 빠름', con: '체력이 조금 낮음' },
   seowon:  { name: '정서원', face: 9, role: '저격', hp: 1000, spd: 230, dmg: 1.12, rate: 1.00, ring: '#59d0ff', price: CHAR_PRICE,
              ult: 'laser', ultName: '안경 레이저', ultDesc: '안경에서 벽도 뚫는 레이저를 쏴서 한 줄에 있는 적 모두에게 큰 피해', desc: '공격력이 제일 센 캐릭터', pro: '공격력 최고', con: '체력이 낮음' },
   seungho: { name: '주승호', face: 10, role: '흡혈 탱커', hp: 1450, spd: 205, dmg: 0.90, rate: 0.92, ring: '#1fd17a', price: CHAR_PRICE, vamp: 0.12, vampU: 0.4,
@@ -2408,7 +2408,7 @@ const ULT_CHARGE = 1800;
 /* 스파이더성빈 궁 (말도 안 되게 셈 · 대신 멀티플레이어에서는 못 씀)
    lane: 지나가는 길 폭(반지름) · net: 내려앉는 곳 그물 반지름 · storm: 사방으로 날아가는 거미줄 수 · zone: 그물 바닥 남는 시간 */
 /* 정우진 궁: 물음표 폭풍 / 신승민 궁: 비누 대청소 */
-const QRING = { waves: [780, 620, 470], n: 16, dmg: 300, range: 680, heal: 0.5, spd: 3, conf: 2.5 };
+const QRING = { waves: [720, 520], n: 12, dmg: 210, range: 600, heal: 0.3, spd: 2, conf: 1.6 };   // 너프: 3겹→2겹 · 16→12발 · 300→210 · 회복 50→30%
 const HAT = { spd: 950, range: 650, dmg: 520, r: 30, pull: 380, power: 4 };   // 신승민 벙거지 부메랑
 const SWING = { lane: 70, laneDmg: 3000, laneStun: 3, net: 260, netDmg: 1500, netStun: 2, storm: 16, stormDmg: 400, stormStun: 0.8, zone: 5, zoneDmg: 250, zoneTick: 0.5, heal: 0.3, inv: 1.5 };
 /* 박건영 '진지 모드': 회복 비율 · 밀쳐내기 반경 · 피해 (예전 45% · 280 · 450) */
@@ -3714,6 +3714,7 @@ function drawPlayer() {
   else if (BUSHES.length && inBush(p.x, p.y)) ctx.globalAlpha = 0.6;   // 수풀 속: 나는 반투명으로
   if (p.buf.shield > 0) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 14, 0, TAU); ctx.fillStyle = 'rgba(89,184,255,.25)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(89,184,255,.85)'; ctx.stroke(); }
   if (p.buf.rage > 0 || p.buf.power > 0 || p.buf.apm > 0) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 9 + Math.sin(t * 12) * 2, 0, TAU); ctx.lineWidth = 4; ctx.strokeStyle = p.buf.apm > 0 ? 'rgba(160,124,255,.9)' : 'rgba(255,159,28,.9)'; ctx.stroke(); }
+  if (G.pvp || G.coop) { ctx.save(); ctx.translate(p.x, p.y); sideDisc(p.r, p.isZ ? ZB.ring : SIDE_COL.me); ctx.restore(); }   // 멀티: 내 발밑 초록 원
   ctx.save(); ctx.translate(p.x, p.y); drawArmorBack(G.lo.a, p.ang, p.r, t, p.moving); ctx.restore();
   const behind = Math.sin(p.ang) < -0.3;
   if (behind) drawGun(p);
@@ -4042,7 +4043,7 @@ function drawOverheads() {
     const cr = e.isBoss ? 24 : 0;   // 5대1 보스는 왕관 위로
     if (e.rival && !e.pet) {   // 다른 사람: 큰 체력 바 (숫자 · 잔상 · 회복 표시)
       drawHpBar(e, cr);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 36 - cr, G.pvp && TEAM_KIND(G.pvp.kind) && e.tm === 0 ? '#bfe6ff' : '#ffc2cc', 4);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 15px ${FONT_DISP}`; outText(e.nick, e.x, e.y - e.r - 36 - cr, '#ffb3c0', 4);   // 상대 이름: 항상 빨간빛
     } else if (!e.boss) { const w = e.r * 2; bar(e.x - w / 2, e.y - e.r - 18 - cr, w, 7, e.hp / e.maxHp, COL.rose); }
     const sy = e.y - e.r - (e.boss ? 44 : e.rival && !e.pet ? 60 : 32);
     if ((e.stun || 0) > 0) {
@@ -5553,8 +5554,16 @@ const PvP = {
   },
 };
 
+/* 편 구분 색: 나 초록 · 우리 편 파랑 · 상대 빨강 (팀 이름과 상관없이 항상 내 기준) */
+const SIDE_COL = { me: '#3fe08e', ally: '#59b8ff', foe: '#ff4f6d' };
+const sideCol = e => e.z ? ZB.ring : e.ally ? SIDE_COL.ally : SIDE_COL.foe;
+function sideDisc(r, col) {   // 발밑 원
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r + 13, 0, TAU); ctx.globalAlpha *= 0.3; ctx.fillStyle = col; ctx.fill();
+  ctx.globalAlpha /= 0.3; ctx.globalAlpha *= 0.95; ctx.lineWidth = 4; ctx.strokeStyle = col; ctx.stroke(); ctx.restore();
+}
 function drawRival(e) {
   const c = CHARS[e.ch] || CHARS.base, r = e.r;
+  sideDisc(r, sideCol(e));
   if (e.inv && Math.floor(G.t * 20) % 2 === 0) ctx.globalAlpha = 0.45;
   if (e.sh) { ctx.beginPath(); ctx.arc(0, 0, r + 14, 0, TAU); ctx.fillStyle = 'rgba(89,184,255,.25)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(89,184,255,.85)'; ctx.stroke(); }
   const behind = Math.sin(e.ang) < -0.3;
@@ -5562,8 +5571,8 @@ function drawRival(e) {
   drawArmorBack(e.ar || 'gym', e.ang, r, G.t, true);
   if (e.sk) drawSkinBack(e.sk, r, e.ang, G.t, e.mv);
   if (behind) gun();
-  const tc = e.z ? ZB.ring : e.ally ? '#59b8ff' : G.pvp && TEAM_KIND(G.pvp.kind) ? TEAM_COL[e.tm] : COL.rose;
-  ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, TAU); ctx.fillStyle = tc; ctx.fill();
+  const tc = sideCol(e);
+  ctx.beginPath(); ctx.arc(0, 0, r + 7, 0, TAU); ctx.fillStyle = tc; ctx.fill();
   ctx.beginPath(); ctx.arc(0, 0, r + 3, 0, TAU); ctx.fillStyle = COL.ink; ctx.fill();
   ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fillStyle = ringOf(e.ch, e.sk); ctx.fill();
   const f = faceCv(e.ch, e.sk), fr = r - 4;
@@ -5610,12 +5619,12 @@ function drawHpBar(e, cr) {
   if (e.hpG == null || e.hp > e.hpG) e.hpG = e.hp;
   else if (now - (e.hpDrop || 0) > 0.35) e.hpG = Math.max(e.hp, e.hpG - mh * 0.9 * dt);
   if (e.healT > 0) e.healT = Math.max(0, e.healT - dt);
-  const col = f > 0.6 ? '#3fe08e' : f > 0.3 ? '#ffd23f' : '#ff4f6d', low = f <= 0.25 && Math.floor(now * 6) % 2 === 0;
+  const col = e.ally ? SIDE_COL.ally : SIDE_COL.foe, low = f <= 0.25 && Math.floor(now * 6) % 2 === 0;   // 체력 바도 편 색 (우리 편 파랑 · 상대 빨강)
   if (e.healT > 0) {   // 회복: 캐릭터 둘레 초록 링
     const k = e.healT / 0.9;
     ctx.save(); ctx.globalAlpha = k * 0.85; ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 8 + (1 - k) * 22, 0, TAU); ctx.lineWidth = 5; ctx.strokeStyle = COL.mint; ctx.stroke(); ctx.restore();
   }
-  rr(x - 3, y - 3, w + 6, h + 6, (h + 6) / 2); ctx.fillStyle = low ? '#ff4f6d' : e.ally ? '#59b8ff' : COL.ink; ctx.fill();
+  rr(x - 3, y - 3, w + 6, h + 6, (h + 6) / 2); ctx.fillStyle = low ? '#fff' : COL.ink; ctx.fill();
   rr(x, y, w, h, h / 2); ctx.fillStyle = 'rgba(16,18,43,.85)'; ctx.fill();
   const fg = clamp(e.hpG / mh, 0, 1);
   if (fg > f) { rr(x, y, Math.max(h, w * fg), h, h / 2); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fill(); }
