@@ -3591,6 +3591,7 @@ function drawEnemy(e) {
     case 'curry': drawCurry(e, t, look); break;
     case 'king': drawKing(e, t, look); break;
     case 'mom': drawMom(e, t); break;
+    case 'gong': drawGong(e, t); break;
     case 'rival': drawRival(e); break;
     case 'pet': ctx.restore(); drawPet(e); return;
   }
@@ -3612,6 +3613,22 @@ function drawMom(e, t) {
   ctx.beginPath(); ctx.arc(r * 1.5, 0, r * 0.3, -Math.PI / 2, Math.PI / 2); ctx.closePath(); ctx.fillStyle = '#e3e7ef'; ctx.fill(); ctx.stroke();
   ctx.restore();
   photoBall(e, '#ff5fb0');
+}
+/* 공종윤(숨겨진 보스): 검보라 오라 + 빙빙 도는 가시 + 해골 왕관 */
+function drawGong(e, t) {
+  const r = e.r, pul = 0.5 + 0.5 * Math.sin(t * 6);
+  ctx.beginPath(); ctx.arc(0, 0, r * (1.35 + pul * 0.06), 0, TAU); ctx.fillStyle = e.enr ? 'rgba(255,40,80,.28)' : 'rgba(110,40,190,.26)'; ctx.fill();
+  ctx.save(); ctx.rotate(t * (e.enr ? 2.4 : 1.2));
+  ctx.lineWidth = 4; ctx.strokeStyle = COL.ink; ctx.lineJoin = 'round';
+  for (let i = 0; i < 10; i++) {
+    const a = i * TAU / 10;
+    ctx.beginPath(); ctx.moveTo(Math.cos(a - 0.16) * r * 0.95, Math.sin(a - 0.16) * r * 0.95); ctx.lineTo(Math.cos(a) * r * 1.32, Math.sin(a) * r * 1.32); ctx.lineTo(Math.cos(a + 0.16) * r * 0.95, Math.sin(a + 0.16) * r * 0.95); ctx.closePath();
+    ctx.fillStyle = e.enr ? '#ff4f6d' : '#7a3cc9'; ctx.fill(); ctx.stroke();
+  }
+  ctx.restore();
+  photoBall(e, e.enr ? '#ff4f6d' : '#9b5cff');
+  ctx.font = `${Math.round(r * 0.55)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('💀', 0, -r * 1.12);
 }
 /* 쫄병: 호준이 사진 공 (종류마다 테두리 색이 다름) */
 const MINION_RING = { hw: '#ff4f6d', clock: '#ff9f1c', eraser: '#ff8fb1', bronze: '#c98a4b' };
